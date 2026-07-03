@@ -41,17 +41,6 @@
           <p class="text-sm text-gray-200 leading-relaxed">{{ profile.resume.summary }}</p>
         </div>
 
-        <div v-if="profile.resume.skills.length">
-          <h3 class="text-xs text-gray-500 mb-2">スキル</h3>
-          <div class="flex flex-wrap gap-2">
-            <span
-              v-for="skill in profile.resume.skills"
-              :key="skill"
-              class="px-3 py-1 bg-surface-deep border border-surface-border rounded-full text-xs text-brand-light"
-            >{{ skill }}</span>
-          </div>
-        </div>
-
         <div v-if="profile.resume.experience.length">
           <h3 class="text-xs text-gray-500 mb-3">職歴</h3>
           <div class="space-y-4">
@@ -150,7 +139,7 @@ const notFound = computed(() => data.value?.profile === null)
 const hasResume = computed(() => {
   const r = profile.value?.resume
   if (!r) return false
-  return r.summary || r.skills.length || r.experience.length || r.education.length
+  return r.summary || r.experience.length || r.education.length
 })
 
 const canReview = computed(() => {

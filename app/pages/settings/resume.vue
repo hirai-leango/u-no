@@ -65,34 +65,6 @@
       />
     </section>
 
-    <!-- スキル -->
-    <section class="mb-6">
-      <label class="block text-xs font-bold tracking-widest uppercase text-gray-500 mb-2">スキル</label>
-      <div class="flex flex-wrap gap-2 mb-2">
-        <span
-          v-for="(skill, i) in form.skills"
-          :key="skill"
-          class="flex items-center gap-1 px-3 py-1 bg-surface-deep border border-surface-border rounded-full text-xs text-brand-light"
-        >
-          {{ skill }}
-          <button class="text-gray-500 hover:text-red-400 transition-colors" @click="form.skills.splice(i, 1)">×</button>
-        </span>
-      </div>
-      <div class="flex gap-2">
-        <input
-          v-model="newSkill"
-          type="text"
-          placeholder="スキルを追加（例: TypeScript）"
-          class="flex-1 bg-surface border border-surface-border rounded-xl px-4 py-2.5 text-sm outline-none focus:border-brand transition-colors text-gray-100 placeholder-gray-600"
-          @keydown.enter.prevent="addSkill"
-        />
-        <button
-          class="px-4 py-2.5 bg-surface border border-surface-border rounded-xl text-sm text-gray-400 hover:text-gray-200 transition-colors"
-          @click="addSkill"
-        >追加</button>
-      </div>
-    </section>
-
     <!-- 職歴 -->
     <section class="mb-6">
       <div class="flex items-center justify-between mb-3">
@@ -188,7 +160,6 @@ const fileInput = ref<HTMLInputElement>()
 const isDragging = ref(false)
 const parsing = ref(false)
 const saving = ref(false)
-const newSkill = ref('')
 
 const form = reactive<Resume>({
   summary: '',
@@ -205,12 +176,6 @@ onMounted(async () => {
   if (profile?.resume) Object.assign(form, profile.resume)
   isSearchable.value = profile?.isSearchable ?? true
 })
-
-function addSkill() {
-  const s = newSkill.value.trim()
-  if (s && !form.skills.includes(s)) form.skills.push(s)
-  newSkill.value = ''
-}
 
 function addExperience() {
   form.experience.push({ company: '', title: '', startDate: '', endDate: '', description: '' })
@@ -238,7 +203,6 @@ async function parseResume(file: File) {
     formData.append('file', file)
     const res = await $fetch<Partial<Resume>>('/api/parse-resume', { method: 'POST', body: formData })
     if (res.summary) form.summary = res.summary
-    if (res.skills?.length) form.skills = [...new Set([...form.skills, ...res.skills])]
     if (res.experience?.length) form.experience = res.experience
     if (res.education?.length) form.education = res.education
   } catch (e) {
