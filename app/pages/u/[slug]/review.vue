@@ -57,7 +57,7 @@ const submitting = ref(false)
 const { getProfileBySlug, getProfileByUid } = useUserProfile()
 const { getMyReview, upsertReview, deleteReview } = useReviews()
 
-onMounted(async () => {
+async function load() {
   const p = await getProfileBySlug(slug.value)
   if (!p || !currentUser.value) return
   // 自分自身にはレビューできない
@@ -65,6 +65,13 @@ onMounted(async () => {
   profile.value = p
   existing.value = await getMyReview(p.uid, currentUser.value.uid)
   if (existing.value) comment.value = existing.value.comment
+}
+
+onMounted(() => {
+  if (currentUser.value) load()
+  watch(currentUser, (u) => {
+    if (u) load()
+  })
 })
 
 async function submit() {
