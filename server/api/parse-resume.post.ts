@@ -1,4 +1,4 @@
-import { VertexAI } from '@google-cloud/vertexai'
+import { GoogleGenerativeAI } from '@google/generative-ai'
 
 export default defineEventHandler(async (event) => {
   const config = useRuntimeConfig()
@@ -9,11 +9,8 @@ export default defineEventHandler(async (event) => {
   const buffer = Buffer.from(await file.arrayBuffer())
   const base64 = buffer.toString('base64')
 
-  const vertexAI = new VertexAI({
-    project: config.vertexProjectId,
-    location: config.vertexLocation,
-  })
-  const model = vertexAI.getGenerativeModel({ model: 'gemini-1.5-pro' })
+  const genAI = new GoogleGenerativeAI(config.geminiApiKey)
+  const model = genAI.getGenerativeModel({ model: 'gemini-1.5-pro' })
 
   const prompt = `
 以下のPDF履歴書を解析して、JSONで返してください。
@@ -44,17 +41,12 @@ export default defineEventHandler(async (event) => {
 }
 `
 
-  const result = await model.generateContent({
-    contents: [{
-      role: 'user',
-      parts: [
-        { text: prompt },
-        { inlineData: { mimeType: 'application/pdf', data: base64 } },
-      ],
-    }],
-    generationConfig: { responseMimeType: 'application/json' },
-  })
+  const result = await model.generateContent([
+    prompt,
+    { inlineData: { mimeType: 'application/pdf', data: base64 } },
+  ])
 
-  const text = result.response.candidates?.[0]?.content?.parts?.[0]?.text ?? '{}'
-  return JSON.parse(text)
+  const text = result.response.text()
+  const json = text.replace(/```json\n?|\n?```/g, '').trim()
+  return JSON.parse(json)
 })
