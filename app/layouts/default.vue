@@ -28,10 +28,9 @@
 </template>
 
 <script setup lang="ts">
-import { GoogleAuthProvider, GithubAuthProvider, FacebookAuthProvider, signOut as firebaseSignOut } from 'firebase/auth'
+import { getAuth, signOut as firebaseSignOut } from 'firebase/auth'
 
 const user = useCurrentUser()
-const { $firestore } = useNuxtApp()
 const userSlug = ref('')
 
 watch(user, async (u) => {
@@ -42,8 +41,8 @@ watch(user, async (u) => {
 }, { immediate: true })
 
 async function signOut() {
-  const { $auth } = useNuxtApp()
-  await firebaseSignOut($auth)
+  const auth = getAuth()
+  await firebaseSignOut(auth)
   navigateTo('/')
 }
 </script>

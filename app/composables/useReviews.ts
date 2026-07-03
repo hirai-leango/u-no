@@ -1,11 +1,11 @@
 import {
   doc, getDoc, setDoc, deleteDoc,
-  collection, query, where, orderBy, getDocs, serverTimestamp,
+  collection, query, where, orderBy, getDocs, serverTimestamp, getFirestore,
 } from 'firebase/firestore'
 import type { Review } from '~/types'
 
 export function useReviews() {
-  const { $firestore } = useNuxtApp()
+  const db = getFirestore()
 
   function reviewDocId(toUserId: string, fromUserId: string) {
     return `${toUserId}_${fromUserId}`
@@ -13,7 +13,7 @@ export function useReviews() {
 
   async function getReviews(toUserId: string): Promise<Review[]> {
     const q = query(
-      collection($firestore, 'reviews'),
+      collection(db, 'reviews'),
       where('toUserId', '==', toUserId),
       orderBy('createdAt', 'desc'),
     )
@@ -22,7 +22,7 @@ export function useReviews() {
   }
 
   async function getMyReview(toUserId: string, fromUserId: string): Promise<Review | null> {
-    const snap = await getDoc(doc($firestore, 'reviews', reviewDocId(toUserId, fromUserId)))
+    const snap = await getDoc(doc(db, 'reviews', reviewDocId(toUserId, fromUserId)))
     if (!snap.exists()) return null
     return { id: snap.id, ...snap.data() } as Review
   }
@@ -33,8 +33,8 @@ export function useReviews() {
     comment: string,
   ): Promise<void> {
     const id = reviewDocId(toUserId, from.uid)
-    const existing = await getDoc(doc($firestore, 'reviews', id))
-    await setDoc(doc($firestore, 'reviews', id), {
+    const existing = await getDoc(doc(db, 'reviews', id))
+    await setDoc(doc(db, 'reviews', id), {
       toUserId,
       fromUserId: from.uid,
       fromDisplayName: from.displayName,
@@ -47,7 +47,7 @@ export function useReviews() {
   }
 
   async function deleteReview(toUserId: string, fromUserId: string): Promise<void> {
-    await deleteDoc(doc($firestore, 'reviews', reviewDocId(toUserId, fromUserId)))
+    await deleteDoc(doc(db, 'reviews', reviewDocId(toUserId, fromUserId)))
   }
 
   return { getReviews, getMyReview, upsertReview, deleteReview }

@@ -49,10 +49,10 @@ import {
   GithubAuthProvider,
   FacebookAuthProvider,
   signInWithPopup,
+  getAuth,
 } from 'firebase/auth'
 
 const user = useCurrentUser()
-const { $auth } = useNuxtApp()
 const userSlug = ref('')
 
 const providers = [
@@ -70,11 +70,12 @@ watch(user, async (u) => {
 }, { immediate: true })
 
 async function login(providerId: string) {
+  const auth = getAuth()
   const providerMap: Record<string, any> = {
     google: new GoogleAuthProvider(),
     github: new GithubAuthProvider(),
     facebook: new FacebookAuthProvider(),
   }
-  await signInWithPopup($auth, providerMap[providerId])
+  await signInWithPopup(auth, providerMap[providerId])
 }
 </script>
