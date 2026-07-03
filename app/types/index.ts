@@ -5,6 +5,7 @@ export interface UserProfile {
   slug: string
   bio: string
   resume: Resume
+  isSearchable: boolean
   createdAt: Date
 }
 

@@ -138,14 +138,7 @@ const route = useRoute()
 const slug = computed(() => route.params.slug as string)
 const currentUser = useCurrentUser()
 
-const { data } = await useAsyncData(`profile-${slug.value}`, async () => {
-  const { getProfileBySlug } = useUserProfile()
-  const { getReviews } = useReviews()
-  const p = await getProfileBySlug(slug.value)
-  if (!p) return { profile: null, reviews: [] }
-  const r = await getReviews(p.uid)
-  return { profile: p, reviews: r }
-})
+const { data } = await useFetch(`/api/profile/${slug.value}`)
 
 const profile = computed(() => data.value?.profile ?? null)
 const reviews = computed(() => data.value?.reviews ?? [])
