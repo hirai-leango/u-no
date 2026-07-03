@@ -138,9 +138,18 @@ const route = useRoute()
 const slug = computed(() => route.params.slug as string)
 const currentUser = useCurrentUser()
 
-const profile = ref<UserProfile | null>(null)
-const reviews = ref<Review[]>([])
-const notFound = ref(false)
+const { data } = await useAsyncData(`profile-${slug.value}`, async () => {
+  const { getProfileBySlug } = useUserProfile()
+  const { getReviews } = useReviews()
+  const p = await getProfileBySlug(slug.value)
+  if (!p) return { profile: null, reviews: [] }
+  const r = await getReviews(p.uid)
+  return { profile: p, reviews: r }
+})
+
+const profile = computed(() => data.value?.profile ?? null)
+const reviews = computed(() => data.value?.reviews ?? [])
+const notFound = computed(() => data.value?.profile === null)
 
 const hasResume = computed(() => {
   const r = profile.value?.resume
@@ -166,13 +175,4 @@ function formatDate(date: any) {
   const d = date.toDate ? date.toDate() : new Date(date)
   return d.toLocaleDateString('ja-JP', { year: 'numeric', month: 'long', day: 'numeric' })
 }
-
-onMounted(async () => {
-  const { getProfileBySlug } = useUserProfile()
-  const { getReviews } = useReviews()
-  const p = await getProfileBySlug(slug.value)
-  if (!p) { notFound.value = true; return }
-  profile.value = p
-  reviews.value = await getReviews(p.uid)
-})
 </script>
