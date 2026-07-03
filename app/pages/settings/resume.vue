@@ -35,6 +35,25 @@
       </div>
     </div>
 
+    <!-- 検索設定 -->
+    <div class="bg-surface border border-surface-border rounded-2xl p-6 mb-8 flex items-center justify-between">
+      <div>
+        <h2 class="text-sm font-bold text-gray-300 mb-1">検索エンジンに表示する</h2>
+        <p class="text-xs text-gray-500">オフにすると Google などの検索結果に出なくなります（URLを知っている人は閲覧可）</p>
+      </div>
+      <button
+        type="button"
+        class="relative w-12 h-7 rounded-full transition-colors flex-shrink-0 ml-4"
+        :class="isSearchable ? 'bg-brand' : 'bg-surface-border'"
+        @click="isSearchable = !isSearchable"
+      >
+        <span
+          class="absolute top-1 left-1 w-5 h-5 bg-white rounded-full transition-transform"
+          :class="isSearchable ? 'translate-x-5' : 'translate-x-0'"
+        />
+      </button>
+    </div>
+
     <!-- 自己PR -->
     <section class="mb-6">
       <label class="block text-xs font-bold tracking-widest uppercase text-gray-500 mb-2">自己PR</label>
@@ -178,10 +197,13 @@ const form = reactive<Resume>({
   education: [],
 })
 
+const isSearchable = ref(true)
+
 onMounted(async () => {
   if (!user.value) return
   const profile = await getProfileByUid(user.value.uid)
   if (profile?.resume) Object.assign(form, profile.resume)
+  isSearchable.value = profile?.isSearchable ?? true
 })
 
 function addSkill() {
@@ -229,7 +251,7 @@ async function parseResume(file: File) {
 async function save() {
   if (!user.value) return
   saving.value = true
-  await saveProfile(user.value.uid, { resume: { ...form } })
+  await saveProfile(user.value.uid, { resume: { ...form }, isSearchable: isSearchable.value })
   saving.value = false
 }
 </script>

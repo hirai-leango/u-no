@@ -1,12 +1,5 @@
 <template>
   <div v-if="profile">
-    <useSeoMeta
-      :title="`${profile.displayName}の有能レビュー`"
-      :og-title="`${profile.displayName}の有能レビュー`"
-      :description="`有能スコア ${reviews.length} | ${profile.bio}`"
-      :og-image="profile.photoURL"
-    />
-
     <!-- ヘッダー -->
     <div class="flex items-start gap-4 mb-8">
       <img :src="profile.photoURL" class="w-16 h-16 rounded-full object-cover" />
@@ -139,6 +132,16 @@ const slug = computed(() => route.params.slug as string)
 const currentUser = useCurrentUser()
 
 const { data } = await useFetch(`/api/profile/${slug.value}`)
+
+const profileData = computed(() => data.value?.profile ?? null)
+
+useSeoMeta({
+  title: () => profileData.value ? `${profileData.value.displayName}の有能レビュー` : '有能レビュー',
+  ogTitle: () => profileData.value ? `${profileData.value.displayName}の有能レビュー` : '有能レビュー',
+  description: () => profileData.value ? `有能スコア ${data.value?.reviews?.length ?? 0} | ${profileData.value.bio}` : '',
+  ogImage: () => profileData.value?.photoURL ?? '',
+  robots: () => (profileData.value && profileData.value.isSearchable === false) ? 'noindex, nofollow' : 'index, follow',
+})
 
 const profile = computed(() => data.value?.profile ?? null)
 const reviews = computed(() => data.value?.reviews ?? [])
