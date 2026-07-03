@@ -137,7 +137,6 @@ import type { UserProfile, Review } from '~/types'
 const route = useRoute()
 const slug = computed(() => route.params.slug as string)
 const currentUser = useCurrentUser()
-const { useClipboard } = useVueuse ? useVueuse() : { useClipboard: null }
 
 const profile = ref<UserProfile | null>(null)
 const reviews = ref<Review[]>([])
