@@ -3,6 +3,9 @@ export default defineNuxtConfig({
   devtools: { enabled: true },
   nitro: {
     preset: 'cloudflare_module',
+    rollupConfig: {
+      external: ['firebase-admin', 'firebase-admin/auth'],
+    },
   },
   modules: [
     '@nuxtjs/tailwindcss',
