@@ -53,8 +53,8 @@ import {
 } from 'firebase/auth'
 
 useSeoMeta({
-  title: 'u-no.me（ユーノーミー）| "You know me" あなたの有能さを第三者が証明する',
-  ogTitle: 'u-no.me（ユーノーミー）| "You know me" あなたの有能さを第三者が証明する',
+  title: 'u-no.me（ユーノーミー）| 信頼が紡ぐビジネスプロフィールSNS',
+  ogTitle: 'u-no.me（ユーノーミー）| 信頼が紡ぐビジネスプロフィールSNS',
   description: '履歴書と第三者レビューで信頼できる自己紹介ページをつくろう',
   ogDescription: '履歴書と第三者レビューで信頼できる自己紹介ページをつくろう',
 })
