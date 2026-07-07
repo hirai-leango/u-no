@@ -37,44 +37,46 @@
 
     <p class="text-sm text-gray-300 leading-relaxed mb-4">{{ review.comment }}</p>
 
-    <!-- 公正さ評価 -->
+    <!-- 評価バー -->
     <div class="flex items-center gap-2 mb-3">
       <button
-        class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors"
+        class="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold transition-colors"
         :class="myVote === 'fair' ? 'bg-brand text-white' : 'bg-surface-deep text-gray-400 hover:text-gray-200'"
         @click="vote('fair')"
       >
-        👍 Good <span v-if="fairCount">{{ fairCount }}</span>
+        👍 Good <span v-if="fairCount" class="tabular-nums">{{ fairCount }}</span>
       </button>
       <button
-        class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors"
+        class="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold transition-colors"
         :class="myVote === 'unfair' ? 'bg-orange-500 text-white' : 'bg-surface-deep text-gray-400 hover:text-gray-200'"
         @click="vote('unfair')"
       >
-        👎 Bad <span v-if="unfairCount">{{ unfairCount }}</span>
+        👎 Bad <span v-if="unfairCount" class="tabular-nums">{{ unfairCount }}</span>
       </button>
+
+      <!-- 投票者アイコン（重ねて表示） -->
+      <div v-if="votes.length" class="flex items-center -space-x-1.5 ml-1">
+        <NuxtLink
+          v-for="v in votes.slice(0, 6)"
+          :key="v.id"
+          :to="`/u/${v.voterSlug}`"
+          :title="`${v.voterName}（${v.value === 'fair' ? 'Good' : 'Bad'}）`"
+        >
+          <img
+            :src="v.voterPhoto"
+            class="w-5 h-5 rounded-full object-cover ring-2 ring-surface"
+            :class="v.value === 'fair' ? 'outline outline-1 outline-brand' : 'outline outline-1 outline-orange-500'"
+          />
+        </NuxtLink>
+        <span v-if="votes.length > 6" class="text-[10px] text-gray-500 pl-2">+{{ votes.length - 6 }}</span>
+      </div>
+
       <button
-        class="ml-auto text-xs text-gray-500 hover:text-gray-300 transition-colors"
+        class="ml-auto flex items-center gap-1 text-xs text-gray-500 hover:text-gray-300 transition-colors"
         @click="showComments = !showComments"
       >
-        💬 コメント{{ comments.length ? ` ${comments.length}` : '' }}
+        💬 <span v-if="comments.length" class="tabular-nums">{{ comments.length }}</span>
       </button>
-    </div>
-
-    <!-- 投票者一覧（実名） -->
-    <div v-if="votes.length" class="flex flex-wrap items-center gap-1.5 mb-3">
-      <NuxtLink
-        v-for="v in votes"
-        :key="v.id"
-        :to="`/u/${v.voterSlug}`"
-        :title="`${v.voterName}（${v.value === 'fair' ? 'Good' : 'Bad'}）`"
-      >
-        <img
-          :src="v.voterPhoto"
-          class="w-5 h-5 rounded-full object-cover ring-1"
-          :class="v.value === 'fair' ? 'ring-brand' : 'ring-orange-500'"
-        />
-      </NuxtLink>
     </div>
 
     <!-- コメントツリー -->
