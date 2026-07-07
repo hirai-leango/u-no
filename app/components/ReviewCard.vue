@@ -26,6 +26,13 @@
       >
         編集
       </NuxtLink>
+      <button
+        v-else-if="currentUser"
+        class="ml-auto text-xs text-gray-600 hover:text-orange-400 transition-colors"
+        @click="reportReview"
+      >
+        通報
+      </button>
     </div>
 
     <p class="text-sm text-gray-300 leading-relaxed mb-4">{{ review.comment }}</p>
@@ -131,12 +138,18 @@ const props = defineProps<{
 const currentUser = useCurrentUser()
 const { getVotes, setVote, getComments, addComment, deleteComment } = useReviewInteractions()
 const { getProfileByUid } = useUserProfile()
+const { reportTarget } = useReports()
 
 const votes = ref<Vote[]>([])
 const comments = ref<ReviewComment[]>([])
 const showComments = ref(false)
 const newComment = ref('')
 const replyTo = ref<string | null>(null)
+const posting = ref(false)
+
+// クライアント側レート制限: 直近の送信からの最小間隔（ミリ秒）
+let lastCommentAt = 0
+const COMMENT_INTERVAL = 5000
 
 const fairCount = computed(() => votes.value.filter(v => v.value === 'fair').length)
 const unfairCount = computed(() => votes.value.filter(v => v.value === 'unfair').length)
@@ -185,17 +198,37 @@ async function onDelete(commentId: string) {
 }
 
 async function submitComment() {
-  if (!currentUser.value || !newComment.value.trim()) return
-  const myProfile = await getProfileByUid(currentUser.value.uid)
-  await addComment(props.review.id, replyTo.value, {
-    uid: currentUser.value.uid,
-    displayName: currentUser.value.displayName ?? '',
-    photoURL: currentUser.value.photoURL ?? '',
-    slug: myProfile?.slug ?? '',
-  }, newComment.value.trim())
-  newComment.value = ''
-  replyTo.value = null
-  comments.value = await getComments(props.review.id)
+  if (!currentUser.value || !newComment.value.trim() || posting.value) return
+  // レート制限: 5秒以内の連投を拒否
+  const now = Date.now()
+  if (now - lastCommentAt < COMMENT_INTERVAL) {
+    alert('コメントの間隔が短すぎます。少し待ってください。')
+    return
+  }
+  posting.value = true
+  try {
+    const myProfile = await getProfileByUid(currentUser.value.uid)
+    await addComment(props.review.id, replyTo.value, {
+      uid: currentUser.value.uid,
+      displayName: currentUser.value.displayName ?? '',
+      photoURL: currentUser.value.photoURL ?? '',
+      slug: myProfile?.slug ?? '',
+    }, newComment.value.trim())
+    lastCommentAt = Date.now()
+    newComment.value = ''
+    replyTo.value = null
+    comments.value = await getComments(props.review.id)
+  } finally {
+    posting.value = false
+  }
+}
+
+async function reportReview() {
+  if (!currentUser.value) return alert('通報するにはログインが必要です')
+  const reason = prompt('通報理由を入力してください（誹謗中傷・スパム・なりすまし など）')
+  if (!reason?.trim()) return
+  await reportTarget('review', props.review.id, currentUser.value.uid, reason.trim())
+  alert('通報を受け付けました。運営が確認します。')
 }
 
 onMounted(loadInteractions)

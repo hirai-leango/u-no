@@ -48,5 +48,17 @@ service cloud.firestore {
       allow delete: if request.auth != null
         && resource.data.authorUid == request.auth.uid;
     }
+
+    // 通報: 本人は読めない（運営のみ）、ログイン済みで自分名義のみ作成
+    match /reports/{reportId} {
+      allow read: if false;
+      allow create: if request.auth != null
+        && request.resource.data.reporterUid == request.auth.uid
+        && request.resource.data.reason is string
+        && request.resource.data.reason.size() > 0
+        && request.resource.data.reason.size() <= 500
+        && request.resource.data.targetType in ['review', 'comment'];
+      allow update, delete: if false;
+    }
   }
 }

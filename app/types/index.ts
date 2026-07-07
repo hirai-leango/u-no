@@ -69,3 +69,14 @@ export interface ReviewComment {
   text: string
   createdAt: Date
 }
+
+// 通報
+export interface Report {
+  id: string
+  targetType: 'review' | 'comment'
+  targetId: string
+  reporterUid: string
+  reason: string
+  createdAt: Date
+  resolved: boolean
+}
