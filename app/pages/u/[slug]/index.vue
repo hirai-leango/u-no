@@ -72,33 +72,12 @@
         <p class="text-sm">まだレビューがありません</p>
       </div>
       <div v-else class="space-y-4">
-        <div
+        <ReviewCard
           v-for="review in reviews"
           :key="review.id"
-          class="bg-surface border border-surface-border rounded-2xl p-5 relative overflow-hidden"
-        >
-          <div class="absolute top-0 left-0 right-0 h-0.5 bg-gradient-to-r from-brand to-brand-dark opacity-60" />
-          <div class="flex items-center gap-3 mb-3">
-            <NuxtLink :to="`/u/${review.fromSlug}`">
-              <img :src="review.fromPhotoURL" class="w-9 h-9 rounded-full object-cover hover:ring-2 ring-brand transition-all" />
-            </NuxtLink>
-            <div>
-              <NuxtLink :to="`/u/${review.fromSlug}`" class="text-sm font-bold text-brand-light hover:underline">
-                {{ review.fromDisplayName }}
-              </NuxtLink>
-              <div class="text-xs text-gray-600">{{ formatDate(review.updatedAt) }}</div>
-            </div>
-            <!-- 自分のレビューなら編集リンク -->
-            <NuxtLink
-              v-if="currentUser?.uid === review.fromUserId"
-              :to="`/u/${slug}/review`"
-              class="ml-auto text-xs text-gray-500 hover:text-gray-300 transition-colors"
-            >
-              編集
-            </NuxtLink>
-          </div>
-          <p class="text-sm text-gray-300 leading-relaxed">{{ review.comment }}</p>
-        </div>
+          :review="review"
+          :profile-slug="slug"
+        />
       </div>
     </section>
   </div>
@@ -153,11 +132,5 @@ function copyUrl() {
   navigator.clipboard.writeText(window.location.href)
   copied.value = true
   setTimeout(() => copied.value = false, 2000)
-}
-
-function formatDate(date: any) {
-  if (!date) return ''
-  const d = date.toDate ? date.toDate() : new Date(date)
-  return d.toLocaleDateString('ja-JP', { year: 'numeric', month: 'long', day: 'numeric' })
 }
 </script>

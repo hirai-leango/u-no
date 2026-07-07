@@ -44,3 +44,28 @@ export interface Review {
   createdAt: Date
   updatedAt: Date
 }
+
+// レビューへの公正さ評価（実名）
+export interface Vote {
+  id: string
+  reviewId: string
+  voterUid: string
+  voterName: string
+  voterPhoto: string
+  voterSlug: string
+  value: 'fair' | 'unfair'
+  createdAt: Date
+}
+
+// レビューへのツリーコメント（実名）
+export interface ReviewComment {
+  id: string
+  reviewId: string
+  parentId: string | null
+  authorUid: string
+  authorName: string
+  authorPhoto: string
+  authorSlug: string
+  text: string
+  createdAt: Date
+}
