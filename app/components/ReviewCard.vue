@@ -37,14 +37,14 @@
         :class="myVote === 'fair' ? 'bg-brand text-white' : 'bg-surface-deep text-gray-400 hover:text-gray-200'"
         @click="vote('fair')"
       >
-        👍 フェア <span v-if="fairCount">{{ fairCount }}</span>
+        👍 Good <span v-if="fairCount">{{ fairCount }}</span>
       </button>
       <button
         class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors"
         :class="myVote === 'unfair' ? 'bg-orange-500 text-white' : 'bg-surface-deep text-gray-400 hover:text-gray-200'"
         @click="vote('unfair')"
       >
-        👎 不当 <span v-if="unfairCount">{{ unfairCount }}</span>
+        👎 Bad <span v-if="unfairCount">{{ unfairCount }}</span>
       </button>
       <button
         class="ml-auto text-xs text-gray-500 hover:text-gray-300 transition-colors"
@@ -60,7 +60,7 @@
         v-for="v in votes"
         :key="v.id"
         :to="`/u/${v.voterSlug}`"
-        :title="`${v.voterName}（${v.value === 'fair' ? 'フェア' : '不当'}）`"
+        :title="`${v.voterName}（${v.value === 'fair' ? 'Good' : 'Bad'}）`"
       >
         <img
           :src="v.voterPhoto"
@@ -103,6 +103,7 @@
         <input
           v-model="newComment"
           type="text"
+          maxlength="1000"
           :placeholder="replyTo ? '返信を書く…' : 'コメントを書く…'"
           class="flex-1 bg-surface-deep border border-surface-border rounded-lg px-3 py-2 text-xs outline-none focus:border-brand transition-colors text-gray-100 placeholder-gray-600"
           @keydown.enter.prevent="submitComment"
