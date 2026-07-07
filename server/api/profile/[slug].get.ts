@@ -65,7 +65,6 @@ export default defineEventHandler(async (event) => {
             value: { stringValue: uid },
           },
         },
-        orderBy: [{ field: { fieldPath: 'createdAt' }, direction: 'DESCENDING' }],
       },
     },
   })
@@ -76,6 +75,12 @@ export default defineEventHandler(async (event) => {
       id: r.document.name.split('/').pop(),
       ...parseFields(r.document.fields),
     }))
+    // インデックス不要にするためサーバー側で新しい順にソート
+    .sort((a: any, b: any) => {
+      const ta = a.createdAt ? new Date(a.createdAt).getTime() : 0
+      const tb = b.createdAt ? new Date(b.createdAt).getTime() : 0
+      return tb - ta
+    })
 
   return { profile, reviews }
 })

@@ -1,6 +1,6 @@
 import {
   doc, getDoc, setDoc, deleteDoc,
-  collection, query, where, orderBy, getDocs, serverTimestamp, getFirestore,
+  collection, query, where, getDocs, serverTimestamp, getFirestore,
 } from 'firebase/firestore'
 import type { Review } from '~/types'
 
@@ -15,10 +15,15 @@ export function useReviews() {
     const q = query(
       collection(db, 'reviews'),
       where('toUserId', '==', toUserId),
-      orderBy('createdAt', 'desc'),
     )
     const snap = await getDocs(q)
-    return snap.docs.map(d => ({ id: d.id, ...d.data() }) as Review)
+    const list = snap.docs.map(d => ({ id: d.id, ...d.data() }) as Review)
+    // インデックス不要にするためクライアント側で新しい順にソート
+    return list.sort((a, b) => {
+      const ta = (a.createdAt as any)?.toMillis?.() ?? 0
+      const tb = (b.createdAt as any)?.toMillis?.() ?? 0
+      return tb - ta
+    })
   }
 
   async function getMyReview(toUserId: string, fromUserId: string): Promise<Review | null> {

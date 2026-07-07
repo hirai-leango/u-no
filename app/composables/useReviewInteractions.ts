@@ -1,6 +1,6 @@
 import {
   doc, getDoc, setDoc, deleteDoc, addDoc,
-  collection, query, where, orderBy, getDocs, serverTimestamp, getFirestore,
+  collection, query, where, getDocs, serverTimestamp, getFirestore,
 } from 'firebase/firestore'
 import type { Vote, ReviewComment } from '~/types'
 
@@ -49,10 +49,15 @@ export function useReviewInteractions() {
     const q = query(
       collection(db, 'comments'),
       where('reviewId', '==', reviewId),
-      orderBy('createdAt', 'asc'),
     )
     const snap = await getDocs(q)
-    return snap.docs.map(d => ({ id: d.id, ...d.data() }) as ReviewComment)
+    const list = snap.docs.map(d => ({ id: d.id, ...d.data() }) as ReviewComment)
+    // インデックス不要にするためクライアント側で時系列ソート
+    return list.sort((a, b) => {
+      const ta = (a.createdAt as any)?.toMillis?.() ?? 0
+      const tb = (b.createdAt as any)?.toMillis?.() ?? 0
+      return ta - tb
+    })
   }
 
   async function addComment(
