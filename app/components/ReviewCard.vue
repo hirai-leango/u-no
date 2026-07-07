@@ -208,7 +208,7 @@ async function submitComment() {
   posting.value = true
   try {
     const myProfile = await getProfileByUid(currentUser.value.uid)
-    await addComment(props.review.id, replyTo.value, {
+    const created = await addComment(props.review.id, replyTo.value, {
       uid: currentUser.value.uid,
       displayName: currentUser.value.displayName ?? '',
       photoURL: currentUser.value.photoURL ?? '',
@@ -217,7 +217,8 @@ async function submitComment() {
     lastCommentAt = Date.now()
     newComment.value = ''
     replyTo.value = null
-    comments.value = await getComments(props.review.id)
+    // 即時反映（サーバー再取得を待たずローカルに追加）
+    comments.value = [...comments.value, created]
   } finally {
     posting.value = false
   }

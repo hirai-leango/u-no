@@ -65,8 +65,8 @@ export function useReviewInteractions() {
     parentId: string | null,
     author: { uid: string; displayName: string; photoURL: string; slug: string },
     text: string,
-  ): Promise<void> {
-    await addDoc(collection(db, 'comments'), {
+  ): Promise<ReviewComment> {
+    const ref = await addDoc(collection(db, 'comments'), {
       reviewId,
       parentId,
       authorUid: author.uid,
@@ -76,6 +76,18 @@ export function useReviewInteractions() {
       text,
       createdAt: serverTimestamp(),
     })
+    // 即時反映用に作成したコメントを返す（createdAtはクライアント時刻で暫定）
+    return {
+      id: ref.id,
+      reviewId,
+      parentId,
+      authorUid: author.uid,
+      authorName: author.displayName,
+      authorPhoto: author.photoURL,
+      authorSlug: author.slug,
+      text,
+      createdAt: new Date(),
+    }
   }
 
   async function deleteComment(commentId: string): Promise<void> {
