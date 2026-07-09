@@ -33,6 +33,19 @@ export interface Education {
   endDate: string
 }
 
+export type Relationship =
+  | 'boss' | 'subordinate' | 'colleague' | 'client' | 'contractor' | 'acquaintance' | 'other'
+
+export const RELATIONSHIP_LABELS: Record<Relationship, string> = {
+  boss: '上司',
+  subordinate: '部下',
+  colleague: '同僚',
+  client: '取引先',
+  contractor: '業務委託',
+  acquaintance: '知人',
+  other: 'その他',
+}
+
 export interface Review {
   id: string
   toUserId: string
@@ -40,6 +53,7 @@ export interface Review {
   fromDisplayName: string
   fromPhotoURL: string
   fromSlug: string
+  relationship: Relationship
   comment: string
   createdAt: Date
   updatedAt: Date

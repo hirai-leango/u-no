@@ -14,9 +14,17 @@
         <img :src="review.fromPhotoURL" class="w-9 h-9 rounded-full object-cover hover:ring-2 ring-brand transition-all" />
       </NuxtLink>
       <div>
-        <NuxtLink :to="`/u/${review.fromSlug}`" class="text-sm font-bold text-brand-light hover:underline">
-          {{ review.fromDisplayName }}
-        </NuxtLink>
+        <div class="flex items-center gap-2">
+          <NuxtLink :to="`/u/${review.fromSlug}`" class="text-sm font-bold text-brand-light hover:underline">
+            {{ review.fromDisplayName }}
+          </NuxtLink>
+          <span
+            v-if="review.relationship"
+            class="text-[10px] px-1.5 py-0.5 rounded-full bg-brand/15 text-brand-light font-semibold"
+          >
+            {{ relationshipLabel }}
+          </span>
+        </div>
         <div class="text-xs text-gray-600">{{ formatDate(review.updatedAt) }}</div>
       </div>
       <NuxtLink
@@ -131,11 +139,15 @@
 
 <script setup lang="ts">
 import type { Review, Vote, ReviewComment } from '~/types'
+import { RELATIONSHIP_LABELS } from '~/types'
 
 const props = defineProps<{
   review: Review
   profileSlug: string
 }>()
+
+const relationshipLabel = computed(() =>
+  props.review.relationship ? RELATIONSHIP_LABELS[props.review.relationship] : '')
 
 const currentUser = useCurrentUser()
 const { getVotes, setVote, getComments, addComment, deleteComment } = useReviewInteractions()

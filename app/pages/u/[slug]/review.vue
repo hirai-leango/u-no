@@ -17,6 +17,26 @@
     </div>
 
     <div class="mb-6">
+      <label class="block text-xs font-bold tracking-widest uppercase text-gray-500 mb-2">
+        {{ profile?.displayName ?? 'この人' }} との関係
+      </label>
+      <div class="grid grid-cols-3 gap-2">
+        <button
+          v-for="(label, key) in RELATIONSHIP_LABELS"
+          :key="key"
+          type="button"
+          class="px-2 py-2.5 rounded-xl text-xs font-semibold border transition-colors"
+          :class="relationship === key
+            ? 'bg-brand text-white border-brand'
+            : 'bg-surface text-gray-400 border-surface-border hover:text-gray-200'"
+          @click="relationship = key as Relationship"
+        >
+          {{ label }}
+        </button>
+      </div>
+    </div>
+
+    <div class="mb-6">
       <label class="block text-xs font-bold tracking-widest uppercase text-gray-500 mb-2">コメント</label>
       <textarea
         v-model="comment"
@@ -31,7 +51,7 @@
     </div>
 
     <button
-      :disabled="!comment.trim() || submitting"
+      :disabled="!comment.trim() || !relationship || submitting"
       class="w-full py-3 rounded-xl font-bold text-sm bg-gradient-to-r from-brand to-brand-dark text-white transition-opacity disabled:opacity-40"
       @click="submit"
     >
@@ -43,7 +63,8 @@
 <script setup lang="ts">
 definePageMeta({ middleware: 'auth' })
 
-import type { UserProfile, Review } from '~/types'
+import type { UserProfile, Review, Relationship } from '~/types'
+import { RELATIONSHIP_LABELS } from '~/types'
 
 const route = useRoute()
 const slug = computed(() => route.params.slug as string)
@@ -52,6 +73,7 @@ const currentUser = useCurrentUser()
 const profile = ref<UserProfile | null>(null)
 const existing = ref<Review | null>(null)
 const comment = ref('')
+const relationship = ref<Relationship | null>(null)
 const submitting = ref(false)
 
 const { getProfileBySlug, getProfileByUid } = useUserProfile()
@@ -64,7 +86,10 @@ async function load() {
   if (p.uid === currentUser.value.uid) return navigateTo(`/u/${slug.value}`)
   profile.value = p
   existing.value = await getMyReview(p.uid, currentUser.value.uid)
-  if (existing.value) comment.value = existing.value.comment
+  if (existing.value) {
+    comment.value = existing.value.comment
+    relationship.value = existing.value.relationship ?? null
+  }
 }
 
 onMounted(() => {
@@ -75,7 +100,7 @@ onMounted(() => {
 })
 
 async function submit() {
-  if (!profile.value || !currentUser.value || !comment.value.trim()) return
+  if (!profile.value || !currentUser.value || !comment.value.trim() || !relationship.value) return
   submitting.value = true
   const myProfile = await getProfileByUid(currentUser.value.uid)
   await upsertReview(profile.value.uid, {
@@ -83,7 +108,7 @@ async function submit() {
     displayName: currentUser.value.displayName ?? '',
     photoURL: currentUser.value.photoURL ?? '',
     slug: myProfile?.slug ?? '',
-  }, comment.value.trim())
+  }, comment.value.trim(), relationship.value)
   navigateTo(`/u/${slug.value}`)
 }
 

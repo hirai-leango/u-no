@@ -2,7 +2,7 @@ import {
   doc, getDoc, setDoc, deleteDoc,
   collection, query, where, getDocs, serverTimestamp, getFirestore,
 } from 'firebase/firestore'
-import type { Review } from '~/types'
+import type { Review, Relationship } from '~/types'
 
 export function useReviews() {
   const db = getFirestore()
@@ -36,6 +36,7 @@ export function useReviews() {
     toUserId: string,
     from: { uid: string; displayName: string; photoURL: string; slug: string },
     comment: string,
+    relationship: Relationship,
   ): Promise<void> {
     const id = reviewDocId(toUserId, from.uid)
     const existing = await getDoc(doc(db, 'reviews', id))
@@ -45,6 +46,7 @@ export function useReviews() {
       fromDisplayName: from.displayName,
       fromPhotoURL: from.photoURL,
       fromSlug: from.slug,
+      relationship,
       comment,
       updatedAt: serverTimestamp(),
       createdAt: existing.exists() ? existing.data().createdAt : serverTimestamp(),
