@@ -24,6 +24,13 @@
     <main class="max-w-3xl mx-auto px-4 py-8">
       <slot />
     </main>
+    <footer class="border-t border-surface-border mt-12">
+      <div class="max-w-3xl mx-auto px-4 py-6 flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-xs text-gray-600">
+        <span>© 2026 u-no.me</span>
+        <NuxtLink to="/terms" class="hover:text-gray-400 transition-colors">利用規約</NuxtLink>
+        <NuxtLink to="/privacy" class="hover:text-gray-400 transition-colors">プライバシーポリシー</NuxtLink>
+      </div>
+    </footer>
   </div>
 </template>
 

@@ -57,6 +57,12 @@
     >
       {{ existing ? '更新する' : 'レビューを送信する' }}
     </button>
+
+    <PhoneVerifyModal
+      v-if="showPhoneModal"
+      @close="showPhoneModal = false"
+      @verified="onPhoneVerified"
+    />
   </div>
 </template>
 
@@ -78,6 +84,8 @@ const submitting = ref(false)
 
 const { getProfileBySlug, getProfileByUid } = useUserProfile()
 const { getMyReview, upsertReview, deleteReview } = useReviews()
+const isPhoneVerified = useIsPhoneVerified()
+const showPhoneModal = ref(false)
 
 async function load() {
   const p = await getProfileBySlug(slug.value)
@@ -101,6 +109,16 @@ onMounted(() => {
 
 async function submit() {
   if (!profile.value || !currentUser.value || !comment.value.trim() || !relationship.value) return
+  // 電話番号未認証なら本人確認モーダルを出す
+  if (!isPhoneVerified.value) {
+    showPhoneModal.value = true
+    return
+  }
+  await doSubmit()
+}
+
+async function doSubmit() {
+  if (!profile.value || !currentUser.value || !relationship.value) return
   submitting.value = true
   const myProfile = await getProfileByUid(currentUser.value.uid)
   await upsertReview(profile.value.uid, {
@@ -110,6 +128,11 @@ async function submit() {
     slug: myProfile?.slug ?? '',
   }, comment.value.trim(), relationship.value)
   navigateTo(`/u/${slug.value}`)
+}
+
+async function onPhoneVerified() {
+  showPhoneModal.value = false
+  await doSubmit()
 }
 
 async function confirmDelete() {
