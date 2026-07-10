@@ -3,6 +3,12 @@ export default defineNuxtConfig({
   devtools: { enabled: true },
   nitro: {
     preset: 'cloudflare_module',
+    routeRules: {
+      // ハッシュ付きJS/CSSは長期キャッシュ（不変）
+      '/_nuxt/**': { headers: { 'cache-control': 'public, max-age=31536000, immutable' } },
+      // HTMLは常に再検証（古いページを掴まない）
+      '/**': { headers: { 'cache-control': 'no-cache' } },
+    },
   },
   modules: [
     '@nuxtjs/tailwindcss',
