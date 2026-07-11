@@ -1,8 +1,5 @@
 <template>
   <div class="flex flex-col items-center justify-center min-h-[70vh] text-center">
-    <div class="inline-block bg-brand text-white text-xs font-bold tracking-widest uppercase px-3 py-1 rounded-full mb-6">
-      You know me
-    </div>
     <h1 class="text-4xl md:text-5xl font-extrabold mb-4 font-display text-ink leading-tight">
       安心して、<br>あなたは報われる。
     </h1>
