@@ -3,7 +3,7 @@
     <div class="inline-block bg-gradient-to-r from-brand to-brand-dark text-white text-xs font-bold tracking-widest uppercase px-3 py-1 rounded-full mb-6">
       You know — 有能
     </div>
-    <h1 class="text-4xl md:text-5xl font-extrabold mb-4 bg-gradient-to-br from-ink to-brand-light bg-clip-text text-transparent">
+    <h1 class="text-4xl md:text-5xl font-extrabold mb-4 font-display text-ink">
       自分の有能さを<br>第三者に証明してもらう
     </h1>
     <p class="text-ink-mute text-base mb-10 max-w-sm">

@@ -4,7 +4,7 @@
     <div class="absolute top-0 left-0 right-0 h-0.5 bg-gradient-to-r from-brand to-brand-dark opacity-60" />
 
     <!-- 不当フラグ -->
-    <div v-if="isFlagged" class="mb-3 text-xs text-orange-400 bg-orange-400/10 rounded-lg px-3 py-1.5 inline-block">
+    <div v-if="isFlagged" class="mb-3 text-xs text-warn bg-warn/10 rounded px-3 py-1.5 inline-block">
       ⚠️ 多くの人がこのレビューを不当と評価しています
     </div>
 
@@ -15,12 +15,12 @@
       </NuxtLink>
       <div>
         <div class="flex items-center gap-2">
-          <NuxtLink :to="`/u/${review.fromSlug}`" class="text-sm font-bold text-brand-light hover:underline">
+          <NuxtLink :to="`/u/${review.fromSlug}`" class="text-sm font-bold text-brand hover:underline">
             {{ review.fromDisplayName }}
           </NuxtLink>
           <span
             v-if="review.relationship"
-            class="text-[10px] px-1.5 py-0.5 rounded-full bg-brand/15 text-brand-light font-semibold"
+            class="text-[10px] px-2 py-0.5 rounded-sm bg-surface-card text-ink-soft font-semibold"
           >
             {{ relationshipLabel }}
           </span>
@@ -36,7 +36,7 @@
       </NuxtLink>
       <button
         v-else-if="currentUser"
-        class="ml-auto text-xs text-ink-mute hover:text-orange-400 transition-colors"
+        class="ml-auto text-xs text-ink-mute hover:text-warn transition-colors"
         @click="reportReview"
       >
         通報
@@ -48,15 +48,15 @@
     <!-- 評価バー -->
     <div class="flex items-center gap-2 mb-3">
       <button
-        class="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold transition-colors"
-        :class="myVote === 'fair' ? 'bg-brand text-white' : 'bg-surface-deep text-ink-mute hover:text-ink'"
+        class="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold border transition-colors"
+        :class="myVote === 'fair' ? 'bg-good text-white border-good' : 'bg-surface-deep text-ink-soft border-line hover:text-ink'"
         @click="vote('fair')"
       >
         👍 Good <span v-if="fairCount" class="tabular-nums">{{ fairCount }}</span>
       </button>
       <button
-        class="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold transition-colors"
-        :class="myVote === 'unfair' ? 'bg-orange-500 text-white' : 'bg-surface-deep text-ink-mute hover:text-ink'"
+        class="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold border transition-colors"
+        :class="myVote === 'unfair' ? 'bg-empty text-white border-empty' : 'bg-surface-deep text-ink-soft border-line hover:text-ink'"
         @click="vote('unfair')"
       >
         👎 Bad <span v-if="unfairCount" class="tabular-nums">{{ unfairCount }}</span>
@@ -73,7 +73,7 @@
           <img
             :src="v.voterPhoto"
             class="w-5 h-5 rounded-full object-cover ring-2 ring-surface"
-            :class="v.value === 'fair' ? 'outline outline-1 outline-brand' : 'outline outline-1 outline-orange-500'"
+            :class="v.value === 'fair' ? 'outline outline-1 outline-good' : 'outline outline-1 outline-empty'"
           />
         </NuxtLink>
         <span v-if="votes.length > 6" class="text-[10px] text-ink-mute pl-2">+{{ votes.length - 6 }}</span>

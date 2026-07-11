@@ -4,7 +4,7 @@
       ← {{ profile?.displayName ?? '' }}のページへ戻る
     </NuxtLink>
 
-    <h1 class="text-2xl font-extrabold mb-1 bg-gradient-to-br from-ink to-brand-light bg-clip-text text-transparent">
+    <h1 class="text-2xl font-extrabold mb-1 font-display text-ink">
       レビューを書く
     </h1>
     <p class="text-ink-mute text-sm mb-8">
@@ -45,7 +45,7 @@
         placeholder="例: 突然の依頼にも即レスで対応してくれた。回答がめちゃくちゃ的確だった。"
         class="w-full bg-surface border border-surface-border rounded-xl px-4 py-3 text-sm outline-none focus:border-brand transition-colors resize-none text-ink placeholder-ink-mute"
       />
-      <div class="text-right text-xs mt-1" :class="comment.length > 270 ? 'text-orange-400' : 'text-ink-mute'">
+      <div class="text-right text-xs mt-1" :class="comment.length > 270 ? 'text-warn' : 'text-ink-mute'">
         {{ comment.length }} / 300
       </div>
     </div>

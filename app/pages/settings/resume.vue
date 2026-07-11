@@ -1,7 +1,7 @@
 <template>
   <div class="max-w-2xl mx-auto">
     <div class="flex items-center justify-between mb-8">
-      <h1 class="text-2xl font-extrabold bg-gradient-to-br from-ink to-brand-light bg-clip-text text-transparent">
+      <h1 class="text-2xl font-extrabold font-display text-ink">
         履歴書を編集
       </h1>
       <button

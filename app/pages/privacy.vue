@@ -4,7 +4,7 @@
       ← トップへ戻る
     </NuxtLink>
 
-    <h1 class="text-2xl font-extrabold mb-2 bg-gradient-to-br from-ink to-brand-light bg-clip-text text-transparent">
+    <h1 class="text-2xl font-extrabold mb-2 font-display text-ink">
       プライバシーポリシー
     </h1>
     <p class="text-xs text-ink-mute mb-8">最終更新日: 2026年7月10日</p>

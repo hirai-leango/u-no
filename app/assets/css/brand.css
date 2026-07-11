@@ -1,0 +1,7 @@
+/* u-no.me ブランド：見出しは明朝（品格）、本文はゴシック */
+body {
+  font-family: 'Zen Kaku Gothic New', 'Noto Sans JP', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+h1, h2, h3 {
+  font-family: 'Shippori Mincho', serif;
+}

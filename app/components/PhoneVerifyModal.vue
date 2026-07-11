@@ -1,7 +1,7 @@
 <template>
   <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/70 px-4" @click.self="$emit('close')">
     <div class="w-full max-w-sm bg-surface border border-surface-border rounded-2xl p-6">
-      <h2 class="text-lg font-extrabold mb-1 bg-gradient-to-br from-ink to-brand-light bg-clip-text text-transparent">
+      <h2 class="text-lg font-extrabold mb-1 font-display text-ink">
         電話番号で本人確認
       </h2>
       <p class="text-xs text-ink-mute mb-6">

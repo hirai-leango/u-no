@@ -1,6 +1,6 @@
 <template>
   <div class="max-w-sm mx-auto pt-16">
-    <h1 class="text-2xl font-extrabold mb-2 bg-gradient-to-br from-ink to-brand-light bg-clip-text text-transparent">
+    <h1 class="text-2xl font-extrabold mb-2 font-display text-ink">
       プロフィールを設定
     </h1>
     <p class="text-ink-mute text-sm mb-8">URLに使うスラッグを決めてください</p>
