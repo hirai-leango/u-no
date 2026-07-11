@@ -1,6 +1,6 @@
 <template>
   <div class="flex flex-col items-center justify-center min-h-[70vh] text-center">
-    <h1 class="text-4xl md:text-5xl font-extrabold mb-4 font-display text-ink leading-tight">
+    <h1 class="text-4xl md:text-5xl font-extrabold mb-4 font-black text-ink leading-tight">
       安心して、<br>あなたは報われる。
     </h1>
     <p class="text-ink-soft text-base mb-10 max-w-md leading-relaxed">

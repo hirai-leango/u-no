@@ -42,7 +42,6 @@ export default {
       },
       fontFamily: {
         sans: ['"Zen Kaku Gothic New"', '"Noto Sans JP"', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
-        display: ['"Shippori Mincho"', 'serif'],
         dot: ['"DotGothic16"', 'monospace'],
       },
       borderRadius: {

@@ -1,7 +1,7 @@
-/* u-no.me ブランド：見出しは明朝（品格）、本文はゴシック */
+/* u-no.me ブランド：本文・見出しとも Zen Kaku Gothic New に統一（明朝は廃止） */
 body {
   font-family: 'Zen Kaku Gothic New', 'Noto Sans JP', -apple-system, BlinkMacSystemFont, sans-serif;
 }
 h1, h2, h3 {
-  font-family: 'Shippori Mincho', serif;
+  font-weight: 900;
 }

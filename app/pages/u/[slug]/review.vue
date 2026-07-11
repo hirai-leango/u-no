@@ -4,7 +4,7 @@
       ← {{ profile?.displayName ?? '' }}のページへ戻る
     </NuxtLink>
 
-    <h1 class="text-2xl font-extrabold mb-1 font-display text-ink">
+    <h1 class="text-2xl font-extrabold mb-1 font-black text-ink">
       レビューを書く
     </h1>
     <p class="text-ink-mute text-sm mb-8">
