@@ -19,7 +19,7 @@
         <p class="text-[11px] text-ink-mute mb-4">日本の携帯番号（先頭0）を入力してください</p>
         <button
           :disabled="!phone.trim() || loading"
-          class="w-full py-3 rounded font-bold text-sm bg-gradient-to-r from-brand to-brand-dark text-white transition-opacity disabled:opacity-40"
+          class="w-full py-3 rounded font-bold text-sm bg-brand text-white transition-colors hover:bg-brand-hover disabled:bg-disabled-bg disabled:text-disabled-text"
           @click="onSend"
         >
           {{ loading ? '送信中…' : '認証コードを送信' }}
@@ -37,7 +37,7 @@
         />
         <button
           :disabled="!code.trim() || loading"
-          class="w-full py-3 rounded font-bold text-sm bg-gradient-to-r from-brand to-brand-dark text-white transition-opacity disabled:opacity-40"
+          class="w-full py-3 rounded font-bold text-sm bg-brand text-white transition-colors hover:bg-brand-hover disabled:bg-disabled-bg disabled:text-disabled-text"
           @click="onConfirm"
         >
           {{ loading ? '確認中…' : '確認する' }}

@@ -2,7 +2,8 @@
   <div class="min-h-screen bg-surface-deep text-ink font-sans">
     <header class="border-b border-surface-border">
       <div class="max-w-3xl mx-auto px-4 h-14 flex items-center justify-between">
-        <NuxtLink to="/" class="text-brand font-bold text-lg tracking-tight">
+        <NuxtLink to="/" class="flex items-center gap-2 text-brand font-bold text-lg tracking-tight">
+          <img src="/favicon.svg" alt="ユーノーミー" class="w-6 h-8" style="image-rendering: pixelated;" />
           ユーノーミー
         </NuxtLink>
         <nav v-if="user" class="flex items-center gap-3">

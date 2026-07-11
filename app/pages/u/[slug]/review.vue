@@ -52,7 +52,7 @@
 
     <button
       :disabled="!comment.trim() || !relationship || submitting"
-      class="w-full py-3 rounded font-bold text-sm bg-gradient-to-r from-brand to-brand-dark text-white transition-opacity disabled:opacity-40"
+      class="w-full py-3 rounded font-bold text-sm bg-brand text-white transition-colors hover:bg-brand-hover disabled:bg-disabled-bg disabled:text-disabled-text"
       @click="submit"
     >
       {{ existing ? '更新する' : 'レビューを送信する' }}

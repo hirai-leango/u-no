@@ -4,14 +4,14 @@
     <div class="flex items-start gap-4 mb-8">
       <img :src="profile.photoURL" class="w-16 h-16 rounded-full object-cover" />
       <div class="flex-1">
-        <h1 class="text-xl font-extrabold text-white">{{ profile.displayName }}</h1>
-        <p class="text-ink-mute text-sm mt-1">{{ profile.bio }}</p>
+        <h1 class="text-xl font-extrabold text-ink">{{ profile.displayName }}</h1>
+        <p class="text-ink-soft text-sm mt-1">{{ profile.bio }}</p>
       </div>
       <div class="text-right">
-        <div class="text-3xl font-extrabold bg-gradient-to-br from-brand-light to-brand bg-clip-text text-transparent">
+        <div class="text-3xl font-extrabold text-brand">
           {{ reviews.length }}
         </div>
-        <div class="text-xs text-ink-mute tracking-widest uppercase">有能スコア</div>
+        <div class="text-xs text-ink-mute tracking-widest">信頼スコア</div>
       </div>
     </div>
 
@@ -20,7 +20,7 @@
       <NuxtLink
         v-if="canReview"
         :to="`/u/${slug}/review`"
-        class="px-5 py-2.5 bg-gradient-to-r from-brand to-brand-dark rounded text-sm font-bold hover:opacity-80 transition-opacity"
+        class="px-5 py-2.5 bg-brand text-white rounded text-sm font-bold hover:bg-brand-hover transition-colors"
       >
         レビューを書く
       </NuxtLink>
