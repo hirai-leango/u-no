@@ -1,20 +1,20 @@
 <template>
   <div class="flex flex-col items-center justify-center min-h-[70vh] text-center">
-    <div class="inline-block bg-gradient-to-r from-brand to-brand-dark text-white text-xs font-bold tracking-widest uppercase px-3 py-1 rounded-full mb-6">
-      You know — 有能
+    <div class="inline-block bg-brand text-white text-xs font-bold tracking-widest uppercase px-3 py-1 rounded-full mb-6">
+      You know me
     </div>
-    <h1 class="text-4xl md:text-5xl font-extrabold mb-4 font-display text-ink">
-      自分の有能さを<br>第三者に証明してもらう
+    <h1 class="text-4xl md:text-5xl font-extrabold mb-4 font-display text-ink leading-tight">
+      安心して、<br>あなたは報われる。
     </h1>
-    <p class="text-ink-mute text-base mb-10 max-w-sm">
-      履歴書と第三者レビューを組み合わせた、<br>信頼できる自己紹介ページを作ろう。
+    <p class="text-ink-soft text-base mb-10 max-w-md leading-relaxed">
+      ユーノーミーは第三者レビューを組み合わせた、<br>ビジネスプロフィールサービスです。
     </p>
 
     <div v-if="!user" class="flex flex-col gap-3 w-64">
       <button
         v-for="provider in providers"
         :key="provider.id"
-        class="flex items-center justify-center gap-3 px-5 py-3 rounded-xl font-semibold text-sm transition-opacity hover:opacity-80 active:scale-95"
+        class="flex items-center justify-center gap-3 px-5 py-3 rounded font-semibold text-sm transition-opacity hover:opacity-80 active:scale-95"
         :class="provider.class"
         @click="login(provider.id)"
       >
@@ -28,14 +28,14 @@
       <NuxtLink
         v-if="userSlug"
         :to="`/u/${userSlug}`"
-        class="px-6 py-3 bg-brand rounded-xl font-semibold text-sm hover:opacity-80 transition-opacity"
+        class="px-6 py-3 bg-brand rounded font-semibold text-sm hover:opacity-80 transition-opacity"
       >
         マイページへ →
       </NuxtLink>
       <NuxtLink
         v-else
         to="/onboarding"
-        class="px-6 py-3 bg-brand rounded-xl font-semibold text-sm hover:opacity-80 transition-opacity"
+        class="px-6 py-3 bg-brand rounded font-semibold text-sm hover:opacity-80 transition-opacity"
       >
         プロフィールを設定する →
       </NuxtLink>

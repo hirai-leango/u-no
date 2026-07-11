@@ -11,7 +11,7 @@
       {{ profile?.displayName }} さんへの正直なレビューをお願いします
     </p>
 
-    <div v-if="existing" class="flex items-center justify-between bg-surface border border-surface-border rounded-xl px-4 py-3 mb-6 text-sm">
+    <div v-if="existing" class="flex items-center justify-between bg-surface border border-surface-border rounded px-4 py-3 mb-6 text-sm">
       <span class="text-ink-mute">以前のレビューを編集中</span>
       <button class="text-red-400 hover:text-red-300 text-xs transition-colors" @click="confirmDelete">削除</button>
     </div>
@@ -25,7 +25,7 @@
           v-for="(label, key) in RELATIONSHIP_LABELS"
           :key="key"
           type="button"
-          class="px-2 py-2.5 rounded-xl text-xs font-semibold border transition-colors"
+          class="px-2 py-2.5 rounded text-xs font-semibold border transition-colors"
           :class="relationship === key
             ? 'bg-brand text-white border-brand'
             : 'bg-surface text-ink-mute border-surface-border hover:text-ink'"
@@ -43,7 +43,7 @@
         :maxlength="300"
         rows="5"
         placeholder="例: 突然の依頼にも即レスで対応してくれた。回答がめちゃくちゃ的確だった。"
-        class="w-full bg-surface border border-surface-border rounded-xl px-4 py-3 text-sm outline-none focus:border-brand transition-colors resize-none text-ink placeholder-ink-mute"
+        class="w-full bg-surface border border-surface-border rounded px-4 py-3 text-sm outline-none focus:border-brand transition-colors resize-none text-ink placeholder-ink-mute"
       />
       <div class="text-right text-xs mt-1" :class="comment.length > 270 ? 'text-warn' : 'text-ink-mute'">
         {{ comment.length }} / 300
@@ -52,7 +52,7 @@
 
     <button
       :disabled="!comment.trim() || !relationship || submitting"
-      class="w-full py-3 rounded-xl font-bold text-sm bg-gradient-to-r from-brand to-brand-dark text-white transition-opacity disabled:opacity-40"
+      class="w-full py-3 rounded font-bold text-sm bg-gradient-to-r from-brand to-brand-dark text-white transition-opacity disabled:opacity-40"
       @click="submit"
     >
       {{ existing ? '更新する' : 'レビューを送信する' }}

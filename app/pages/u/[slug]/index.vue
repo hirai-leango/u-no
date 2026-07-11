@@ -20,12 +20,12 @@
       <NuxtLink
         v-if="canReview"
         :to="`/u/${slug}/review`"
-        class="px-5 py-2.5 bg-gradient-to-r from-brand to-brand-dark rounded-xl text-sm font-bold hover:opacity-80 transition-opacity"
+        class="px-5 py-2.5 bg-gradient-to-r from-brand to-brand-dark rounded text-sm font-bold hover:opacity-80 transition-opacity"
       >
         レビューを書く
       </NuxtLink>
       <button
-        class="px-5 py-2.5 bg-surface border border-surface-border rounded-xl text-sm font-semibold text-ink-mute hover:text-ink transition-colors"
+        class="px-5 py-2.5 bg-surface border border-surface-border rounded text-sm font-semibold text-ink-mute hover:text-ink transition-colors"
         @click="copyUrl"
       >
         {{ copied ? 'コピーしました！' : '🔗 URLをコピー' }}
@@ -35,7 +35,7 @@
     <!-- 履歴書 -->
     <section v-if="hasResume" class="mb-10">
       <h2 class="text-xs font-bold tracking-widest uppercase text-ink-mute mb-4">履歴書</h2>
-      <div class="bg-surface border border-surface-border rounded-2xl p-6 space-y-6">
+      <div class="bg-surface border border-surface-border rounded-none p-6 space-y-6">
         <div v-if="profile.resume.summary">
           <h3 class="text-xs text-ink-mute mb-1">自己PR</h3>
           <p class="text-sm text-ink leading-relaxed">{{ profile.resume.summary }}</p>

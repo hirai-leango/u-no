@@ -6,7 +6,7 @@
       </h1>
       <button
         :disabled="saving"
-        class="px-5 py-2.5 bg-gradient-to-r from-brand to-brand-dark rounded-xl text-sm font-bold disabled:opacity-40 hover:opacity-80 transition-opacity"
+        class="px-5 py-2.5 bg-gradient-to-r from-brand to-brand-dark rounded text-sm font-bold disabled:opacity-40 hover:opacity-80 transition-opacity"
         @click="save"
       >
         {{ saving ? '保存中...' : '保存する' }}
@@ -14,11 +14,11 @@
     </div>
 
     <!-- PDFインポート -->
-    <div class="bg-surface border border-surface-border rounded-2xl p-6 mb-8">
+    <div class="bg-surface border border-surface-border rounded-none p-6 mb-8">
       <h2 class="text-sm font-bold text-ink-soft mb-1">PDFからインポート</h2>
       <p class="text-xs text-ink-mute mb-4">履歴書PDFをアップロードすると、AIが自動で項目を入力します</p>
       <div
-        class="border-2 border-dashed border-surface-border rounded-xl p-8 text-center cursor-pointer hover:border-brand transition-colors"
+        class="border-2 border-dashed border-surface-border rounded p-8 text-center cursor-pointer hover:border-brand transition-colors"
         :class="{ 'border-brand': isDragging }"
         @dragover.prevent="isDragging = true"
         @dragleave="isDragging = false"
@@ -36,7 +36,7 @@
     </div>
 
     <!-- 検索設定 -->
-    <div class="bg-surface border border-surface-border rounded-2xl p-6 mb-8 flex items-center justify-between">
+    <div class="bg-surface border border-surface-border rounded-none p-6 mb-8 flex items-center justify-between">
       <div>
         <h2 class="text-sm font-bold text-ink-soft mb-1">検索エンジンに表示する</h2>
         <p class="text-xs text-ink-mute">オフにすると Google などの検索結果に出なくなります（URLを知っている人は閲覧可）</p>
@@ -61,7 +61,7 @@
         v-model="form.summary"
         rows="4"
         placeholder="自己PRを入力してください"
-        class="w-full bg-surface border border-surface-border rounded-xl px-4 py-3 text-sm outline-none focus:border-brand transition-colors resize-none text-ink placeholder-ink-mute"
+        class="w-full bg-surface border border-surface-border rounded px-4 py-3 text-sm outline-none focus:border-brand transition-colors resize-none text-ink placeholder-ink-mute"
       />
     </section>
 
@@ -75,7 +75,7 @@
         <div
           v-for="(exp, i) in form.experience"
           :key="i"
-          class="bg-surface border border-surface-border rounded-xl p-4 space-y-3"
+          class="bg-surface border border-surface-border rounded p-4 space-y-3"
         >
           <div class="flex justify-end">
             <button class="text-xs text-ink-mute hover:text-red-400 transition-colors" @click="form.experience.splice(i, 1)">削除</button>
@@ -116,7 +116,7 @@
         <div
           v-for="(edu, i) in form.education"
           :key="i"
-          class="bg-surface border border-surface-border rounded-xl p-4 space-y-3"
+          class="bg-surface border border-surface-border rounded p-4 space-y-3"
         >
           <div class="flex justify-end">
             <button class="text-xs text-ink-mute hover:text-red-400 transition-colors" @click="form.education.splice(i, 1)">削除</button>

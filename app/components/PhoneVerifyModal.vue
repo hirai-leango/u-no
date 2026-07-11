@@ -1,6 +1,6 @@
 <template>
   <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/70 px-4" @click.self="$emit('close')">
-    <div class="w-full max-w-sm bg-surface border border-surface-border rounded-2xl p-6">
+    <div class="w-full max-w-sm bg-surface border border-surface-border rounded-none p-6">
       <h2 class="text-lg font-extrabold mb-1 font-display text-ink">
         電話番号で本人確認
       </h2>
@@ -14,12 +14,12 @@
           v-model="phone"
           type="tel"
           placeholder="090-1234-5678"
-          class="w-full bg-surface-deep border border-surface-border rounded-xl px-4 py-3 text-sm outline-none focus:border-brand transition-colors text-ink placeholder-ink-mute mb-2"
+          class="w-full bg-surface-deep border border-surface-border rounded px-4 py-3 text-sm outline-none focus:border-brand transition-colors text-ink placeholder-ink-mute mb-2"
         />
         <p class="text-[11px] text-ink-mute mb-4">日本の携帯番号（先頭0）を入力してください</p>
         <button
           :disabled="!phone.trim() || loading"
-          class="w-full py-3 rounded-xl font-bold text-sm bg-gradient-to-r from-brand to-brand-dark text-white transition-opacity disabled:opacity-40"
+          class="w-full py-3 rounded font-bold text-sm bg-gradient-to-r from-brand to-brand-dark text-white transition-opacity disabled:opacity-40"
           @click="onSend"
         >
           {{ loading ? '送信中…' : '認証コードを送信' }}
@@ -33,11 +33,11 @@
           type="text"
           inputmode="numeric"
           placeholder="6桁のコード"
-          class="w-full bg-surface-deep border border-surface-border rounded-xl px-4 py-3 text-sm outline-none focus:border-brand transition-colors text-ink placeholder-ink-mute mb-4 tracking-widest text-center"
+          class="w-full bg-surface-deep border border-surface-border rounded px-4 py-3 text-sm outline-none focus:border-brand transition-colors text-ink placeholder-ink-mute mb-4 tracking-widest text-center"
         />
         <button
           :disabled="!code.trim() || loading"
-          class="w-full py-3 rounded-xl font-bold text-sm bg-gradient-to-r from-brand to-brand-dark text-white transition-opacity disabled:opacity-40"
+          class="w-full py-3 rounded font-bold text-sm bg-gradient-to-r from-brand to-brand-dark text-white transition-opacity disabled:opacity-40"
           @click="onConfirm"
         >
           {{ loading ? '確認中…' : '確認する' }}

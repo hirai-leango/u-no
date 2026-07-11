@@ -1,5 +1,5 @@
 <template>
-  <div class="bg-surface border border-surface-border rounded-2xl p-5 relative overflow-hidden"
+  <div class="bg-surface border border-surface-border rounded-none p-5 relative overflow-hidden"
     :class="{ 'opacity-60': isFlagged }">
     <div class="absolute top-0 left-0 right-0 h-0.5 bg-gradient-to-r from-brand to-brand-dark opacity-60" />
 
@@ -52,14 +52,14 @@
         :class="myVote === 'fair' ? 'bg-good text-white border-good' : 'bg-surface-deep text-ink-soft border-line hover:text-ink'"
         @click="vote('fair')"
       >
-        👍 Good <span v-if="fairCount" class="tabular-nums">{{ fairCount }}</span>
+        ◯ Good <span v-if="fairCount" class="tabular-nums">{{ fairCount }}</span>
       </button>
       <button
         class="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold border transition-colors"
         :class="myVote === 'unfair' ? 'bg-empty text-white border-empty' : 'bg-surface-deep text-ink-soft border-line hover:text-ink'"
         @click="vote('unfair')"
       >
-        👎 Bad <span v-if="unfairCount" class="tabular-nums">{{ unfairCount }}</span>
+        ✕ Bad <span v-if="unfairCount" class="tabular-nums">{{ unfairCount }}</span>
       </button>
 
       <!-- 投票者アイコン（重ねて表示） -->
@@ -83,7 +83,7 @@
         class="ml-auto flex items-center gap-1 text-xs text-ink-mute hover:text-ink-soft transition-colors"
         @click="showComments = !showComments"
       >
-        💬 <span v-if="comments.length" class="tabular-nums">{{ comments.length }}</span>
+        コメント <span v-if="comments.length" class="tabular-nums">{{ comments.length }}</span>
       </button>
     </div>
 

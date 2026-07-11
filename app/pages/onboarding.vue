@@ -7,7 +7,7 @@
 
     <div class="mb-2">
       <label class="block text-xs font-bold tracking-widest uppercase text-ink-mute mb-2">スラッグ</label>
-      <div class="flex items-center bg-surface border border-surface-border rounded-xl overflow-hidden focus-within:border-brand transition-colors">
+      <div class="flex items-center bg-surface border border-surface-border rounded overflow-hidden focus-within:border-brand transition-colors">
         <span class="pl-4 text-ink-mute text-sm whitespace-nowrap">yuuno.app/u/</span>
         <input
           v-model="slug"
@@ -29,13 +29,13 @@
         v-model="bio"
         placeholder="簡単な自己紹介を書いてください"
         rows="3"
-        class="w-full bg-surface border border-surface-border rounded-xl px-4 py-3 text-sm outline-none focus:border-brand transition-colors resize-none text-ink placeholder-ink-mute"
+        class="w-full bg-surface border border-surface-border rounded px-4 py-3 text-sm outline-none focus:border-brand transition-colors resize-none text-ink placeholder-ink-mute"
       />
     </div>
 
     <button
       :disabled="!canSubmit"
-      class="w-full py-3 rounded-xl font-bold text-sm bg-gradient-to-r from-brand to-brand-dark text-white transition-opacity disabled:opacity-40"
+      class="w-full py-3 rounded font-bold text-sm bg-gradient-to-r from-brand to-brand-dark text-white transition-opacity disabled:opacity-40"
       @click="submit"
     >
       はじめる
