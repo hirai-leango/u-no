@@ -28,14 +28,14 @@
       <NuxtLink
         v-if="userSlug"
         :to="`/u/${userSlug}`"
-        class="px-6 py-3 bg-brand rounded font-semibold text-sm hover:opacity-80 transition-opacity"
+        class="px-6 py-3 bg-brand text-white rounded font-bold text-sm hover:bg-brand-hover transition-colors"
       >
         マイページへ →
       </NuxtLink>
       <NuxtLink
         v-else
         to="/onboarding"
-        class="px-6 py-3 bg-brand rounded font-semibold text-sm hover:opacity-80 transition-opacity"
+        class="px-6 py-3 bg-brand text-white rounded font-bold text-sm hover:bg-brand-hover transition-colors"
       >
         プロフィールを設定する →
       </NuxtLink>

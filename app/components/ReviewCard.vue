@@ -126,7 +126,7 @@
           @keydown.enter.prevent="submitComment"
         />
         <button
-          class="px-3 py-2 bg-brand rounded-lg text-xs font-semibold hover:opacity-80 transition-opacity"
+          class="px-3 py-2 bg-brand text-white rounded text-xs font-bold hover:bg-brand-hover transition-colors"
           @click="submitComment"
         >送信</button>
       </div>
