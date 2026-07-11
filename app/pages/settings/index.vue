@@ -4,5 +4,5 @@ navigateTo('/settings/resume', { redirectCode: 301 })
 </script>
 
 <template>
-  <div class="text-center py-20 text-gray-600 text-sm">リダイレクト中...</div>
+  <div class="text-center py-20 text-ink-mute text-sm">リダイレクト中...</div>
 </template>

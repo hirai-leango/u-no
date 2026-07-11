@@ -10,19 +10,25 @@ export default {
   theme: {
     extend: {
       colors: {
+        // ライト＆ブルー：信頼・誠実
         surface: {
-          DEFAULT: '#1a1a24',
-          deep: '#0f0f13',
-          border: '#2a2a3a',
+          DEFAULT: '#ffffff',   // カード背景
+          deep: '#f5f8fc',      // ページ背景
+          border: '#e3e9f2',    // 罫線
         },
         brand: {
-          DEFAULT: '#6c63ff',
-          light: '#a78bfa',
-          dark: '#9b59b6',
+          DEFAULT: '#2563eb',   // 信頼の青
+          light: '#3b82f6',
+          dark: '#1d4ed8',
+        },
+        ink: {
+          DEFAULT: '#1a2b46',   // 主要テキスト（濃紺寄りの黒）
+          soft: '#4a5b76',      // 本文
+          mute: '#8a99b0',      // 補助テキスト
         },
       },
       fontFamily: {
-        sans: ['-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'sans-serif'],
+        sans: ['"Noto Sans JP"', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'sans-serif'],
       },
     },
   },

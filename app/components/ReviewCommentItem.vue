@@ -8,18 +8,18 @@
         <NuxtLink :to="`/u/${comment.authorSlug}`" class="text-xs font-bold text-brand-light hover:underline">
           {{ comment.authorName }}
         </NuxtLink>
-        <span class="text-[10px] text-gray-600">{{ formatDate(comment.createdAt) }}</span>
+        <span class="text-[10px] text-ink-mute">{{ formatDate(comment.createdAt) }}</span>
       </div>
-      <p class="text-xs text-gray-300 leading-relaxed mt-0.5 break-words">{{ comment.text }}</p>
+      <p class="text-xs text-ink-soft leading-relaxed mt-0.5 break-words">{{ comment.text }}</p>
       <div class="flex items-center gap-3 mt-1">
         <button
           v-if="currentUser"
-          class="text-[10px] text-gray-500 hover:text-gray-300 transition-colors"
+          class="text-[10px] text-ink-mute hover:text-ink-soft transition-colors"
           @click="$emit('reply', comment.parentId ?? comment.id)"
         >返信</button>
         <button
           v-if="currentUser?.uid === comment.authorUid"
-          class="text-[10px] text-gray-500 hover:text-red-400 transition-colors"
+          class="text-[10px] text-ink-mute hover:text-red-400 transition-colors"
           @click="$emit('delete', comment.id)"
         >削除</button>
       </div>

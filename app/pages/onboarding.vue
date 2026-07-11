@@ -1,19 +1,19 @@
 <template>
   <div class="max-w-sm mx-auto pt-16">
-    <h1 class="text-2xl font-extrabold mb-2 bg-gradient-to-br from-white to-brand-light bg-clip-text text-transparent">
+    <h1 class="text-2xl font-extrabold mb-2 bg-gradient-to-br from-ink to-brand-light bg-clip-text text-transparent">
       プロフィールを設定
     </h1>
-    <p class="text-gray-400 text-sm mb-8">URLに使うスラッグを決めてください</p>
+    <p class="text-ink-mute text-sm mb-8">URLに使うスラッグを決めてください</p>
 
     <div class="mb-2">
-      <label class="block text-xs font-bold tracking-widest uppercase text-gray-500 mb-2">スラッグ</label>
+      <label class="block text-xs font-bold tracking-widest uppercase text-ink-mute mb-2">スラッグ</label>
       <div class="flex items-center bg-surface border border-surface-border rounded-xl overflow-hidden focus-within:border-brand transition-colors">
-        <span class="pl-4 text-gray-500 text-sm whitespace-nowrap">yuuno.app/u/</span>
+        <span class="pl-4 text-ink-mute text-sm whitespace-nowrap">yuuno.app/u/</span>
         <input
           v-model="slug"
           type="text"
           placeholder="your-name"
-          class="bg-transparent flex-1 px-2 py-3 text-sm outline-none text-gray-100"
+          class="bg-transparent flex-1 px-2 py-3 text-sm outline-none text-ink"
           @input="checkSlug"
         />
       </div>
@@ -24,12 +24,12 @@
     <p v-else class="text-transparent text-xs mb-4">_</p>
 
     <div class="mb-6">
-      <label class="block text-xs font-bold tracking-widest uppercase text-gray-500 mb-2">自己紹介（任意）</label>
+      <label class="block text-xs font-bold tracking-widest uppercase text-ink-mute mb-2">自己紹介（任意）</label>
       <textarea
         v-model="bio"
         placeholder="簡単な自己紹介を書いてください"
         rows="3"
-        class="w-full bg-surface border border-surface-border rounded-xl px-4 py-3 text-sm outline-none focus:border-brand transition-colors resize-none text-gray-100 placeholder-gray-600"
+        class="w-full bg-surface border border-surface-border rounded-xl px-4 py-3 text-sm outline-none focus:border-brand transition-colors resize-none text-ink placeholder-ink-mute"
       />
     </div>
 

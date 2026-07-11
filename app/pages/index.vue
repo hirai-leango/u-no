@@ -3,10 +3,10 @@
     <div class="inline-block bg-gradient-to-r from-brand to-brand-dark text-white text-xs font-bold tracking-widest uppercase px-3 py-1 rounded-full mb-6">
       You know — 有能
     </div>
-    <h1 class="text-4xl md:text-5xl font-extrabold mb-4 bg-gradient-to-br from-white to-brand-light bg-clip-text text-transparent">
+    <h1 class="text-4xl md:text-5xl font-extrabold mb-4 bg-gradient-to-br from-ink to-brand-light bg-clip-text text-transparent">
       自分の有能さを<br>第三者に証明してもらう
     </h1>
-    <p class="text-gray-400 text-base mb-10 max-w-sm">
+    <p class="text-ink-mute text-base mb-10 max-w-sm">
       履歴書と第三者レビューを組み合わせた、<br>信頼できる自己紹介ページを作ろう。
     </p>
 
@@ -24,7 +24,7 @@
     </div>
 
     <div v-else class="flex flex-col items-center gap-4">
-      <p class="text-gray-400 text-sm">ログイン中: {{ user.displayName }}</p>
+      <p class="text-ink-mute text-sm">ログイン中: {{ user.displayName }}</p>
       <NuxtLink
         v-if="userSlug"
         :to="`/u/${userSlug}`"

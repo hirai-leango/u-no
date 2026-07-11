@@ -25,38 +25,38 @@
             {{ relationshipLabel }}
           </span>
         </div>
-        <div class="text-xs text-gray-600">{{ formatDate(review.updatedAt) }}</div>
+        <div class="text-xs text-ink-mute">{{ formatDate(review.updatedAt) }}</div>
       </div>
       <NuxtLink
         v-if="currentUser?.uid === review.fromUserId"
         :to="`/u/${profileSlug}/review`"
-        class="ml-auto text-xs text-gray-500 hover:text-gray-300 transition-colors"
+        class="ml-auto text-xs text-ink-mute hover:text-ink-soft transition-colors"
       >
         編集
       </NuxtLink>
       <button
         v-else-if="currentUser"
-        class="ml-auto text-xs text-gray-600 hover:text-orange-400 transition-colors"
+        class="ml-auto text-xs text-ink-mute hover:text-orange-400 transition-colors"
         @click="reportReview"
       >
         通報
       </button>
     </div>
 
-    <p class="text-sm text-gray-300 leading-relaxed mb-4">{{ review.comment }}</p>
+    <p class="text-sm text-ink-soft leading-relaxed mb-4">{{ review.comment }}</p>
 
     <!-- 評価バー -->
     <div class="flex items-center gap-2 mb-3">
       <button
         class="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold transition-colors"
-        :class="myVote === 'fair' ? 'bg-brand text-white' : 'bg-surface-deep text-gray-400 hover:text-gray-200'"
+        :class="myVote === 'fair' ? 'bg-brand text-white' : 'bg-surface-deep text-ink-mute hover:text-ink'"
         @click="vote('fair')"
       >
         👍 Good <span v-if="fairCount" class="tabular-nums">{{ fairCount }}</span>
       </button>
       <button
         class="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold transition-colors"
-        :class="myVote === 'unfair' ? 'bg-orange-500 text-white' : 'bg-surface-deep text-gray-400 hover:text-gray-200'"
+        :class="myVote === 'unfair' ? 'bg-orange-500 text-white' : 'bg-surface-deep text-ink-mute hover:text-ink'"
         @click="vote('unfair')"
       >
         👎 Bad <span v-if="unfairCount" class="tabular-nums">{{ unfairCount }}</span>
@@ -76,11 +76,11 @@
             :class="v.value === 'fair' ? 'outline outline-1 outline-brand' : 'outline outline-1 outline-orange-500'"
           />
         </NuxtLink>
-        <span v-if="votes.length > 6" class="text-[10px] text-gray-500 pl-2">+{{ votes.length - 6 }}</span>
+        <span v-if="votes.length > 6" class="text-[10px] text-ink-mute pl-2">+{{ votes.length - 6 }}</span>
       </div>
 
       <button
-        class="ml-auto flex items-center gap-1 text-xs text-gray-500 hover:text-gray-300 transition-colors"
+        class="ml-auto flex items-center gap-1 text-xs text-ink-mute hover:text-ink-soft transition-colors"
         @click="showComments = !showComments"
       >
         💬 <span v-if="comments.length" class="tabular-nums">{{ comments.length }}</span>
@@ -89,7 +89,7 @@
 
     <!-- コメントツリー -->
     <div v-if="showComments" class="border-t border-surface-border pt-3 mt-3 space-y-3">
-      <div v-if="comments.length === 0" class="text-xs text-gray-600">まだコメントがありません</div>
+      <div v-if="comments.length === 0" class="text-xs text-ink-mute">まだコメントがありません</div>
 
       <div
         v-for="c in topLevelComments"
@@ -122,7 +122,7 @@
           type="text"
           maxlength="1000"
           :placeholder="replyTo ? '返信を書く…' : 'コメントを書く…'"
-          class="flex-1 bg-surface-deep border border-surface-border rounded-lg px-3 py-2 text-xs outline-none focus:border-brand transition-colors text-gray-100 placeholder-gray-600"
+          class="flex-1 bg-surface-deep border border-surface-border rounded-lg px-3 py-2 text-xs outline-none focus:border-brand transition-colors text-ink placeholder-ink-mute"
           @keydown.enter.prevent="submitComment"
         />
         <button
@@ -130,7 +130,7 @@
           @click="submitComment"
         >送信</button>
       </div>
-      <div v-if="replyTo" class="text-xs text-gray-500 ml-1">
+      <div v-if="replyTo" class="text-xs text-ink-mute ml-1">
         返信中… <button class="text-brand-light" @click="replyTo = null">キャンセル</button>
       </div>
     </div>

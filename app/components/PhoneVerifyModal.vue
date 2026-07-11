@@ -1,22 +1,22 @@
 <template>
   <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/70 px-4" @click.self="$emit('close')">
     <div class="w-full max-w-sm bg-surface border border-surface-border rounded-2xl p-6">
-      <h2 class="text-lg font-extrabold mb-1 bg-gradient-to-br from-white to-brand-light bg-clip-text text-transparent">
+      <h2 class="text-lg font-extrabold mb-1 bg-gradient-to-br from-ink to-brand-light bg-clip-text text-transparent">
         電話番号で本人確認
       </h2>
-      <p class="text-xs text-gray-500 mb-6">
+      <p class="text-xs text-ink-mute mb-6">
         なりすまし・不正投稿を防ぐため、レビューの投稿・評価には電話番号による本人確認が必要です。番号は公開されません。
       </p>
 
       <div v-if="step === 'input'">
-        <label class="block text-xs font-bold tracking-widest uppercase text-gray-500 mb-2">電話番号</label>
+        <label class="block text-xs font-bold tracking-widest uppercase text-ink-mute mb-2">電話番号</label>
         <input
           v-model="phone"
           type="tel"
           placeholder="090-1234-5678"
-          class="w-full bg-surface-deep border border-surface-border rounded-xl px-4 py-3 text-sm outline-none focus:border-brand transition-colors text-gray-100 placeholder-gray-600 mb-2"
+          class="w-full bg-surface-deep border border-surface-border rounded-xl px-4 py-3 text-sm outline-none focus:border-brand transition-colors text-ink placeholder-ink-mute mb-2"
         />
-        <p class="text-[11px] text-gray-600 mb-4">日本の携帯番号（先頭0）を入力してください</p>
+        <p class="text-[11px] text-ink-mute mb-4">日本の携帯番号（先頭0）を入力してください</p>
         <button
           :disabled="!phone.trim() || loading"
           class="w-full py-3 rounded-xl font-bold text-sm bg-gradient-to-r from-brand to-brand-dark text-white transition-opacity disabled:opacity-40"
@@ -27,13 +27,13 @@
       </div>
 
       <div v-else-if="step === 'code'">
-        <label class="block text-xs font-bold tracking-widest uppercase text-gray-500 mb-2">認証コード</label>
+        <label class="block text-xs font-bold tracking-widest uppercase text-ink-mute mb-2">認証コード</label>
         <input
           v-model="code"
           type="text"
           inputmode="numeric"
           placeholder="6桁のコード"
-          class="w-full bg-surface-deep border border-surface-border rounded-xl px-4 py-3 text-sm outline-none focus:border-brand transition-colors text-gray-100 placeholder-gray-600 mb-4 tracking-widest text-center"
+          class="w-full bg-surface-deep border border-surface-border rounded-xl px-4 py-3 text-sm outline-none focus:border-brand transition-colors text-ink placeholder-ink-mute mb-4 tracking-widest text-center"
         />
         <button
           :disabled="!code.trim() || loading"
@@ -46,7 +46,7 @@
 
       <p v-if="error" class="text-red-400 text-xs mt-3">{{ error }}</p>
 
-      <button class="w-full text-center text-xs text-gray-500 hover:text-gray-300 mt-4 transition-colors" @click="$emit('close')">
+      <button class="w-full text-center text-xs text-ink-mute hover:text-ink-soft mt-4 transition-colors" @click="$emit('close')">
         あとにする
       </button>
 

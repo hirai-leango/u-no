@@ -1,15 +1,15 @@
 <template>
-  <div class="min-h-screen bg-surface-deep text-gray-100 font-sans">
+  <div class="min-h-screen bg-surface-deep text-ink font-sans">
     <header class="border-b border-surface-border">
       <div class="max-w-3xl mx-auto px-4 h-14 flex items-center justify-between">
-        <NuxtLink to="/" class="text-brand-light font-bold text-lg tracking-tight">
-          有能レビュー
+        <NuxtLink to="/" class="text-brand font-bold text-lg tracking-tight">
+          ユーノーミー
         </NuxtLink>
         <nav v-if="user" class="flex items-center gap-3">
-          <NuxtLink :to="`/u/${userSlug}`" class="text-sm text-gray-400 hover:text-gray-200 transition-colors">
+          <NuxtLink :to="`/u/${userSlug}`" class="text-sm text-ink-mute hover:text-ink transition-colors">
             マイページ
           </NuxtLink>
-          <NuxtLink to="/settings" class="text-sm text-gray-400 hover:text-gray-200 transition-colors">
+          <NuxtLink to="/settings" class="text-sm text-ink-mute hover:text-ink transition-colors">
             設定
           </NuxtLink>
           <img
@@ -25,10 +25,10 @@
       <slot />
     </main>
     <footer class="border-t border-surface-border mt-12">
-      <div class="max-w-3xl mx-auto px-4 py-6 flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-xs text-gray-600">
+      <div class="max-w-3xl mx-auto px-4 py-6 flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-xs text-ink-mute">
         <span>© 2026 u-no.me</span>
-        <NuxtLink to="/terms" class="hover:text-gray-400 transition-colors">利用規約</NuxtLink>
-        <NuxtLink to="/privacy" class="hover:text-gray-400 transition-colors">プライバシーポリシー</NuxtLink>
+        <NuxtLink to="/terms" class="hover:text-ink-mute transition-colors">利用規約</NuxtLink>
+        <NuxtLink to="/privacy" class="hover:text-ink-mute transition-colors">プライバシーポリシー</NuxtLink>
       </div>
     </footer>
   </div>
