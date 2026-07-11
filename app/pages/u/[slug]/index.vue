@@ -66,10 +66,8 @@
 
     <!-- レビュー一覧 -->
     <section>
-      <h2 class="text-xs font-bold tracking-widest uppercase text-ink-mute mb-4">レビュー</h2>
       <div v-if="reviews.length === 0" class="text-center py-12 text-ink-mute">
-        <p class="text-2xl mb-2">💭</p>
-        <p class="text-sm">まだレビューがありません</p>
+        <p class="text-sm">まだ誰も注いでいません。最初の一杯を待っています。</p>
       </div>
       <div v-else class="space-y-4">
         <ReviewCard
