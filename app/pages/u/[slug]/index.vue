@@ -67,7 +67,7 @@
     <!-- レビュー一覧 -->
     <section>
       <div v-if="reviews.length === 0" class="text-center py-12 text-ink-mute">
-        <p class="text-sm">まだ誰も注いでいません。最初の一杯を待っています。</p>
+        <p class="text-sm">まだ推薦のメッセージがありません。</p>
       </div>
       <div v-else class="space-y-4">
         <ReviewCard
