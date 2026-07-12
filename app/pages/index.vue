@@ -9,7 +9,7 @@
         style="image-rendering: pixelated;"
       />
       <h1 class="text-3xl md:text-5xl mb-4 font-black text-ink leading-tight whitespace-nowrap">
-        流石に０レビューの人は、<br>信頼しにくいですよね
+        流石に０レビューの人は<br>ちょっと警戒しちゃうよね
       </h1>
       <p class="text-ink-soft text-base mb-10 max-w-md leading-relaxed">
         ユーノーミーは第三者レビューを組み合わせた、<br>ビジネスプロフィールサービスです。
