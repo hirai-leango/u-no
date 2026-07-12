@@ -12,7 +12,7 @@
     <div class="space-y-6 text-sm text-ink-soft leading-relaxed">
       <section>
         <h2 class="text-base font-bold text-ink mb-2">第1条（適用）</h2>
-        <p>本規約は、u-no.me（以下「本サービス」）の利用に関する条件を、本サービスを利用するすべての方（以下「ユーザー」）と運営者との間で定めるものです。ユーザーは、本サービスを利用することで、本規約に同意したものとみなされます。本規約に同意しない場合、ユーザーは本サービスを利用できません。</p>
+        <p>本規約は、株式会社LeanGo（以下「運営者」）が提供する u-no.me（以下「本サービス」）の利用に関する条件を、本サービスを利用するすべての方（以下「ユーザー」）と運営者との間で定めるものです。ユーザーは、本サービスを利用することで、本規約に同意したものとみなされます。本規約に同意しない場合、ユーザーは本サービスを利用できません。</p>
       </section>
 
       <section>
@@ -160,7 +160,7 @@
       <section>
         <h2 class="text-base font-bold text-ink mb-2">第25条（お問い合わせ窓口）</h2>
         <p>本規約、通報・権利侵害の申告、その他本サービスに関するお問い合わせは、次の窓口までご連絡ください。</p>
-        <p class="mt-2">メール: <a href="mailto:support@u-no.me" class="text-brand hover:underline">support@u-no.me</a></p>
+        <p class="mt-2">運営者: 株式会社LeanGo<br>メール: <a href="mailto:support@u-no.me" class="text-brand hover:underline">support@u-no.me</a></p>
       </section>
     </div>
   </div>
