@@ -13,12 +13,12 @@
           <NuxtLink to="/settings" class="text-sm text-ink-mute hover:text-ink transition-colors">
             設定
           </NuxtLink>
-          <img
-            v-if="user.photoURL"
-            :src="user.photoURL"
-            class="w-8 h-8 rounded-full cursor-pointer"
-            @click="signOut"
-          />
+          <NuxtLink v-if="user.photoURL" :to="`/u/${userSlug}`">
+            <img
+              :src="user.photoURL"
+              class="w-8 h-8 rounded-full cursor-pointer hover:ring-2 ring-brand transition-all"
+            />
+          </NuxtLink>
         </nav>
       </div>
     </header>
