@@ -35,6 +35,45 @@
       </div>
     </div>
 
+    <!-- 肩書き -->
+    <section class="mb-6">
+      <label class="block text-xs font-bold tracking-widest uppercase text-ink-mute mb-2">肩書き（会社・役職）</label>
+      <input
+        v-model="headline"
+        type="text"
+        maxlength="60"
+        placeholder="例: 株式会社◯◯ / マーケティング部長"
+        class="w-full bg-surface border border-surface-border rounded px-4 py-3 text-sm outline-none focus:border-brand transition-colors text-ink placeholder-ink-mute"
+      />
+    </section>
+
+    <!-- 自己紹介 -->
+    <section class="mb-6">
+      <label class="block text-xs font-bold tracking-widest uppercase text-ink-mute mb-2">自己紹介</label>
+      <textarea
+        v-model="bio"
+        rows="2"
+        maxlength="200"
+        placeholder="ひとことで自己紹介"
+        class="w-full bg-surface border border-surface-border rounded px-4 py-3 text-sm outline-none focus:border-brand transition-colors resize-none text-ink placeholder-ink-mute"
+      />
+    </section>
+
+    <!-- リンク集 -->
+    <section class="mb-6">
+      <div class="flex items-center justify-between mb-3">
+        <label class="text-xs font-bold tracking-widest uppercase text-ink-mute">リンク</label>
+        <button class="text-xs text-brand hover:underline" @click="addLink">+ 追加</button>
+      </div>
+      <div class="space-y-2">
+        <div v-for="(l, i) in links" :key="i" class="flex gap-2">
+          <input v-model="l.label" type="text" placeholder="ラベル（例: LinkedIn）" class="w-1/3 bg-surface border border-surface-border rounded px-3 py-2 text-sm outline-none focus:border-brand transition-colors text-ink placeholder-ink-mute" />
+          <input v-model="l.url" type="url" placeholder="https://…" class="flex-1 bg-surface border border-surface-border rounded px-3 py-2 text-sm outline-none focus:border-brand transition-colors text-ink placeholder-ink-mute" />
+          <button class="text-xs text-ink-mute hover:text-warn transition-colors px-2" @click="links.splice(i, 1)">×</button>
+        </div>
+      </div>
+    </section>
+
     <!-- 検索設定 -->
     <div class="bg-surface border border-surface-border rounded-none p-6 mb-8 flex items-center justify-between">
       <div>
@@ -152,7 +191,7 @@
 <script setup lang="ts">
 definePageMeta({ middleware: 'auth' })
 
-import type { Resume } from '~/types'
+import type { Resume, ProfileLink } from '~/types'
 
 const user = useCurrentUser()
 const { getProfileByUid, saveProfile } = useUserProfile()
@@ -168,14 +207,24 @@ const form = reactive<Resume>({
   education: [],
 })
 
+const headline = ref('')
+const bio = ref('')
+const links = ref<ProfileLink[]>([])
 const isSearchable = ref(true)
 
 onMounted(async () => {
   if (!user.value) return
   const profile = await getProfileByUid(user.value.uid)
   if (profile?.resume) Object.assign(form, profile.resume)
+  headline.value = profile?.headline ?? ''
+  bio.value = profile?.bio ?? ''
+  links.value = profile?.links ?? []
   isSearchable.value = profile?.isSearchable ?? true
 })
+
+function addLink() {
+  links.value.push({ label: '', url: '' })
+}
 
 function addExperience() {
   form.experience.push({ company: '', title: '', startDate: '', endDate: '', description: '' })
@@ -215,7 +264,13 @@ async function parseResume(file: File) {
 async function save() {
   if (!user.value) return
   saving.value = true
-  await saveProfile(user.value.uid, { resume: { ...form }, isSearchable: isSearchable.value })
+  await saveProfile(user.value.uid, {
+    headline: headline.value,
+    bio: bio.value,
+    links: links.value.filter(l => l.label && l.url),
+    resume: { ...form },
+    isSearchable: isSearchable.value,
+  })
   saving.value = false
 }
 </script>

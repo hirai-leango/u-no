@@ -5,7 +5,18 @@
       <img :src="profile.photoURL" class="w-16 h-16 rounded-full object-cover" />
       <div class="flex-1">
         <h1 class="text-xl font-extrabold text-ink">{{ profile.displayName }}</h1>
-        <p class="text-ink-soft text-sm mt-1">{{ profile.bio }}</p>
+        <p v-if="profile.headline" class="text-brand text-sm font-semibold mt-0.5">{{ profile.headline }}</p>
+        <p v-if="profile.bio" class="text-ink-soft text-sm mt-1">{{ profile.bio }}</p>
+        <div v-if="profile.links && profile.links.length" class="flex flex-wrap gap-2 mt-2">
+          <a
+            v-for="l in profile.links"
+            :key="l.url"
+            :href="l.url"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="text-xs text-brand border border-surface-border rounded px-2 py-1 hover:border-brand transition-colors"
+          >{{ l.label }}</a>
+        </div>
       </div>
       <div class="text-right">
         <div class="text-3xl font-extrabold text-brand">

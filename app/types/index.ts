@@ -1,9 +1,16 @@
+export interface ProfileLink {
+  label: string
+  url: string
+}
+
 export interface UserProfile {
   uid: string
   displayName: string
   photoURL: string
   slug: string
+  headline: string
   bio: string
+  links: ProfileLink[]
   resume: Resume
   isSearchable: boolean
   createdAt: Date
