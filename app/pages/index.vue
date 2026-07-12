@@ -70,7 +70,8 @@ watch(user, async (u) => {
   const { getProfileByUid } = useUserProfile()
   const profile = await getProfileByUid(u.uid)
   userSlug.value = profile?.slug ?? ''
-  if (!profile) navigateTo('/onboarding')
+  if (profile?.slug) navigateTo(`/u/${profile.slug}`)
+  else navigateTo('/onboarding')
 }, { immediate: true })
 
 async function login(providerId: string) {
