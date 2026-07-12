@@ -39,10 +39,30 @@
       </button>
     </div>
 
+    <!-- タブ切替 -->
+    <div class="flex border-b border-surface-border mb-6">
+      <button
+        class="flex-1 py-3 text-sm font-bold transition-colors border-b-2 -mb-px"
+        :class="tab === 'reviews' ? 'text-brand border-brand' : 'text-ink-mute border-transparent hover:text-ink'"
+        @click="tab = 'reviews'"
+      >
+        レビュー<span v-if="reviews.length" class="ml-1 tabular-nums">{{ reviews.length }}</span>
+      </button>
+      <button
+        class="flex-1 py-3 text-sm font-bold transition-colors border-b-2 -mb-px"
+        :class="tab === 'resume' ? 'text-brand border-brand' : 'text-ink-mute border-transparent hover:text-ink'"
+        @click="tab = 'resume'"
+      >
+        履歴書
+      </button>
+    </div>
+
     <!-- 履歴書 -->
-    <section v-if="hasResume" class="mb-10">
-      <h2 class="text-xs font-bold tracking-widest uppercase text-ink-mute mb-4">履歴書</h2>
-      <div class="bg-surface border border-surface-border rounded-none p-6 space-y-6">
+    <section v-show="tab === 'resume'" class="mb-10">
+      <div v-if="!hasResume" class="text-center py-12 text-ink-mute">
+        <p class="text-sm">まだ履歴書が登録されていません。</p>
+      </div>
+      <div v-else class="bg-surface border border-surface-border rounded-none p-6 space-y-6">
         <div v-if="profile.resume.summary">
           <h3 class="text-xs text-ink-mute mb-1">自己PR</h3>
           <p class="text-sm text-ink leading-relaxed">{{ profile.resume.summary }}</p>
@@ -72,7 +92,7 @@
     </section>
 
     <!-- レビュー一覧 -->
-    <section>
+    <section v-show="tab === 'reviews'">
       <div v-if="reviews.length === 0" class="text-center py-12 text-ink-mute">
         <p class="text-sm">まだ推薦のメッセージがありません。</p>
       </div>
@@ -131,6 +151,8 @@ const canReview = computed(() => {
   if (!profile.value) return false
   return currentUser.value.uid !== profile.value.uid
 })
+
+const tab = ref<'reviews' | 'resume'>('reviews')
 
 const isMyPage = computed(() =>
   !!currentUser.value && !!profile.value && currentUser.value.uid === profile.value.uid)
