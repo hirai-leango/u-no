@@ -9,7 +9,7 @@
         style="image-rendering: pixelated;"
       />
       <h1 class="text-4xl md:text-5xl mb-4 font-black text-ink leading-tight">
-        流石に０レビューは、<br>努力不足じゃない？
+        流石に０レビューの人は、<br>信頼しにくいですよね
       </h1>
       <p class="text-ink-soft text-base mb-10 max-w-md leading-relaxed">
         ユーノーミーは第三者レビューを組み合わせた、<br>ビジネスプロフィールサービスです。
