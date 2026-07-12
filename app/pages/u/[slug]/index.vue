@@ -18,12 +18,6 @@
           >{{ l.label }}</a>
         </div>
       </div>
-      <div class="text-right">
-        <div class="text-3xl font-extrabold text-brand">
-          {{ reviews.length }}
-        </div>
-        <div class="text-xs text-ink-mute tracking-widest">信頼スコア</div>
-      </div>
     </div>
 
     <!-- アクションボタン -->
@@ -105,11 +99,18 @@
       </div>
       <div v-else class="space-y-4">
         <ReviewCard
-          v-for="review in reviews"
+          v-for="review in visibleReviews"
           :key="review.id"
           :review="review"
           :profile-slug="slug"
         />
+        <button
+          v-if="reviews.length > visibleCount"
+          class="w-full py-3 rounded border border-surface-border text-sm font-semibold text-ink-mute hover:text-ink hover:border-brand transition-colors"
+          @click="visibleCount += 10"
+        >
+          もっと見る（残り{{ reviews.length - visibleCount }}件）
+        </button>
       </div>
     </section>
   </div>
@@ -138,7 +139,7 @@ const profileData = computed(() => data.value?.profile ?? null)
 useSeoMeta({
   title: () => profileData.value ? `${profileData.value.displayName} | ユーノーミー` : 'ユーノーミー',
   ogTitle: () => profileData.value ? `${profileData.value.displayName} | ユーノーミー` : 'ユーノーミー',
-  description: () => profileData.value ? `有能スコア ${data.value?.reviews?.length ?? 0} | ${profileData.value.bio}` : '',
+  description: () => profileData.value ? (profileData.value.bio || `${profileData.value.displayName}のプロフィール`) : '',
   ogImage: () => profileData.value?.photoURL ?? '',
   robots: () => (profileData.value && profileData.value.isSearchable === false) ? 'noindex, nofollow' : 'index, follow',
 })
@@ -163,6 +164,10 @@ const canReview = computed(() => {
 const showSignupToReview = computed(() => !currentUser.value && !!profile.value)
 
 const tab = ref<'reviews' | 'resume'>('reviews')
+
+// レビューは10件ずつ表示
+const visibleCount = ref(10)
+const visibleReviews = computed(() => reviews.value.slice(0, visibleCount.value))
 
 const isMyPage = computed(() =>
   !!currentUser.value && !!profile.value && currentUser.value.uid === profile.value.uid)
