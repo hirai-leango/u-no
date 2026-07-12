@@ -69,6 +69,7 @@
 
 <script setup lang="ts">
 definePageMeta({ middleware: 'auth' })
+useSeoMeta({ robots: 'noindex, nofollow' })
 
 import type { UserProfile, Review, Relationship } from '~/types'
 import { RELATIONSHIP_LABELS } from '~/types'

@@ -180,6 +180,7 @@
 
 <script setup lang="ts">
 definePageMeta({ middleware: 'auth' })
+useSeoMeta({ robots: 'noindex, nofollow' })
 
 import type { Resume, ProfileLink } from '~/types'
 

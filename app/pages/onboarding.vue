@@ -46,6 +46,7 @@
 
 <script setup lang="ts">
 definePageMeta({ middleware: 'auth' })
+useSeoMeta({ robots: 'noindex, nofollow' })
 
 const user = useCurrentUser()
 const { isSlugAvailable, saveProfile } = useUserProfile()
