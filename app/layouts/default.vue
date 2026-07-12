@@ -14,6 +14,14 @@
             />
           </NuxtLink>
         </nav>
+        <nav v-else class="flex items-center gap-2">
+          <NuxtLink to="/login" class="text-sm font-semibold px-4 py-2 rounded border border-brand text-brand hover:bg-brand/10 transition-colors">
+            ログイン
+          </NuxtLink>
+          <NuxtLink to="/signup" class="text-sm font-bold px-4 py-2 rounded bg-brand text-white hover:bg-brand-hover transition-colors">
+            会員登録
+          </NuxtLink>
+        </nav>
       </div>
     </header>
     <main class="max-w-3xl mx-auto px-4 py-8">
