@@ -64,14 +64,14 @@
         :class="tab === 'resume' ? 'text-brand border-brand' : 'text-ink-mute border-transparent hover:text-ink'"
         @click="tab = 'resume'"
       >
-        履歴書
+        経歴
       </button>
     </div>
 
-    <!-- 履歴書 -->
+    <!-- 経歴 -->
     <section v-show="tab === 'resume'" class="mb-10">
       <div v-if="!hasResume" class="text-center py-12 text-ink-mute">
-        <p class="text-sm">まだ履歴書が登録されていません。</p>
+        <p class="text-sm">まだ経歴が登録されていません。</p>
       </div>
       <div v-else class="bg-surface border border-surface-border rounded-none p-6 space-y-6">
         <div v-if="profile.resume.summary">
