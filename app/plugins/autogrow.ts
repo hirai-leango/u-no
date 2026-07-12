@@ -8,6 +8,10 @@ export default defineNuxtPlugin((nuxtApp) => {
     (el.tagName === 'TEXTAREA' ? el : el.querySelector('textarea')) as HTMLTextAreaElement | null
 
   nuxtApp.vueApp.directive('autogrow', {
+    // SSR時に呼ばれる（DOMは無いので何も付与しない）
+    getSSRProps() {
+      return {}
+    },
     mounted(el: HTMLElement) {
       const ta = getTa(el)
       if (!ta) return
