@@ -59,7 +59,8 @@
 
       <section>
         <h2 class="text-base font-bold text-ink mb-2">8. お問い合わせ</h2>
-        <p>本ポリシーに関するお問い合わせは、運営者の連絡先までご連絡ください。</p>
+        <p>本ポリシーに関するお問い合わせ、および個人情報の開示・訂正・削除等のご請求は、次の窓口までご連絡ください。</p>
+        <p class="mt-2">メール: <a href="mailto:support@u-no.me" class="text-brand hover:underline">support@u-no.me</a></p>
       </section>
 
       <section>
