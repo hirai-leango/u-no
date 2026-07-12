@@ -138,11 +138,14 @@ import {
   getAuth,
 } from 'firebase/auth'
 
+const siteTitle = 'ユーノーミー（u-no.me）| 知人があなたを紹介するビジネスプロフィールサービス'
+const siteDescription = 'ユーノーミーは、知人や取引先があなたを紹介してくれる第三者レビュー型のビジネスプロフィールサービス。自分で盛るのではなく、周りの人の証言で信頼を可視化。URLひとつで、名刺やSNSから自己紹介できます。'
+
 useSeoMeta({
-  title: 'u-no.me（ユーノーミー）| 信頼が紡ぐビジネスプロフィールSNS',
-  ogTitle: 'u-no.me（ユーノーミー）| 信頼が紡ぐビジネスプロフィールSNS',
-  description: '履歴書と第三者レビューで信頼できる自己紹介ページをつくろう',
-  ogDescription: '履歴書と第三者レビューで信頼できる自己紹介ページをつくろう',
+  title: siteTitle,
+  ogTitle: siteTitle,
+  description: siteDescription,
+  ogDescription: siteDescription,
 })
 
 const user = useCurrentUser()
