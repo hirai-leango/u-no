@@ -8,7 +8,7 @@
         class="w-44 h-44 md:w-56 md:h-56 object-contain mb-6"
         style="image-rendering: pixelated;"
       />
-      <h1 class="text-4xl md:text-5xl mb-4 font-black text-ink leading-tight">
+      <h1 class="text-3xl md:text-5xl mb-4 font-black text-ink leading-tight whitespace-nowrap">
         流石に０レビューの人は、<br>信頼しにくいですよね
       </h1>
       <p class="text-ink-soft text-base mb-10 max-w-md leading-relaxed">
