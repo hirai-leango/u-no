@@ -48,8 +48,8 @@
       </section>
 
       <section>
-        <h2 class="text-base font-bold text-ink mb-2">6. 外部サービスの利用</h2>
-        <p>本サービスは、認証・データベース基盤として Google Firebase を、ホスティングに Cloudflare を利用しています。これらの取得情報の取扱いは各社のプライバシーポリシーに従います。</p>
+        <h2 class="text-base font-bold text-ink mb-2">6. 外部サービスの利用・アクセス解析</h2>
+        <p>本サービスは、認証・データベース基盤として Google Firebase を、ホスティングに Cloudflare を利用しています。また、利用状況の把握・改善のため、Google LLC が提供するアクセス解析ツール「Google アナリティクス」を利用しています。Google アナリティクスは Cookie を用いて匿名のトラフィックデータを収集します（個人を特定する情報は含みません）。これらの取得情報の取扱いは各社のプライバシーポリシーに従います。Cookie の無効化により収集を拒否することも可能です。</p>
       </section>
 
       <section>

@@ -25,7 +25,12 @@ export default defineNuxtConfig({
     '@nuxtjs/tailwindcss',
     '@nuxt/icon',
     '@vueuse/nuxt',
+    'nuxt-gtag',
   ],
+  // GA4測定ID（G-XXXXXXXXXX）
+  gtag: {
+    id: 'G-GS86EJ3M2H',
+  },
   runtimeConfig: {
     geminiApiKey: process.env.GEMINI_API_KEY,
     public: {
