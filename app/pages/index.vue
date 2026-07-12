@@ -5,7 +5,7 @@
       <img
         src="/yunomi-chabashira-transparent.gif"
         alt="ユーノーミー"
-        class="w-28 h-28 md:w-36 md:h-36 object-contain mb-6"
+        class="w-44 h-44 md:w-56 md:h-56 object-contain mb-6"
         style="image-rendering: pixelated;"
       />
       <h1 class="text-4xl md:text-5xl mb-4 font-black text-ink leading-tight">
