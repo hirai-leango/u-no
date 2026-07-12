@@ -41,9 +41,16 @@
       >
         {{ copied ? 'コピーしました！' : 'URLをコピー' }}
       </button>
+      <NuxtLink
+        v-if="isMyPage"
+        to="/settings"
+        class="px-5 py-2.5 bg-surface border border-surface-border rounded text-sm font-semibold text-ink-mute hover:text-ink transition-colors ml-auto"
+      >
+        設定
+      </NuxtLink>
       <button
         v-if="isMyPage"
-        class="px-5 py-2.5 bg-surface border border-surface-border rounded text-sm font-semibold text-ink-mute hover:text-warn transition-colors ml-auto"
+        class="px-5 py-2.5 bg-surface border border-surface-border rounded text-sm font-semibold text-ink-mute hover:text-warn transition-colors"
         @click="logout"
       >
         ログアウト

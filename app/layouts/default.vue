@@ -7,9 +7,6 @@
           ユーノーミー
         </NuxtLink>
         <nav v-if="user" class="flex items-center gap-3">
-          <NuxtLink to="/settings" class="text-sm text-ink-mute hover:text-ink transition-colors">
-            設定
-          </NuxtLink>
           <NuxtLink v-if="user.photoURL" :to="`/u/${userSlug}`">
             <img
               :src="user.photoURL"
