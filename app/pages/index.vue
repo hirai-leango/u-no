@@ -2,6 +2,12 @@
   <div>
     <!-- ヒーロー -->
     <section class="flex flex-col items-center justify-center min-h-[70vh] text-center">
+      <img
+        src="/yunomi-chabashira-transparent.gif"
+        alt="ユーノーミー"
+        class="w-28 h-28 md:w-36 md:h-36 object-contain mb-6"
+        style="image-rendering: pixelated;"
+      />
       <h1 class="text-4xl md:text-5xl mb-4 font-black text-ink leading-tight">
         流石に０レビューは、<br>努力不足じゃない？
       </h1>
