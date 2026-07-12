@@ -143,6 +143,16 @@ useSeoMeta({
   robots: () => (profileData.value && profileData.value.isSearchable === false) ? 'noindex, nofollow' : 'index, follow',
 })
 
+// プロフィールごとの動的OG画像（氏名・肩書き・顔写真）
+defineOgImageComponent('Profile', {
+  name: profileData.value?.displayName ?? 'ユーノーミー',
+  headline: profileData.value?.headline ?? '',
+  photo: profileData.value?.photoURL ?? '',
+}, {
+  width: 1200,
+  height: 630,
+})
+
 const profile = computed(() => data.value?.profile ?? null)
 const reviews = computed(() => data.value?.reviews ?? [])
 const notFound = computed(() => data.value?.profile === null)

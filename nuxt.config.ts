@@ -26,10 +26,27 @@ export default defineNuxtConfig({
     '@nuxt/icon',
     '@vueuse/nuxt',
     'nuxt-gtag',
+    '@nuxt/fonts',
+    'nuxt-og-image',
   ],
   // GA4測定ID（G-XXXXXXXXXX）
   gtag: {
     id: 'G-GS86EJ3M2H',
+  },
+  // 動的OG画像の日本語用フォント。既存サイトのフォントには触らないよう
+  // リモートプロバイダを無効化し、ローカルのNoto Sans JPのみ登録
+  fonts: {
+    providers: {
+      google: false,
+      googleicons: false,
+      bunny: false,
+      fontshare: false,
+      fontsource: false,
+    },
+    families: [
+      { name: 'Noto Sans JP', src: '/og-fonts/noto-sans-jp-400.ttf', weight: 400, global: true },
+      { name: 'Noto Sans JP', src: '/og-fonts/noto-sans-jp-700.ttf', weight: 700, global: true },
+    ],
   },
   runtimeConfig: {
     geminiApiKey: process.env.GEMINI_API_KEY,
