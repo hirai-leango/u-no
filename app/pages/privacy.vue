@@ -7,7 +7,7 @@
     <h1 class="text-2xl font-extrabold mb-2 font-black text-ink">
       プライバシーポリシー
     </h1>
-    <p class="text-xs text-ink-mute mb-8">最終更新日: 2026年7月10日</p>
+    <p class="text-xs text-ink-mute mb-8">最終更新日: 2026年7月12日</p>
 
     <div class="space-y-6 text-sm text-ink-soft leading-relaxed">
       <section>
@@ -38,27 +38,32 @@
       </section>
 
       <section>
-        <h2 class="text-base font-bold text-ink mb-2">4. 第三者提供</h2>
-        <p>運営者は、法令に基づく場合を除き、ユーザーの同意なく個人情報を第三者に提供しません。</p>
+        <h2 class="text-base font-bold text-ink mb-2">4. ユーザーによる投稿情報の取扱い</h2>
+        <p>ユーザーが投稿するレビュー・コメント等には、第三者に関する情報が含まれる場合があります。これらの投稿情報の内容および適法性についての責任は投稿したユーザーに帰属し、運営者はその内容について責任を負いません。投稿情報に起因してユーザー間または第三者との間で生じた紛争は、<NuxtLink to="/terms" class="text-brand hover:underline">利用規約</NuxtLink>の定めに従い、当事者間で解決されるものとします。</p>
       </section>
 
       <section>
-        <h2 class="text-base font-bold text-ink mb-2">5. 外部サービスの利用</h2>
+        <h2 class="text-base font-bold text-ink mb-2">5. 第三者提供</h2>
+        <p>運営者は、法令に基づく場合を除き、ユーザーの同意なく個人情報を第三者に提供しません。ユーザー間の紛争等に関して、運営者が当事者情報を開示する義務を負うものではありません（法令に基づく場合を除きます）。</p>
+      </section>
+
+      <section>
+        <h2 class="text-base font-bold text-ink mb-2">6. 外部サービスの利用</h2>
         <p>本サービスは、認証・データベース基盤として Google Firebase を、ホスティングに Cloudflare を利用しています。これらの取得情報の取扱いは各社のプライバシーポリシーに従います。</p>
       </section>
 
       <section>
-        <h2 class="text-base font-bold text-ink mb-2">6. 情報の削除</h2>
+        <h2 class="text-base font-bold text-ink mb-2">7. 情報の削除</h2>
         <p>ユーザーは、自身のアカウント・プロフィール・投稿を削除できます。アカウント削除の希望はお問い合わせ窓口までご連絡ください。</p>
       </section>
 
       <section>
-        <h2 class="text-base font-bold text-ink mb-2">7. お問い合わせ</h2>
+        <h2 class="text-base font-bold text-ink mb-2">8. お問い合わせ</h2>
         <p>本ポリシーに関するお問い合わせは、運営者の連絡先までご連絡ください。</p>
       </section>
 
       <section>
-        <h2 class="text-base font-bold text-ink mb-2">8. 改定</h2>
+        <h2 class="text-base font-bold text-ink mb-2">9. 改定</h2>
         <p>本ポリシーは、必要に応じて改定されることがあります。改定後の内容は本ページに掲載した時点で効力を生じます。</p>
       </section>
     </div>
