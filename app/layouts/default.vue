@@ -6,13 +6,45 @@
           <img src="/favicon.svg" alt="ユーノーミー" class="w-6 h-8" style="image-rendering: pixelated;" />
           ユーノーミー
         </NuxtLink>
-        <nav v-if="user" class="flex items-center gap-3">
-          <NuxtLink v-if="user.photoURL" :to="`/u/${userSlug}`">
+        <nav v-if="user" class="relative flex items-center" ref="menuRef">
+          <button
+            class="flex items-center gap-1.5"
+            @click="menuOpen = !menuOpen"
+          >
             <img
+              v-if="user.photoURL"
               :src="user.photoURL"
               class="w-8 h-8 rounded-full cursor-pointer hover:ring-2 ring-brand transition-all"
             />
-          </NuxtLink>
+            <Icon name="heroicons:chevron-down-20-solid" class="text-ink-mute text-base transition-transform" :class="menuOpen ? 'rotate-180' : ''" />
+          </button>
+
+          <div
+            v-if="menuOpen"
+            class="absolute right-0 top-11 w-52 bg-white border border-surface-border rounded-lg shadow-lg py-1.5 z-20"
+          >
+            <NuxtLink
+              :to="`/u/${userSlug}`"
+              class="block px-4 py-2.5 text-sm text-ink hover:bg-brand/5 transition-colors"
+              @click="menuOpen = false"
+            >
+              マイページ
+            </NuxtLink>
+            <NuxtLink
+              to="/settings"
+              class="block px-4 py-2.5 text-sm text-ink hover:bg-brand/5 transition-colors"
+              @click="menuOpen = false"
+            >
+              プロフィールを編集
+            </NuxtLink>
+            <div class="border-t border-surface-border my-1.5"></div>
+            <button
+              class="block w-full text-left px-4 py-2.5 text-sm text-ink-mute hover:text-warn hover:bg-brand/5 transition-colors"
+              @click="signOut"
+            >
+              ログアウト
+            </button>
+          </div>
         </nav>
         <nav v-else class="flex items-center gap-2">
           <NuxtLink to="/login" class="text-sm font-semibold px-4 py-2 rounded border border-brand text-brand hover:bg-brand/10 transition-colors">
@@ -42,6 +74,8 @@ import { getAuth, signOut as firebaseSignOut } from 'firebase/auth'
 
 const user = useCurrentUser()
 const userSlug = ref('')
+const menuOpen = ref(false)
+const menuRef = ref<HTMLElement | null>(null)
 
 watch(user, async (u) => {
   if (!u) return
@@ -50,7 +84,16 @@ watch(user, async (u) => {
   userSlug.value = profile?.slug ?? ''
 }, { immediate: true })
 
+// メニュー外クリックで閉じる
+function onClickOutside(e: MouseEvent) {
+  if (menuRef.value && !menuRef.value.contains(e.target as Node)) menuOpen.value = false
+}
+onMounted(() => document.addEventListener('click', onClickOutside))
+onBeforeUnmount(() => document.removeEventListener('click', onClickOutside))
+
 async function signOut() {
+  menuOpen.value = false
+  if (!confirm('ログアウトしますか？')) return
   const auth = getAuth()
   await firebaseSignOut(auth)
   navigateTo('/')

@@ -27,9 +27,10 @@
       <label class="block text-xs font-bold tracking-widest uppercase text-ink-mute mb-2">自己紹介（任意）</label>
       <textarea
         v-model="bio"
+        v-autogrow
         placeholder="簡単な自己紹介を書いてください"
         rows="3"
-        class="w-full bg-surface border border-surface-border rounded px-4 py-3 text-sm outline-none focus:border-brand transition-colors resize-none text-ink placeholder-ink-mute"
+        class="w-full bg-surface border border-surface-border rounded px-4 py-3 text-sm outline-none focus:border-brand transition-colors resize-none min-h-[4.5rem] text-ink placeholder-ink-mute"
       />
     </div>
 
@@ -75,9 +76,10 @@ async function submit() {
     photoURL: user.value.photoURL ?? '',
     slug: slug.value,
     bio: bio.value,
-    resume: { summary: '', skills: [], experience: [], education: [] },
+    resume: { skills: [], experience: [], education: [] },
     createdAt: new Date(),
   })
-  navigateTo(`/u/${slug.value}`)
+  const redirect = useRoute().query.redirect as string
+  navigateTo(redirect || `/u/${slug.value}`)
 }
 </script>

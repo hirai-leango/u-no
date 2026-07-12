@@ -52,10 +52,11 @@
       <label class="block text-xs font-bold tracking-widest uppercase text-ink-mute mb-2">自己紹介</label>
       <textarea
         v-model="bio"
+        v-autogrow
         rows="2"
         maxlength="200"
         placeholder="ひとことで自己紹介"
-        class="w-full bg-surface border border-surface-border rounded px-4 py-3 text-sm outline-none focus:border-brand transition-colors resize-none text-ink placeholder-ink-mute"
+        class="w-full bg-surface border border-surface-border rounded px-4 py-3 text-sm outline-none focus:border-brand transition-colors resize-none min-h-[4.5rem] text-ink placeholder-ink-mute"
       />
     </section>
 
@@ -93,17 +94,6 @@
       </button>
     </div>
 
-    <!-- 自己PR -->
-    <section class="mb-6">
-      <label class="block text-xs font-bold tracking-widest uppercase text-ink-mute mb-2">自己PR</label>
-      <textarea
-        v-model="form.summary"
-        rows="4"
-        placeholder="自己PRを入力してください"
-        class="w-full bg-surface border border-surface-border rounded px-4 py-3 text-sm outline-none focus:border-brand transition-colors resize-none text-ink placeholder-ink-mute"
-      />
-    </section>
-
     <!-- 職歴 -->
     <section class="mb-6">
       <div class="flex items-center justify-between mb-3">
@@ -139,7 +129,7 @@
           </div>
           <div>
             <label class="text-xs text-ink-mute mb-1 block">業務内容</label>
-            <textarea v-model="exp.description" rows="2" class="input-field resize-none" placeholder="担当業務の概要" />
+            <textarea v-model="exp.description" v-autogrow rows="2" class="input-field resize-none min-h-[4.5rem]" placeholder="担当業務の概要" />
           </div>
         </div>
       </div>
@@ -201,7 +191,6 @@ const parsing = ref(false)
 const saving = ref(false)
 
 const form = reactive<Resume>({
-  summary: '',
   skills: [],
   experience: [],
   education: [],
@@ -251,7 +240,6 @@ async function parseResume(file: File) {
     const formData = new FormData()
     formData.append('file', file)
     const res = await $fetch<Partial<Resume>>('/api/parse-resume', { method: 'POST', body: formData })
-    if (res.summary) form.summary = res.summary
     if (res.experience?.length) form.experience = res.experience
     if (res.education?.length) form.education = res.education
   } catch (e) {

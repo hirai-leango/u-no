@@ -12,7 +12,7 @@
         流石に０レビューの人は<br>ちょっと警戒しちゃうよね
       </h1>
       <p class="text-ink-soft text-base mb-10 max-w-md leading-relaxed">
-        ユーノーミーは第三者レビューを組み合わせた、<br>ビジネスプロフィールサービスです。
+        ユーノーミーは知人があなたを紹介する、<br>ビジネスプロフィールサービスです。
       </p>
 
       <div v-if="!user" class="flex flex-col gap-3 w-64">
@@ -52,13 +52,10 @@
 
       <!-- u-no.me とは -->
       <section class="px-6 py-20">
-        <p class="text-[11px] tracking-[.24em] uppercase text-trust font-bold text-center mb-3">u-no.me とは</p>
+        <p class="text-[11px] tracking-[.24em] text-trust font-bold text-center mb-3">ユーノーミーとは</p>
         <h2 class="font-black text-2xl md:text-4xl text-center mb-5 leading-snug text-ink">
-          あなたが信頼できることは、<br>周りの人が教えてくれる。
+          あなたが信頼できることは、<br>周りの人が教えてくれる。<br>You know me !
         </h2>
-        <p class="text-ink-soft text-sm text-center max-w-md mx-auto mb-10">
-          第三者レビューをコンセプトにした、ビジネスプロフィールサービスです。
-        </p>
 
         <div class="flex flex-col gap-px bg-line border border-line max-w-xl mx-auto">
           <div v-for="f in features" :key="f.title" class="bg-white p-6 flex items-center gap-4">
@@ -119,10 +116,11 @@
 
         <div class="text-center mt-12">
           <button
-            class="bg-brand text-white font-bold text-sm px-8 py-3.5 rounded hover:bg-brand-hover transition-colors"
+            class="bg-white text-gray-800 flex items-center justify-center gap-3 px-5 py-3 rounded font-semibold text-sm transition-opacity hover:opacity-80 active:scale-95 mx-auto"
             @click="login('google')"
           >
-            Googleで始める
+            <Icon name="logos:google-icon" class="text-lg" />
+            Googleでログイン
           </button>
         </div>
       </section>
@@ -152,8 +150,9 @@ const userSlug = ref('')
 
 const providers = [
   { id: 'google', label: 'Googleでログイン', icon: 'logos:google-icon', class: 'bg-white text-gray-800' },
-  { id: 'github', label: 'GitHubでログイン', icon: 'logos:github-icon', class: 'bg-gray-900 text-white border border-surface-border' },
-  { id: 'facebook', label: 'Facebookでログイン', icon: 'logos:facebook', class: 'bg-[#1877f2] text-white' },
+  // TODO: いつか実装する（Meta/GitHub側の設定・審査が必要）
+  // { id: 'github', label: 'GitHubでログイン', icon: 'logos:github-icon', class: 'bg-gray-900 text-white border border-surface-border' },
+  // { id: 'facebook', label: 'Facebookでログイン', icon: 'logos:facebook', class: 'bg-[#1877f2] text-white' },
 ]
 
 const features = [

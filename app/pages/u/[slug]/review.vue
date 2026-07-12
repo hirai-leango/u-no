@@ -43,7 +43,8 @@
         :maxlength="300"
         rows="5"
         placeholder="例: 突然の依頼にも即レスで対応してくれた。回答がめちゃくちゃ的確だった。"
-        class="w-full bg-surface border border-surface-border rounded px-4 py-3 text-sm outline-none focus:border-brand transition-colors resize-none text-ink placeholder-ink-mute"
+        v-autogrow
+        class="w-full bg-surface border border-surface-border rounded px-4 py-3 text-sm outline-none focus:border-brand transition-colors resize-none min-h-[6rem] text-ink placeholder-ink-mute"
       />
       <div class="text-right text-xs mt-1" :class="comment.length > 270 ? 'text-warn' : 'text-ink-mute'">
         {{ comment.length }} / 300

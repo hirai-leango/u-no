@@ -17,7 +17,6 @@ export interface UserProfile {
 }
 
 export interface Resume {
-  summary: string
   skills: string[]
   experience: Experience[]
   education: Education[]

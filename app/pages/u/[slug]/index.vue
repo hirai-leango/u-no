@@ -35,25 +35,19 @@
       >
         レビューを書く
       </NuxtLink>
-      <button
-        class="px-5 py-2.5 bg-surface border border-surface-border rounded text-sm font-semibold text-ink-mute hover:text-ink transition-colors"
-        @click="copyUrl"
-      >
-        {{ copied ? 'コピーしました！' : 'URLをコピー' }}
-      </button>
       <NuxtLink
-        v-if="isMyPage"
-        to="/settings"
-        class="px-5 py-2.5 bg-surface border border-surface-border rounded text-sm font-semibold text-ink-mute hover:text-ink transition-colors ml-auto"
+        v-if="showSignupToReview"
+        :to="`/signup?redirect=/u/${slug}/review`"
+        class="px-5 py-2.5 bg-brand text-white rounded text-sm font-bold hover:bg-brand-hover transition-colors"
       >
-        設定
+        アカウントを登録してレビューを書く
       </NuxtLink>
       <button
         v-if="isMyPage"
-        class="px-5 py-2.5 bg-surface border border-surface-border rounded text-sm font-semibold text-ink-mute hover:text-warn transition-colors"
-        @click="logout"
+        class="px-5 py-2.5 w-64 text-center whitespace-nowrap bg-surface border border-surface-border rounded text-sm font-semibold text-ink-mute hover:text-ink transition-colors"
+        @click="copyUrl"
       >
-        ログアウト
+        {{ copied ? 'URLをコピーしました！' : '知人にレビューを書いてもらう' }}
       </button>
     </div>
 
@@ -81,11 +75,6 @@
         <p class="text-sm">まだ経歴が登録されていません。</p>
       </div>
       <div v-else class="bg-surface border border-surface-border rounded-none p-6 space-y-6">
-        <div v-if="profile.resume.summary">
-          <h3 class="text-xs text-ink-mute mb-1">自己PR</h3>
-          <p class="text-sm text-ink leading-relaxed">{{ profile.resume.summary }}</p>
-        </div>
-
         <div v-if="profile.resume.experience.length">
           <h3 class="text-xs text-ink-mute mb-3">職歴</h3>
           <div class="space-y-4">
@@ -161,7 +150,7 @@ const notFound = computed(() => data.value?.profile === null)
 const hasResume = computed(() => {
   const r = profile.value?.resume
   if (!r) return false
-  return r.summary || r.experience.length || r.education.length
+  return r.experience.length || r.education.length
 })
 
 const canReview = computed(() => {
@@ -169,6 +158,9 @@ const canReview = computed(() => {
   if (!profile.value) return false
   return currentUser.value.uid !== profile.value.uid
 })
+
+// 未ログインで他人のページを見ているとき
+const showSignupToReview = computed(() => !currentUser.value && !!profile.value)
 
 const tab = ref<'reviews' | 'resume'>('reviews')
 
@@ -182,10 +174,4 @@ function copyUrl() {
   setTimeout(() => copied.value = false, 2000)
 }
 
-async function logout() {
-  if (!confirm('ログアウトしますか？')) return
-  const { getAuth, signOut } = await import('firebase/auth')
-  await signOut(getAuth())
-  navigateTo('/')
-}
 </script>

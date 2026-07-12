@@ -18,7 +18,6 @@ export default defineEventHandler(async (event) => {
 
 返却フォーマット（JSON only）:
 {
-  "summary": "自己PR文",
   "skills": ["スキル1", "スキル2"],
   "experience": [
     {
