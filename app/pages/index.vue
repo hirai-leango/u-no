@@ -146,6 +146,8 @@ useSeoMeta({
   ogTitle: siteTitle,
   description: siteDescription,
   ogDescription: siteDescription,
+  ogImage: 'https://u-no.me/ogp-top.png',
+  twitterImage: 'https://u-no.me/ogp-top.png',
 })
 
 const user = useCurrentUser()
