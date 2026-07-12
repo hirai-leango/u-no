@@ -56,7 +56,7 @@
 
         <div class="flex flex-col gap-px bg-line border border-line max-w-xl mx-auto">
           <div v-for="f in features" :key="f.title" class="bg-white p-6 flex items-center gap-4">
-            <img src="/favicon.svg" class="w-12 h-14 object-contain flex-none" style="image-rendering: pixelated;" alt="" />
+            <img :src="f.icon" class="w-14 h-14 object-contain flex-none" style="image-rendering: pixelated;" alt="" />
             <div>
               <h3 class="font-bold text-[15.5px] mb-1.5 text-ink">{{ f.title }}</h3>
               <p class="text-[13px] text-ink-soft leading-relaxed">{{ f.body }}</p>
@@ -151,9 +151,9 @@ const providers = [
 ]
 
 const features = [
-  { title: '信頼を、証明する', body: '第三者の口コミが信頼になるのは、お店選びでみんな知っていますよね。同じことを、あなた自身に。' },
-  { title: '自分で言わなくていい', body: '「仕事ができます」と自分で言うのは、少し気恥ずかしい。代わりに周りの人が語ってくれます。' },
-  { title: '嘘や荒らしは許されない', body: '実名で書かれたレビューには、第三者がGood/Badで応えられる。悪意ある評価は自然と沈みます。' },
+  { icon: '/icon-cert.svg', title: '信頼を、証明する', body: '第三者の口コミが信頼になるのは、お店選びでみんな知っていますよね。同じことを、あなた自身に。' },
+  { icon: '/icon-self.svg', title: '自分で言わなくていい', body: '「仕事ができます」と自分で言うのは、少し気恥ずかしい。代わりに周りの人が語ってくれます。' },
+  { icon: '/icon-truth.svg', title: '嘘や荒らしは許されない', body: '実名で書かれたレビューには、第三者がGood/Badで応えられる。悪意ある評価は自然と沈みます。' },
 ]
 
 const reasons = [
