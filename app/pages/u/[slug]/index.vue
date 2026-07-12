@@ -140,7 +140,6 @@ useSeoMeta({
   title: () => profileData.value ? `${profileData.value.displayName} | ユーノーミー` : 'ユーノーミー',
   ogTitle: () => profileData.value ? `${profileData.value.displayName} | ユーノーミー` : 'ユーノーミー',
   description: () => profileData.value ? (profileData.value.bio || `${profileData.value.displayName}のプロフィール`) : '',
-  ogImage: () => profileData.value?.photoURL ?? '',
   robots: () => (profileData.value && profileData.value.isSearchable === false) ? 'noindex, nofollow' : 'index, follow',
 })
 
