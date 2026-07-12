@@ -28,7 +28,14 @@
         class="px-5 py-2.5 bg-surface border border-surface-border rounded text-sm font-semibold text-ink-mute hover:text-ink transition-colors"
         @click="copyUrl"
       >
-        {{ copied ? 'コピーしました！' : '🔗 URLをコピー' }}
+        {{ copied ? 'コピーしました！' : 'URLをコピー' }}
+      </button>
+      <button
+        v-if="isMyPage"
+        class="px-5 py-2.5 bg-surface border border-surface-border rounded text-sm font-semibold text-ink-mute hover:text-warn transition-colors ml-auto"
+        @click="logout"
+      >
+        ログアウト
       </button>
     </div>
 
@@ -125,10 +132,20 @@ const canReview = computed(() => {
   return currentUser.value.uid !== profile.value.uid
 })
 
+const isMyPage = computed(() =>
+  !!currentUser.value && !!profile.value && currentUser.value.uid === profile.value.uid)
+
 const copied = ref(false)
 function copyUrl() {
   navigator.clipboard.writeText(window.location.href)
   copied.value = true
   setTimeout(() => copied.value = false, 2000)
+}
+
+async function logout() {
+  if (!confirm('ログアウトしますか？')) return
+  const { getAuth, signOut } = await import('firebase/auth')
+  await signOut(getAuth())
+  navigateTo('/')
 }
 </script>
