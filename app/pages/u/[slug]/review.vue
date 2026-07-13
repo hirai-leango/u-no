@@ -1,6 +1,6 @@
 <template>
   <div class="max-w-sm mx-auto pt-8">
-    <NuxtLink :to="`/u/${slug}`" class="inline-flex items-center gap-1 text-ink-mute text-sm hover:text-ink-soft mb-8 transition-colors">
+    <NuxtLink :to="`/u/${slug}/`" class="inline-flex items-center gap-1 text-ink-mute text-sm hover:text-ink-soft mb-8 transition-colors">
       ← {{ profile?.displayName ?? '' }}のページへ戻る
     </NuxtLink>
 
@@ -93,7 +93,7 @@ async function load() {
   const p = await getProfileBySlug(slug.value)
   if (!p || !currentUser.value) return
   // 自分自身にはレビューできない
-  if (p.uid === currentUser.value.uid) return navigateTo(`/u/${slug.value}`)
+  if (p.uid === currentUser.value.uid) return navigateTo(`/u/${slug.value}/`)
   profile.value = p
   existing.value = await getMyReview(p.uid, currentUser.value.uid)
   if (existing.value) {
@@ -129,7 +129,7 @@ async function doSubmit() {
     photoURL: currentUser.value.photoURL ?? '',
     slug: myProfile?.slug ?? '',
   }, comment.value.trim(), relationship.value)
-  navigateTo(`/u/${slug.value}`)
+  navigateTo(`/u/${slug.value}/`)
 }
 
 async function onPhoneVerified() {
@@ -141,6 +141,6 @@ async function confirmDelete() {
   if (!profile.value || !currentUser.value) return
   if (!confirm('レビューを削除しますか？')) return
   await deleteReview(profile.value.uid, currentUser.value.uid)
-  navigateTo(`/u/${slug.value}`)
+  navigateTo(`/u/${slug.value}/`)
 }
 </script>

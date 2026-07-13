@@ -34,10 +34,10 @@ watch(user, async (u) => {
   const profile = await getProfileByUid(u.uid)
   if (profile && profile.slug) {
     // 登録済み: リダイレクト先が指定されていればそこへ
-    navigateTo(redirect.value || '/u/' + profile.slug)
+    navigateTo(redirect.value || '/u/' + profile.slug + '/')
   } else {
     // 未登録: オンボーディングへ（リダイレクト先を引き継ぐ）
-    navigateTo(redirect.value ? '/onboarding?redirect=' + encodeURIComponent(redirect.value) : '/onboarding')
+    navigateTo(redirect.value ? '/onboarding/?redirect=' + encodeURIComponent(redirect.value) : '/onboarding/')
   }
 }, { immediate: true })
 

@@ -1,11 +1,11 @@
 <template>
   <div class="flex items-start gap-2">
-    <NuxtLink :to="`/u/${comment.authorSlug}`" class="flex-shrink-0">
+    <NuxtLink :to="`/u/${comment.authorSlug}/`" class="flex-shrink-0">
       <img :src="comment.authorPhoto" class="w-6 h-6 rounded-full object-cover" />
     </NuxtLink>
     <div class="flex-1 min-w-0">
       <div class="flex items-center gap-2">
-        <NuxtLink :to="`/u/${comment.authorSlug}`" class="text-xs font-bold text-brand-light hover:underline">
+        <NuxtLink :to="`/u/${comment.authorSlug}/`" class="text-xs font-bold text-brand-light hover:underline">
           {{ comment.authorName }}
         </NuxtLink>
         <span class="text-[10px] text-ink-mute">{{ formatDate(comment.createdAt) }}</span>

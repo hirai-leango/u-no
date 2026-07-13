@@ -10,12 +10,12 @@
 
     <!-- レビュアー情報 -->
     <div class="flex items-center gap-3 mb-3">
-      <NuxtLink :to="`/u/${review.fromSlug}`">
+      <NuxtLink :to="`/u/${review.fromSlug}/`">
         <img :src="review.fromPhotoURL" class="w-9 h-9 rounded-full object-cover hover:ring-2 ring-brand transition-all" />
       </NuxtLink>
       <div>
         <div class="flex items-center gap-2">
-          <NuxtLink :to="`/u/${review.fromSlug}`" class="text-sm font-bold text-brand hover:underline">
+          <NuxtLink :to="`/u/${review.fromSlug}/`" class="text-sm font-bold text-brand hover:underline">
             {{ review.fromDisplayName }}
           </NuxtLink>
           <span
@@ -29,7 +29,7 @@
       </div>
       <NuxtLink
         v-if="currentUser?.uid === review.fromUserId"
-        :to="`/u/${profileSlug}/review`"
+        :to="`/u/${profileSlug}/review/`"
         class="ml-auto text-xs text-ink-mute hover:text-ink-soft transition-colors"
       >
         編集
@@ -67,7 +67,7 @@
         <NuxtLink
           v-for="v in votes.slice(0, 6)"
           :key="v.id"
-          :to="`/u/${v.voterSlug}`"
+          :to="`/u/${v.voterSlug}/`"
           :title="`${v.voterName}（${v.value === 'fair' ? 'Good' : 'Bad'}）`"
         >
           <img

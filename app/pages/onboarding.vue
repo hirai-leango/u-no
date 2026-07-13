@@ -81,6 +81,6 @@ async function submit() {
     createdAt: new Date(),
   })
   const redirect = useRoute().query.redirect as string
-  navigateTo(redirect || `/u/${slug.value}`)
+  navigateTo(redirect || `/u/${slug.value}/`)
 }
 </script>

@@ -24,14 +24,14 @@
     <div class="flex gap-3 mb-10">
       <NuxtLink
         v-if="canReview"
-        :to="`/u/${slug}/review`"
+        :to="`/u/${slug}/review/`"
         class="px-5 py-2.5 bg-brand text-white rounded text-sm font-bold hover:bg-brand-hover transition-colors"
       >
         レビューを書く
       </NuxtLink>
       <NuxtLink
         v-if="showSignupToReview"
-        :to="`/signup?redirect=/u/${slug}/review`"
+        :to="`/signup/?redirect=/u/${slug}/review/`"
         class="px-5 py-2.5 bg-brand text-white rounded text-sm font-bold hover:bg-brand-hover transition-colors"
       >
         アカウントを登録してレビューを書く

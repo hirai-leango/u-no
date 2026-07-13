@@ -5,14 +5,14 @@
     <!-- タブ -->
     <div class="grid grid-cols-2 border border-line rounded-lg overflow-hidden mb-8">
       <NuxtLink
-        to="/login"
+        to="/login/"
         class="py-3 text-sm font-bold text-center transition-colors"
         :class="mode === 'login' ? 'bg-brand text-white' : 'bg-white text-ink-soft hover:bg-brand/5'"
       >
         ログイン
       </NuxtLink>
       <NuxtLink
-        to="/signup"
+        to="/signup/"
         class="py-3 text-sm font-bold text-center transition-colors"
         :class="mode === 'signup' ? 'bg-brand text-white' : 'bg-white text-ink-soft hover:bg-brand/5'"
       >
@@ -34,11 +34,11 @@
     <p class="text-ink-mute text-xs mt-8 text-center">
       <template v-if="mode === 'login'">
         はじめての方は
-        <NuxtLink to="/signup" class="text-brand hover:underline">会員登録</NuxtLink>
+        <NuxtLink to="/signup/" class="text-brand hover:underline">会員登録</NuxtLink>
       </template>
       <template v-else>
         すでにアカウントをお持ちの方は
-        <NuxtLink to="/login" class="text-brand hover:underline">ログイン</NuxtLink>
+        <NuxtLink to="/login/" class="text-brand hover:underline">ログイン</NuxtLink>
       </template>
     </p>
   </div>

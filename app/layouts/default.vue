@@ -24,14 +24,14 @@
             class="absolute right-0 top-11 w-52 bg-white border border-surface-border rounded-lg shadow-lg py-1.5 z-20"
           >
             <NuxtLink
-              :to="`/u/${userSlug}`"
+              :to="`/u/${userSlug}/`"
               class="block px-4 py-2.5 text-sm text-ink hover:bg-brand/5 transition-colors"
               @click="menuOpen = false"
             >
               マイページ
             </NuxtLink>
             <NuxtLink
-              to="/settings"
+              to="/settings/"
               class="block px-4 py-2.5 text-sm text-ink hover:bg-brand/5 transition-colors"
               @click="menuOpen = false"
             >
@@ -47,10 +47,10 @@
           </div>
         </nav>
         <nav v-else class="flex items-center gap-2">
-          <NuxtLink to="/login" class="text-sm font-semibold px-4 py-2 rounded border border-brand text-brand hover:bg-brand/10 transition-colors">
+          <NuxtLink to="/login/" class="text-sm font-semibold px-4 py-2 rounded border border-brand text-brand hover:bg-brand/10 transition-colors">
             ログイン
           </NuxtLink>
-          <NuxtLink to="/signup" class="text-sm font-bold px-4 py-2 rounded bg-brand text-white hover:bg-brand-hover transition-colors">
+          <NuxtLink to="/signup/" class="text-sm font-bold px-4 py-2 rounded bg-brand text-white hover:bg-brand-hover transition-colors">
             会員登録
           </NuxtLink>
         </nav>
@@ -62,8 +62,8 @@
     <footer class="border-t border-surface-border mt-12">
       <div class="max-w-3xl mx-auto px-4 py-6 flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-xs text-ink-mute">
         <span>© 2026 u-no.me</span>
-        <NuxtLink to="/terms" class="hover:text-ink-mute transition-colors">利用規約</NuxtLink>
-        <NuxtLink to="/privacy" class="hover:text-ink-mute transition-colors">プライバシーポリシー</NuxtLink>
+        <NuxtLink to="/terms/" class="hover:text-ink-mute transition-colors">利用規約</NuxtLink>
+        <NuxtLink to="/privacy/" class="hover:text-ink-mute transition-colors">プライバシーポリシー</NuxtLink>
       </div>
     </footer>
   </div>

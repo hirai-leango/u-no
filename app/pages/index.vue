@@ -32,14 +32,14 @@
         <p class="text-ink-mute text-sm">ログイン中: {{ user.displayName }}</p>
         <NuxtLink
           v-if="userSlug"
-          :to="`/u/${userSlug}`"
+          :to="`/u/${userSlug}/`"
           class="px-6 py-3 bg-brand text-white rounded font-bold text-sm hover:bg-brand-hover transition-colors"
         >
           マイページへ →
         </NuxtLink>
         <NuxtLink
           v-else
-          to="/onboarding"
+          to="/onboarding/"
           class="px-6 py-3 bg-brand text-white rounded font-bold text-sm hover:bg-brand-hover transition-colors"
         >
           プロフィールを設定する →
@@ -184,8 +184,8 @@ watch(user, async (u) => {
   const { getProfileByUid } = useUserProfile()
   const profile = await getProfileByUid(u.uid)
   userSlug.value = profile?.slug ?? ''
-  if (profile?.slug) navigateTo(`/u/${profile.slug}`)
-  else navigateTo('/onboarding')
+  if (profile?.slug) navigateTo(`/u/${profile.slug}/`)
+  else navigateTo('/onboarding/')
 }, { immediate: true })
 
 async function login(providerId: string) {

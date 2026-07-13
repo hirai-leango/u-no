@@ -1,7 +1,7 @@
 <script setup lang="ts">
 definePageMeta({ middleware: 'auth' })
 useSeoMeta({ robots: 'noindex, nofollow' })
-navigateTo('/settings/resume', { redirectCode: 301 })
+navigateTo('/settings/resume/', { redirectCode: 301 })
 </script>
 
 <template>
