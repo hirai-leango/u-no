@@ -256,7 +256,7 @@ async function save() {
   await saveProfile(user.value.uid, {
     headline: headline.value,
     bio: bio.value,
-    links: links.value.filter(l => l.label && l.url),
+    links: links.value.filter(l => l.label && isHttpUrl(l.url)),
     resume: { ...form },
     isSearchable: isSearchable.value,
   })

@@ -80,7 +80,7 @@ async function submit() {
     resume: { skills: [], experience: [], education: [] },
     createdAt: new Date(),
   })
-  const redirect = useRoute().query.redirect as string
+  const redirect = safeInternalRedirect(useRoute().query.redirect as string)
   navigateTo(redirect || `/u/${slug.value}/`)
 }
 </script>

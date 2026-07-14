@@ -7,9 +7,9 @@
         <h1 class="text-xl font-extrabold text-ink">{{ profile.displayName }}</h1>
         <p v-if="profile.headline" class="text-brand text-sm font-semibold mt-0.5">{{ profile.headline }}</p>
         <p v-if="profile.bio" class="text-ink-soft text-sm mt-1">{{ profile.bio }}</p>
-        <div v-if="profile.links && profile.links.length" class="flex flex-wrap gap-2 mt-2">
+        <div v-if="safeLinks.length" class="flex flex-wrap gap-2 mt-2">
           <a
-            v-for="l in profile.links"
+            v-for="l in safeLinks"
             :key="l.url"
             :href="l.url"
             target="_blank"
@@ -154,6 +154,8 @@ defineOgImageComponent('Profile', {
 })
 
 const profile = computed(() => data.value?.profile ?? null)
+// リンクは http(s) のみ許可（javascript: 等のXSSを排除）
+const safeLinks = computed(() => (profile.value?.links ?? []).filter(l => isHttpUrl(l.url)))
 const reviews = computed(() => data.value?.reviews ?? [])
 const notFound = computed(() => data.value?.profile === null)
 

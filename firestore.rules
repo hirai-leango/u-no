@@ -11,7 +11,10 @@ service cloud.firestore {
         && request.resource.data.slug is string
         && request.resource.data.slug.size() >= 2
         && request.resource.data.slug.size() <= 30
-        && request.resource.data.bio.size() <= 200;
+        && request.resource.data.bio.size() <= 200
+        // フィールド肥大化の防止（任意項目は存在する場合のみ検証）
+        && (!('headline' in request.resource.data) || (request.resource.data.headline is string && request.resource.data.headline.size() <= 100))
+        && (!('links' in request.resource.data) || (request.resource.data.links is list && request.resource.data.links.size() <= 20));
     }
 
     // レビュー: 誰でも読める、ログイン済みで自分以外へのみ投稿・編集、自分のものだけ削除

@@ -21,6 +21,10 @@ export default defineNuxtConfig({
     routeRules: {
       // ハッシュ付きJS/CSSは長期キャッシュ（不変）
       '/_nuxt/**': { headers: { 'cache-control': 'public, max-age=31536000, immutable' } },
+      // 動的OG画像はURLが内容署名付き→長期キャッシュで再生成コスト削減
+      '/_og/**': { headers: { 'cache-control': 'public, max-age=31536000, immutable' } },
+      // OG用フォントも長期キャッシュ
+      '/og-fonts/**': { headers: { 'cache-control': 'public, max-age=31536000, immutable' } },
       // HTMLは常に再検証（古いページを掴まない）
       '/**': { headers: { 'cache-control': 'no-cache' } },
     },

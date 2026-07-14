@@ -26,7 +26,8 @@ const providers = [
 ]
 
 const route = useRoute()
-const redirect = computed(() => (route.query.redirect as string) || '')
+// 内部パスのみ許可（オープンリダイレクト対策）
+const redirect = computed(() => safeInternalRedirect(route.query.redirect as string))
 
 watch(user, async (u) => {
   if (!u) return
