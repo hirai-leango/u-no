@@ -5,7 +5,7 @@
 
     <!-- 不当フラグ -->
     <div v-if="isFlagged" class="mb-3 text-xs text-warn bg-warn/10 rounded px-3 py-1.5 inline-block">
-      ⚠️ 多くの人がこのレビューを不当と評価しています
+      ⚠️ 多くの人がこのエピソードを不当と評価しています
     </div>
 
     <!-- レビュアー情報 -->

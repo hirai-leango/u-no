@@ -65,7 +65,7 @@ export interface Review {
   updatedAt: Date
 }
 
-// レビューへの公正さ評価（実名）
+// エピソードへの公正さ評価（実名）
 export interface Vote {
   id: string
   reviewId: string
@@ -77,7 +77,7 @@ export interface Vote {
   createdAt: Date
 }
 
-// レビューへのツリーコメント（実名）
+// エピソードへのツリーコメント（実名）
 export interface ReviewComment {
   id: string
   reviewId: string

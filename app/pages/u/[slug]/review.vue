@@ -1,18 +1,30 @@
 <template>
   <div class="max-w-sm mx-auto pt-8">
-    <NuxtLink :to="`/u/${slug}/`" class="inline-flex items-center gap-1 text-ink-mute text-sm hover:text-ink-soft mb-8 transition-colors">
+    <NuxtLink :to="`/u/${slug}/`" class="inline-flex items-center gap-1 text-ink-mute text-sm hover:text-ink-soft mb-6 transition-colors">
       ← {{ profile?.displayName ?? '' }}のページへ戻る
     </NuxtLink>
 
+    <!-- 温かい導入（依頼者の名前・写真） -->
+    <div v-if="profile" class="flex items-center gap-3 bg-brand/5 border border-brand/15 rounded-lg px-4 py-3 mb-6">
+      <img
+        v-if="profile.photoURL"
+        :src="profile.photoURL"
+        class="w-12 h-12 rounded-full object-cover flex-none"
+      />
+      <p class="text-sm text-ink leading-snug">
+        <span class="font-bold">{{ profile.displayName }}</span> さんが、あなたとのエピソードを待っています。
+      </p>
+    </div>
+
     <h1 class="text-2xl font-extrabold mb-1 font-black text-ink">
-      レビューを書く
+      エピソードを書く
     </h1>
     <p class="text-ink-mute text-sm mb-8">
-      {{ profile?.displayName }} さんへの正直なレビューをお願いします
+      人柄や実績について教えてください
     </p>
 
     <div v-if="existing" class="flex items-center justify-between bg-surface border border-surface-border rounded px-4 py-3 mb-6 text-sm">
-      <span class="text-ink-mute">以前のレビューを編集中</span>
+      <span class="text-ink-mute">以前のエピソードを編集中</span>
       <button class="text-red-400 hover:text-red-300 text-xs transition-colors" @click="confirmDelete">削除</button>
     </div>
 
@@ -56,7 +68,7 @@
       class="w-full py-3 rounded font-bold text-sm bg-brand text-white transition-colors hover:bg-brand-hover disabled:bg-disabled-bg disabled:text-disabled-text"
       @click="submit"
     >
-      {{ existing ? '更新する' : 'レビューを送信する' }}
+      {{ existing ? '更新する' : 'エピソードを送信する' }}
     </button>
 
     <PhoneVerifyModal
@@ -92,7 +104,7 @@ const showPhoneModal = ref(false)
 async function load() {
   const p = await getProfileBySlug(slug.value)
   if (!p || !currentUser.value) return
-  // 自分自身にはレビューできない
+  // 自分自身にはエピソードできない
   if (p.uid === currentUser.value.uid) return navigateTo(`/u/${slug.value}/`)
   profile.value = p
   existing.value = await getMyReview(p.uid, currentUser.value.uid)
@@ -139,7 +151,7 @@ async function onPhoneVerified() {
 
 async function confirmDelete() {
   if (!profile.value || !currentUser.value) return
-  if (!confirm('レビューを削除しますか？')) return
+  if (!confirm('エピソードを削除しますか？')) return
   await deleteReview(profile.value.uid, currentUser.value.uid)
   navigateTo(`/u/${slug.value}/`)
 }

@@ -27,21 +27,21 @@
         :to="`/u/${slug}/review/`"
         class="px-5 py-2.5 bg-brand text-white rounded text-sm font-bold hover:bg-brand-hover transition-colors"
       >
-        レビューを書く
+        エピソードを書く
       </NuxtLink>
       <NuxtLink
         v-if="showSignupToReview"
         :to="`/signup/?redirect=/u/${slug}/review/`"
         class="px-5 py-2.5 bg-brand text-white rounded text-sm font-bold hover:bg-brand-hover transition-colors"
       >
-        アカウントを登録してレビューを書く
+        アカウントを登録してエピソードを書く
       </NuxtLink>
       <button
         v-if="isMyPage"
         class="px-5 py-2.5 w-64 text-center whitespace-nowrap bg-surface border border-surface-border rounded text-sm font-semibold text-ink-mute hover:text-ink transition-colors"
         @click="copyUrl"
       >
-        {{ copied ? 'URLをコピーしました！' : '知人にレビューを書いてもらう' }}
+        {{ copied ? 'URLをコピーしました！' : '知人にエピソードを書いてもらう' }}
       </button>
     </div>
 
@@ -52,7 +52,7 @@
         :class="tab === 'reviews' ? 'text-brand border-brand' : 'text-ink-mute border-transparent hover:text-ink'"
         @click="tab = 'reviews'"
       >
-        レビュー<span v-if="reviews.length" class="ml-1 tabular-nums">{{ reviews.length }}</span>
+        エピソード<span v-if="reviews.length" class="tabular-nums">({{ reviews.length }})</span>
       </button>
       <button
         class="flex-1 py-3 text-sm font-bold transition-colors border-b-2 -mb-px"
@@ -92,7 +92,7 @@
       </div>
     </section>
 
-    <!-- レビュー一覧 -->
+    <!-- エピソード一覧 -->
     <section v-show="tab === 'reviews'">
       <div v-if="reviews.length === 0" class="text-center py-12 text-ink-mute">
         <p class="text-sm">まだ推薦のメッセージがありません。</p>
@@ -176,7 +176,7 @@ const showSignupToReview = computed(() => !currentUser.value && !!profile.value)
 
 const tab = ref<'reviews' | 'resume'>('reviews')
 
-// レビューは10件ずつ表示
+// エピソードは10件ずつ表示
 const visibleCount = ref(10)
 const visibleReviews = computed(() => reviews.value.slice(0, visibleCount.value))
 

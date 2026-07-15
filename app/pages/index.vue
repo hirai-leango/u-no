@@ -9,7 +9,7 @@
         style="image-rendering: pixelated;"
       />
       <h1 class="text-3xl md:text-5xl mb-4 font-black text-ink leading-tight whitespace-nowrap">
-        流石に０レビューの人は<br>ちょっと警戒しちゃうよね
+        流石に０エピソードの人は<br>ちょっと警戒しちゃうよね
       </h1>
       <p class="text-ink-soft text-base mb-10 max-w-md leading-relaxed">
         ユーノーミーは知人があなたを紹介する、<br>ビジネスプロフィールサービスです。
@@ -139,7 +139,7 @@ import {
 } from 'firebase/auth'
 
 const siteTitle = 'ユーノーミー（u-no.me）| 知人があなたを紹介するビジネスプロフィールサービス'
-const siteDescription = 'ユーノーミーは、知人や取引先があなたを紹介してくれる第三者レビュー型のビジネスプロフィールサービス。自分で盛るのではなく、周りの人の証言で信頼を可視化。URLひとつで、名刺やSNSから自己紹介できます。'
+const siteDescription = 'ユーノーミーは、知人や取引先があなたを紹介してくれるビジネスプロフィールサービス。自分で盛るのではなく、周りの人のエピソードで信頼を可視化。URLひとつで、名刺やSNSから自己紹介できます。'
 
 useSeoMeta({
   title: siteTitle,
@@ -163,7 +163,7 @@ const providers = [
 const features = [
   { icon: '/icon-cert.svg', title: '信頼を、証明する', body: '第三者の口コミが信頼になるのは、お店選びでみんな知っていますよね。同じことを、あなた自身に。' },
   { icon: '/icon-self.svg', title: '自分で言わなくていい', body: '「仕事ができます」と自分で言うのは、少し気恥ずかしい。代わりに周りの人が語ってくれます。' },
-  { icon: '/icon-truth.svg', title: '嘘や荒らしは許されない', body: '実名で書かれたレビューには、第三者がGood/Badで応えられる。悪意ある評価は自然と沈みます。' },
+  { icon: '/icon-truth.svg', title: '嘘や荒らしは許されない', body: '実名で書かれたエピソードには、第三者がGood/Badで応えられる。悪意ある評価は自然と沈みます。' },
 ]
 
 const reasons = [
