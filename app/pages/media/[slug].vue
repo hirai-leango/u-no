@@ -6,7 +6,7 @@
       <span>›</span>
       <NuxtLink to="/media/" class="hover:text-ink-soft">メディア</NuxtLink>
       <span>›</span>
-      <span class="text-ink-soft">{{ a.category }}</span>
+      <NuxtLink :to="`/media/category/${a.categorySlug}/`" class="hover:text-ink-soft">{{ a.category }}</NuxtLink>
     </nav>
 
     <p class="text-[11px] font-bold text-brand mb-2">{{ a.category }}</p>
@@ -129,7 +129,8 @@ if (a) {
       itemListElement: [
         { '@type': 'ListItem', position: 1, name: 'ホーム', item: `${SITE}/` },
         { '@type': 'ListItem', position: 2, name: 'メディア', item: `${SITE}/media/` },
-        { '@type': 'ListItem', position: 3, name: a.title },
+        { '@type': 'ListItem', position: 3, name: a.category, item: `${SITE}/media/category/${a.categorySlug}/` },
+        { '@type': 'ListItem', position: 4, name: a.title },
       ],
     },
     {

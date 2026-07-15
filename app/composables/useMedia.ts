@@ -84,3 +84,21 @@ export function useMediaList(): Article[] {
 export function useMediaArticle(slug: string): Article | null {
   return articles.find((a) => a.slug === slug) ?? null
 }
+
+export interface Category { name: string; slug: string; count: number }
+
+// 記事から出現順にカテゴリを集計
+export function useMediaCategories(): Category[] {
+  const map = new Map<string, Category>()
+  for (const a of articles) {
+    if (!a.categorySlug) continue
+    const c = map.get(a.categorySlug)
+    if (c) c.count++
+    else map.set(a.categorySlug, { name: a.category, slug: a.categorySlug, count: 1 })
+  }
+  return [...map.values()]
+}
+
+export function useMediaByCategory(categorySlug: string): Article[] {
+  return articles.filter((a) => a.categorySlug === categorySlug)
+}

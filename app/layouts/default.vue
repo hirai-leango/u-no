@@ -60,11 +60,26 @@
       <slot />
     </main>
     <footer class="border-t border-surface-border mt-12">
-      <div class="max-w-3xl mx-auto px-4 py-6 flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-xs text-ink-mute">
-        <span>© 2026 u-no.me</span>
-        <NuxtLink to="/media/" class="hover:text-ink-mute transition-colors">メディア</NuxtLink>
-        <NuxtLink to="/terms/" class="hover:text-ink-mute transition-colors">利用規約</NuxtLink>
-        <NuxtLink to="/privacy/" class="hover:text-ink-mute transition-colors">プライバシーポリシー</NuxtLink>
+      <div class="max-w-3xl mx-auto px-4 py-8">
+        <!-- メディア カテゴリ -->
+        <div class="mb-5">
+          <p class="text-[11px] font-bold text-ink-mute tracking-wide mb-2.5">メディア</p>
+          <div class="flex flex-wrap gap-x-4 gap-y-2 text-xs text-ink-soft">
+            <NuxtLink to="/media/" class="hover:text-ink transition-colors">記事一覧</NuxtLink>
+            <NuxtLink
+              v-for="c in mediaCategories"
+              :key="c.slug"
+              :to="`/media/category/${c.slug}/`"
+              class="hover:text-ink transition-colors"
+            >{{ c.name }}</NuxtLink>
+          </div>
+        </div>
+        <!-- 法務 -->
+        <div class="flex flex-wrap items-center gap-x-5 gap-y-2 text-xs text-ink-mute pt-4 border-t border-surface-border">
+          <span>© 2026 u-no.me</span>
+          <NuxtLink to="/terms/" class="hover:text-ink-soft transition-colors">利用規約</NuxtLink>
+          <NuxtLink to="/privacy/" class="hover:text-ink-soft transition-colors">プライバシーポリシー</NuxtLink>
+        </div>
       </div>
     </footer>
 
@@ -96,6 +111,8 @@ const route = useRoute()
 // 認証系ページ（ログイン/登録/オンボーディング）ではCTAを出さない
 const isAuthPage = computed(() => /^\/(login|signup|onboarding)/.test(route.path))
 const showFloatingCta = computed(() => !user.value && !isAuthPage.value)
+
+const mediaCategories = useMediaCategories()
 
 watch(user, async (u) => {
   if (!u) return
