@@ -29,7 +29,7 @@
     </div>
 
     <div class="mb-6">
-      <label class="block text-xs font-bold tracking-widest uppercase text-ink-mute mb-2">
+      <label class="block text-xs font-bold tracking-widest text-ink-mute mb-2">
         {{ profile?.displayName ?? 'この人' }} との関係
       </label>
       <div class="grid grid-cols-3 gap-2">
