@@ -56,16 +56,31 @@
         </nav>
       </div>
     </header>
-    <main class="max-w-3xl mx-auto px-4 py-8">
+    <main class="max-w-3xl mx-auto px-4 py-8" :class="showFloatingCta ? 'pb-28 md:pb-8' : ''">
       <slot />
     </main>
     <footer class="border-t border-surface-border mt-12">
       <div class="max-w-3xl mx-auto px-4 py-6 flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-xs text-ink-mute">
         <span>© 2026 u-no.me</span>
+        <NuxtLink to="/media/" class="hover:text-ink-mute transition-colors">メディア</NuxtLink>
         <NuxtLink to="/terms/" class="hover:text-ink-mute transition-colors">利用規約</NuxtLink>
         <NuxtLink to="/privacy/" class="hover:text-ink-mute transition-colors">プライバシーポリシー</NuxtLink>
       </div>
     </footer>
+
+    <!-- スマホ用フローティングCTA（未ログイン・認証系ページ以外） -->
+    <div
+      v-if="showFloatingCta"
+      class="md:hidden fixed bottom-0 inset-x-0 z-40 px-4 pt-3 border-t border-surface-border bg-surface-deep/95 backdrop-blur"
+      style="padding-bottom: calc(env(safe-area-inset-bottom) + 12px);"
+    >
+      <NuxtLink
+        to="/signup/"
+        class="block w-full text-center bg-brand text-white font-bold text-sm py-3.5 rounded-lg shadow-lg hover:bg-brand-hover transition-colors"
+      >
+        無料でユーザー登録 →
+      </NuxtLink>
+    </div>
   </div>
 </template>
 
@@ -76,6 +91,11 @@ const user = useCurrentUser()
 const userSlug = ref('')
 const menuOpen = ref(false)
 const menuRef = ref<HTMLElement | null>(null)
+
+const route = useRoute()
+// 認証系ページ（ログイン/登録/オンボーディング）ではCTAを出さない
+const isAuthPage = computed(() => /^\/(login|signup|onboarding)/.test(route.path))
+const showFloatingCta = computed(() => !user.value && !isAuthPage.value)
 
 watch(user, async (u) => {
   if (!u) return
