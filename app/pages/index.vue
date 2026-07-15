@@ -71,7 +71,7 @@
       <!-- 登録する理由 -->
       <section class="bg-brand text-white">
         <div class="px-6 py-20 max-w-3xl mx-auto">
-          <p class="text-[11px] tracking-[.24em] uppercase text-trust font-bold text-center mb-3">登録する理由</p>
+          <p class="text-[11px] tracking-[.24em] text-trust font-bold text-center mb-3">登録する理由</p>
           <h2 class="font-black text-2xl md:text-4xl text-center mb-5 leading-snug text-white">
             名刺に書ききれない信頼を、<br>周りの人が補ってくれる。
           </h2>
@@ -93,7 +93,7 @@
 
       <!-- 使い方 -->
       <section class="px-6 py-20 max-w-3xl mx-auto">
-        <p class="text-[11px] tracking-[.24em] uppercase text-trust font-bold text-center mb-3">使い方</p>
+        <p class="text-[11px] tracking-[.24em] text-trust font-bold text-center mb-3">使い方</p>
         <h2 class="font-black text-2xl md:text-4xl text-center mb-5 text-ink">やることは、3つだけ。</h2>
         <p class="text-ink-soft text-sm text-center max-w-md mx-auto mb-10">難しい設定は、ひとつもありません。</p>
 

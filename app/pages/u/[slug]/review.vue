@@ -49,7 +49,7 @@
     </div>
 
     <div class="mb-6">
-      <label class="block text-xs font-bold tracking-widest uppercase text-ink-mute mb-2">コメント</label>
+      <label class="block text-xs font-bold tracking-widest text-ink-mute mb-2">コメント</label>
       <textarea
         v-model="comment"
         :maxlength="300"

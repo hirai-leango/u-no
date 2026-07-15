@@ -6,7 +6,7 @@
     <p class="text-ink-mute text-sm mb-8">URLに使うスラッグを決めてください</p>
 
     <div class="mb-2">
-      <label class="block text-xs font-bold tracking-widest uppercase text-ink-mute mb-2">スラッグ</label>
+      <label class="block text-xs font-bold tracking-widest text-ink-mute mb-2">スラッグ</label>
       <div class="flex items-center bg-surface border border-surface-border rounded overflow-hidden focus-within:border-brand transition-colors">
         <span class="pl-4 text-ink-mute text-sm whitespace-nowrap">yuuno.app/u/</span>
         <input
@@ -24,7 +24,7 @@
     <p v-else class="text-transparent text-xs mb-4">_</p>
 
     <div class="mb-6">
-      <label class="block text-xs font-bold tracking-widest uppercase text-ink-mute mb-2">自己紹介（任意）</label>
+      <label class="block text-xs font-bold tracking-widest text-ink-mute mb-2">自己紹介（任意）</label>
       <textarea
         v-model="bio"
         v-autogrow

@@ -37,7 +37,7 @@
 
     <!-- 肩書き -->
     <section class="mb-6">
-      <label class="block text-xs font-bold tracking-widest uppercase text-ink-mute mb-2">肩書き（会社・役職）</label>
+      <label class="block text-xs font-bold tracking-widest text-ink-mute mb-2">肩書き（会社・役職）</label>
       <input
         v-model="headline"
         type="text"
@@ -49,7 +49,7 @@
 
     <!-- 自己紹介 -->
     <section class="mb-6">
-      <label class="block text-xs font-bold tracking-widest uppercase text-ink-mute mb-2">自己紹介</label>
+      <label class="block text-xs font-bold tracking-widest text-ink-mute mb-2">自己紹介</label>
       <textarea
         v-model="bio"
         v-autogrow
@@ -63,7 +63,7 @@
     <!-- リンク集 -->
     <section class="mb-6">
       <div class="flex items-center justify-between mb-3">
-        <label class="text-xs font-bold tracking-widest uppercase text-ink-mute">リンク</label>
+        <label class="text-xs font-bold tracking-widest text-ink-mute">リンク</label>
         <button class="text-xs text-brand hover:underline" @click="addLink">+ 追加</button>
       </div>
       <div class="space-y-2">
@@ -97,7 +97,7 @@
     <!-- 職歴 -->
     <section class="mb-6">
       <div class="flex items-center justify-between mb-3">
-        <label class="text-xs font-bold tracking-widest uppercase text-ink-mute">職歴</label>
+        <label class="text-xs font-bold tracking-widest text-ink-mute">職歴</label>
         <button class="text-xs text-brand-light hover:underline" @click="addExperience">+ 追加</button>
       </div>
       <div class="space-y-4">
@@ -138,7 +138,7 @@
     <!-- 学歴 -->
     <section class="mb-10">
       <div class="flex items-center justify-between mb-3">
-        <label class="text-xs font-bold tracking-widest uppercase text-ink-mute">学歴</label>
+        <label class="text-xs font-bold tracking-widest text-ink-mute">学歴</label>
         <button class="text-xs text-brand-light hover:underline" @click="addEducation">+ 追加</button>
       </div>
       <div class="space-y-4">

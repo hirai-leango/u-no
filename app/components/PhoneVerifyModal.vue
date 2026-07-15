@@ -9,7 +9,7 @@
       </p>
 
       <div v-if="step === 'input'">
-        <label class="block text-xs font-bold tracking-widest uppercase text-ink-mute mb-2">電話番号</label>
+        <label class="block text-xs font-bold tracking-widest text-ink-mute mb-2">電話番号</label>
         <input
           v-model="phone"
           type="tel"
@@ -27,7 +27,7 @@
       </div>
 
       <div v-else-if="step === 'code'">
-        <label class="block text-xs font-bold tracking-widest uppercase text-ink-mute mb-2">認証コード</label>
+        <label class="block text-xs font-bold tracking-widest text-ink-mute mb-2">認証コード</label>
         <input
           v-model="code"
           type="text"
