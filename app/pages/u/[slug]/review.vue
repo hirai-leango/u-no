@@ -52,14 +52,14 @@
       <label class="block text-xs font-bold tracking-widest text-ink-mute mb-2">コメント</label>
       <textarea
         v-model="comment"
-        :maxlength="300"
+        :maxlength="1000"
         rows="5"
         placeholder="例: 突然の依頼にも即レスで対応してくれた。回答がめちゃくちゃ的確だった。"
         v-autogrow
         class="w-full bg-surface border border-surface-border rounded px-4 py-3 text-sm outline-none focus:border-brand transition-colors resize-none min-h-[6rem] text-ink placeholder-ink-mute"
       />
-      <div class="text-right text-xs mt-1" :class="comment.length > 270 ? 'text-warn' : 'text-ink-mute'">
-        {{ comment.length }} / 300
+      <div class="text-right text-xs mt-1" :class="comment.length > 950 ? 'text-warn' : 'text-ink-mute'">
+        {{ comment.length }} / 1000
       </div>
     </div>
 

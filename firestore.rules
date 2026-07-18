@@ -25,7 +25,7 @@ service cloud.firestore {
         && request.resource.data.toUserId != request.auth.uid
         && request.resource.data.comment is string
         && request.resource.data.comment.size() > 0
-        && request.resource.data.comment.size() <= 300
+        && request.resource.data.comment.size() <= 1000
         && request.resource.data.relationship in ['boss', 'subordinate', 'colleague', 'client', 'contractor', 'acquaintance', 'other'];
       allow delete: if request.auth != null
         && resource.data.fromUserId == request.auth.uid;
