@@ -47,7 +47,7 @@
       <p v-if="error" class="text-red-400 text-xs mt-3">{{ error }}</p>
 
       <button class="w-full text-center text-xs text-ink-mute hover:text-ink-soft mt-4 transition-colors" @click="$emit('close')">
-        あとにする
+        エピソードは後で公開する
       </button>
 
       <div id="recaptcha-container" />
