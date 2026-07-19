@@ -202,11 +202,12 @@ function goToConfirm() {
 // 確認画面で「公開する」を押したとき
 async function publish() {
   showConfirmModal.value = false
-  // 電話番号未認証なら本人確認モーダルを出す
-  if (!isPhoneVerified.value) {
-    showPhoneModal.value = true
-    return
-  }
+  // 【一時バイパス】reCAPTCHA/電話認証の設定が整うまで、本人確認をスキップして投稿を開通させる。
+  // 復活させるときは下のブロックのコメントを外す。
+  // if (!isPhoneVerified.value) {
+  //   showPhoneModal.value = true
+  //   return
+  // }
   await doSubmit()
 }
 
