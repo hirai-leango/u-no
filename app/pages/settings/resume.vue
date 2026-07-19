@@ -1,6 +1,6 @@
 <template>
   <div class="max-w-2xl mx-auto">
-    <div class="flex items-center justify-between mb-8">
+    <div ref="headerRef" class="flex items-center justify-between mb-8">
       <h1 class="text-2xl font-black text-ink">
         プロフィールを編集
       </h1>
@@ -13,27 +13,21 @@
       </button>
     </div>
 
-    <!-- PDFインポート -->
-    <div class="bg-surface border border-surface-border rounded-none p-6 mb-8">
-      <h2 class="text-sm font-bold text-ink-soft mb-1">PDFからインポート</h2>
-      <p class="text-xs text-ink-mute mb-4">履歴書PDFをアップロードすると、AIが自動で項目を入力します</p>
-      <div
-        class="border-2 border-dashed border-surface-border rounded p-8 text-center cursor-pointer hover:border-brand transition-colors"
-        :class="{ 'border-brand': isDragging }"
-        @dragover.prevent="isDragging = true"
-        @dragleave="isDragging = false"
-        @drop.prevent="handleDrop"
-        @click="fileInput?.click()"
-      >
-        <input ref="fileInput" type="file" accept=".pdf" class="hidden" @change="handleFile" />
-        <p v-if="parsing" class="text-sm text-brand-light animate-pulse">AIが解析中...</p>
-        <div v-else>
-          <p class="text-2xl mb-2">📄</p>
-          <p class="text-sm text-ink-mute">PDFをドラッグ＆ドロップ、またはクリック</p>
-          <p class="text-xs text-ink-mute mt-1">住所・電話番号は自動的に除外されます</p>
+    <!-- スクロールで上部ボタンが隠れたら出るフローティング保存ボタン -->
+    <Transition name="floatsave">
+      <div v-if="showFloatingSave" class="fixed top-0 inset-x-0 z-40 bg-surface-deep/95 backdrop-blur border-b border-surface-border">
+        <div class="max-w-2xl mx-auto px-4 py-3">
+          <button
+            :disabled="saving"
+            class="w-full px-5 py-3 bg-brand text-white rounded text-sm font-bold shadow-sm disabled:bg-disabled-bg disabled:text-disabled-text hover:bg-brand-hover transition-colors"
+            @click="save"
+          >
+            {{ saving ? '保存中...' : 'プロフィールを保存する' }}
+          </button>
         </div>
       </div>
-    </div>
+    </Transition>
+
 
     <!-- 肩書き -->
     <section class="mb-6">
@@ -186,9 +180,6 @@ import type { Resume, ProfileLink } from '~/types'
 
 const user = useCurrentUser()
 const { getProfileByUid, saveProfile } = useUserProfile()
-const fileInput = ref<HTMLInputElement>()
-const isDragging = ref(false)
-const parsing = ref(false)
 const saving = ref(false)
 
 const form = reactive<Resume>({
@@ -224,43 +215,38 @@ function addEducation() {
   form.education.push({ institution: '', degree: '', field: '', startDate: '', endDate: '' })
 }
 
-function handleDrop(e: DragEvent) {
-  isDragging.value = false
-  const file = e.dataTransfer?.files[0]
-  if (file?.type === 'application/pdf') parseResume(file)
-}
+const { showToast } = useToast()
 
-function handleFile(e: Event) {
-  const file = (e.target as HTMLInputElement).files?.[0]
-  if (file) parseResume(file)
-}
-
-async function parseResume(file: File) {
-  parsing.value = true
-  try {
-    const formData = new FormData()
-    formData.append('file', file)
-    const res = await $fetch<Partial<Resume>>('/api/parse-resume', { method: 'POST', body: formData })
-    if (res.experience?.length) form.experience = res.experience
-    if (res.education?.length) form.education = res.education
-  } catch (e) {
-    console.error('PDF解析に失敗しました', e)
-  } finally {
-    parsing.value = false
-  }
-}
+// 上部の保存ボタンが画面外に出たらフローティング保存を表示
+const headerRef = ref<HTMLElement | null>(null)
+const showFloatingSave = ref(false)
+onMounted(() => {
+  if (!headerRef.value) return
+  const io = new IntersectionObserver(
+    ([e]) => { showFloatingSave.value = !e.isIntersecting },
+    { threshold: 0 },
+  )
+  io.observe(headerRef.value)
+  onBeforeUnmount(() => io.disconnect())
+})
 
 async function save() {
   if (!user.value) return
   saving.value = true
-  await saveProfile(user.value.uid, {
-    headline: headline.value,
-    bio: bio.value,
-    links: links.value.filter(l => l.label && isHttpUrl(l.url)),
-    resume: { ...form },
-    isSearchable: isSearchable.value,
-  })
-  saving.value = false
+  try {
+    await saveProfile(user.value.uid, {
+      headline: headline.value,
+      bio: bio.value,
+      links: links.value.filter(l => l.label && isHttpUrl(l.url)),
+      resume: { ...form },
+      isSearchable: isSearchable.value,
+    })
+    showToast('プロフィールを保存しました')
+  } catch (e) {
+    showToast('保存に失敗しました。時間をおいて再度お試しください', { type: 'error' })
+  } finally {
+    saving.value = false
+  }
 }
 </script>
 

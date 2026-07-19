@@ -1,6 +1,6 @@
 import {
   doc, getDoc, setDoc, deleteDoc,
-  collection, query, where, getDocs, serverTimestamp, getFirestore,
+  collection, query, where, getDocs, getCountFromServer, serverTimestamp, getFirestore,
 } from 'firebase/firestore'
 import type { Review, Relationship } from '~/types'
 
@@ -57,5 +57,12 @@ export function useReviews() {
     await deleteDoc(doc(db, 'reviews', reviewDocId(toUserId, fromUserId)))
   }
 
-  return { getReviews, getMyReview, upsertReview, deleteReview }
+  // 自分が他人に贈ったエピソード数（fromUserId == 自分）
+  async function getGivenCount(fromUserId: string): Promise<number> {
+    const q = query(collection(db, 'reviews'), where('fromUserId', '==', fromUserId))
+    const snap = await getCountFromServer(q)
+    return snap.data().count
+  }
+
+  return { getReviews, getMyReview, upsertReview, deleteReview, getGivenCount }
 }

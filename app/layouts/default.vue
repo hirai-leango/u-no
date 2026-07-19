@@ -59,6 +59,8 @@
     <main class="max-w-3xl mx-auto px-4 py-8" :class="showFloatingCta ? 'pb-28 md:pb-8' : ''">
       <slot />
     </main>
+
+    <AppToast />
     <footer class="border-t border-surface-border mt-12">
       <div class="max-w-3xl mx-auto px-4 py-8">
         <!-- メディア カテゴリ -->

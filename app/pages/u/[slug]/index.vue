@@ -1,22 +1,24 @@
 <template>
   <div v-if="profile">
     <!-- ヘッダー -->
-    <div class="flex items-start gap-4 mb-8">
-      <img :src="profile.photoURL" class="w-16 h-16 rounded-full object-cover" />
-      <div class="flex-1">
-        <h1 class="text-xl font-extrabold text-ink">{{ profile.displayName }}</h1>
-        <p v-if="profile.headline" class="text-brand text-sm font-semibold mt-0.5">{{ profile.headline }}</p>
-        <p v-if="profile.bio" class="text-ink-soft text-sm mt-1">{{ profile.bio }}</p>
-        <div v-if="safeLinks.length" class="flex flex-wrap gap-2 mt-2">
-          <a
-            v-for="l in safeLinks"
-            :key="l.url"
-            :href="l.url"
-            target="_blank"
-            rel="noopener noreferrer"
-            class="text-xs text-brand border border-surface-border rounded px-2 py-1 hover:border-brand transition-colors"
-          >{{ l.label }}</a>
+    <div class="mb-8">
+      <div class="flex items-start gap-4">
+        <img :src="profile.photoURL" class="w-16 h-16 rounded-full object-cover flex-none" />
+        <div class="flex-1 min-w-0">
+          <h1 class="text-xl font-extrabold text-ink">{{ profile.displayName }}</h1>
+          <p v-if="profile.headline" class="text-brand text-sm font-semibold mt-0.5">{{ profile.headline }}</p>
         </div>
+      </div>
+      <p v-if="profile.bio" class="text-ink-soft text-sm mt-3 leading-relaxed whitespace-pre-wrap">{{ profile.bio }}</p>
+      <div v-if="safeLinks.length" class="flex flex-wrap gap-2 mt-3">
+        <a
+          v-for="l in safeLinks"
+          :key="l.url"
+          :href="l.url"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="text-xs text-brand border border-surface-border rounded px-2 py-1 hover:border-brand transition-colors"
+        >{{ l.label }}</a>
       </div>
     </div>
 
@@ -27,7 +29,7 @@
         :to="`/u/${slug}/review/`"
         class="px-5 py-2.5 bg-brand text-white rounded text-sm font-bold hover:bg-brand-hover transition-colors"
       >
-        エピソードを書く
+        エピソードを贈る
       </NuxtLink>
       <NuxtLink
         v-if="showSignupToReview"
@@ -39,10 +41,22 @@
       <button
         v-if="isMyPage"
         class="px-5 py-2.5 w-64 text-center whitespace-nowrap bg-surface border border-surface-border rounded text-sm font-semibold text-ink-mute hover:text-ink transition-colors"
-        @click="copyUrl"
+        @click="shareProfile"
       >
-        {{ copied ? 'URLをコピーしました！' : '知人にエピソードを書いてもらう' }}
+        {{ copied ? 'URLをコピーしました！' : '知人からエピソードを受け取る' }}
       </button>
+    </div>
+
+    <!-- 贈った／受け取ったサマリー -->
+    <div class="flex gap-3 mb-10">
+      <div class="flex-1 bg-surface border border-surface-border rounded-lg p-4 text-center">
+        <div class="text-2xl font-black text-ink tabular-nums">{{ givenCount }}</div>
+        <div class="text-xs text-ink-mute mt-0.5">贈ったエピソード</div>
+      </div>
+      <div class="flex-1 bg-surface border border-surface-border rounded-lg p-4 text-center">
+        <div class="text-2xl font-black text-ink tabular-nums">{{ reviews.length }}</div>
+        <div class="text-xs text-ink-mute mt-0.5">受け取ったエピソード</div>
+      </div>
     </div>
 
     <!-- タブ切替 -->
@@ -95,7 +109,7 @@
     <!-- エピソード一覧 -->
     <section v-show="tab === 'reviews'">
       <div v-if="reviews.length === 0" class="text-center py-12 text-ink-mute">
-        <p class="text-sm">まだ推薦のメッセージがありません。</p>
+        <p class="text-sm">まだエピソードがありません。</p>
       </div>
       <div v-else class="space-y-4">
         <ReviewCard
@@ -183,11 +197,35 @@ const visibleReviews = computed(() => reviews.value.slice(0, visibleCount.value)
 const isMyPage = computed(() =>
   !!currentUser.value && !!profile.value && currentUser.value.uid === profile.value.uid)
 
+// プロフィール本人が「贈ったエピソード数」を集計（受け取った数は reviews.length）
+const { getGivenCount } = useReviews()
+const givenCount = ref(0)
+watch(profile, async (p) => {
+  if (import.meta.client && p?.uid) {
+    try { givenCount.value = await getGivenCount(p.uid) } catch { /* noop */ }
+  }
+}, { immediate: true })
+
 const copied = ref(false)
-function copyUrl() {
-  navigator.clipboard.writeText(window.location.href)
-  copied.value = true
-  setTimeout(() => copied.value = false, 2000)
+async function shareProfile() {
+  const url = window.location.href
+  const name = profile.value?.displayName ?? ''
+  // スマホ等はネイティブ共有シート、非対応環境はURLコピーにフォールバック
+  if (navigator.share) {
+    try {
+      await navigator.share({
+        title: `${name}さんのプロフィール`,
+        text: `${name}さんへエピソード（他己紹介）を書いてください`,
+        url,
+      })
+    } catch {
+      // 共有をキャンセルした場合は何もしない
+    }
+  } else {
+    await navigator.clipboard.writeText(url)
+    copied.value = true
+    setTimeout(() => (copied.value = false), 2000)
+  }
 }
 
 </script>
