@@ -16,7 +16,7 @@
           placeholder="090-1234-5678"
           class="w-full bg-surface-deep border border-surface-border rounded px-4 py-3 text-sm outline-none focus:border-brand transition-colors text-ink placeholder-ink-mute mb-2"
         />
-        <p class="text-[11px] text-ink-mute mb-4">日本の携帯番号（先頭0）を入力してください</p>
+        <p class="text-[11px] text-ink-mute mb-4">日本の携帯番号のみ対応（先頭0）しています</p>
         <button
           :disabled="!phone.trim() || loading"
           class="w-full py-3 rounded font-bold text-sm bg-brand text-white transition-colors hover:bg-brand-hover disabled:bg-disabled-bg disabled:text-disabled-text"

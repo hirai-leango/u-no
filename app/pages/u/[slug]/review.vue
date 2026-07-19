@@ -137,10 +137,6 @@
 
 <script setup lang="ts">
 definePageMeta({ middleware: 'auth' })
-useSeoMeta({
-  title: () => profile.value ? `${profile.value.displayName}さんへのエピソードを書く | ユーノーミー` : 'エピソードを書く | ユーノーミー',
-  robots: 'noindex, nofollow',
-})
 
 import type { UserProfile, Review, Relationship } from '~/types'
 import { RELATIONSHIP_LABELS } from '~/types'
@@ -150,6 +146,11 @@ const slug = computed(() => route.params.slug as string)
 const currentUser = useCurrentUser()
 
 const profile = ref<UserProfile | null>(null)
+
+useSeoMeta({
+  title: () => profile.value ? `${profile.value.displayName}さんへのエピソードを書く | ユーノーミー` : 'エピソードを書く | ユーノーミー',
+  robots: 'noindex, nofollow',
+})
 const existing = ref<Review | null>(null)
 const comment = ref('')
 const relationship = ref<Relationship | null>(null)
