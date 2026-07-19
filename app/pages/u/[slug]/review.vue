@@ -220,6 +220,7 @@ async function doSubmit() {
     displayName: currentUser.value.displayName ?? '',
     photoURL: currentUser.value.photoURL ?? '',
     slug: myProfile?.slug ?? '',
+    headline: myProfile?.headline ?? '',
   }, comment.value.trim(), relationship.value)
   navigateTo(`/u/${slug.value}/`)
 }

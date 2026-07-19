@@ -34,7 +34,7 @@ export function useReviews() {
 
   async function upsertReview(
     toUserId: string,
-    from: { uid: string; displayName: string; photoURL: string; slug: string },
+    from: { uid: string; displayName: string; photoURL: string; slug: string; headline?: string },
     comment: string,
     relationship: Relationship,
   ): Promise<void> {
@@ -46,6 +46,7 @@ export function useReviews() {
       fromDisplayName: from.displayName,
       fromPhotoURL: from.photoURL,
       fromSlug: from.slug,
+      fromHeadline: from.headline ?? '',
       relationship,
       comment,
       updatedAt: serverTimestamp(),

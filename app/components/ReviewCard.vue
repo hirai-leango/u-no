@@ -25,6 +25,7 @@
             {{ relationshipLabel }}
           </span>
         </div>
+        <div v-if="review.fromHeadline" class="text-xs text-ink-soft">{{ review.fromHeadline }}</div>
         <div class="text-xs text-ink-mute">{{ formatDate(review.updatedAt) }}</div>
       </div>
       <NuxtLink
@@ -43,7 +44,7 @@
       </button>
     </div>
 
-    <p class="text-sm text-ink-soft leading-relaxed mb-4">{{ review.comment }}</p>
+    <p class="text-sm text-ink-soft leading-relaxed mb-4 whitespace-pre-wrap">{{ review.comment }}</p>
 
     <!-- 評価バー -->
     <div class="flex items-center gap-2 mb-3">
