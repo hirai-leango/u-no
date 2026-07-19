@@ -1,7 +1,6 @@
 <template>
-  <div class="bg-surface border border-surface-border rounded-none p-5 relative overflow-hidden"
+  <div class="relative py-5 border-b border-line"
     :class="{ 'opacity-60': isFlagged }">
-    <div class="absolute top-0 left-0 right-0 h-0.5 bg-gradient-to-r from-brand to-brand-dark opacity-60" />
 
     <!-- 不当フラグ -->
     <div v-if="isFlagged" class="mb-3 text-xs text-warn bg-warn/10 rounded px-3 py-1.5 inline-block">

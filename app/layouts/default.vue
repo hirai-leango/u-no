@@ -1,5 +1,5 @@
 <template>
-  <div class="min-h-screen bg-surface-deep text-ink font-sans">
+  <div class="min-h-screen bg-white text-ink font-sans">
     <header class="border-b border-surface-border">
       <div class="max-w-3xl mx-auto px-4 h-14 flex items-center justify-between">
         <NuxtLink to="/" class="flex items-center gap-2 text-brand font-bold text-lg tracking-tight">
@@ -30,6 +30,12 @@
             >
               マイページ
             </NuxtLink>
+            <button
+              class="block w-full text-left px-4 py-2.5 text-sm font-semibold text-brand hover:bg-brand/5 transition-colors"
+              @click="shareMyProfile"
+            >
+              エピソードを受け取る
+            </button>
             <NuxtLink
               to="/settings/"
               class="block px-4 py-2.5 text-sm text-ink hover:bg-brand/5 transition-colors"
@@ -129,6 +135,29 @@ function onClickOutside(e: MouseEvent) {
 }
 onMounted(() => document.addEventListener('click', onClickOutside))
 onBeforeUnmount(() => document.removeEventListener('click', onClickOutside))
+
+const { showToast } = useToast()
+
+// 自分のプロフィールURLを共有（知人に他己紹介を書いてもらう）
+async function shareMyProfile() {
+  menuOpen.value = false
+  if (!userSlug.value) return
+  const url = `${window.location.origin}/u/${userSlug.value}/`
+  if (navigator.share) {
+    try {
+      await navigator.share({
+        title: `${user.value?.displayName ?? ''}さんへのエピソードをお願いします`,
+        text: `${user.value?.displayName ?? ''}さんへエピソードを書いてください`,
+        url,
+      })
+    } catch {
+      // 共有キャンセルは何もしない
+    }
+  } else {
+    await navigator.clipboard.writeText(url)
+    showToast('プロフィールURLをコピーしました')
+  }
+}
 
 async function signOut() {
   menuOpen.value = false

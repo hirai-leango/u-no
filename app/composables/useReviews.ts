@@ -37,6 +37,7 @@ export function useReviews() {
     from: { uid: string; displayName: string; photoURL: string; slug: string; headline?: string },
     comment: string,
     relationship: Relationship,
+    to?: { displayName?: string; photoURL?: string; slug?: string },
   ): Promise<void> {
     const id = reviewDocId(toUserId, from.uid)
     const existing = await getDoc(doc(db, 'reviews', id))
@@ -47,10 +48,25 @@ export function useReviews() {
       fromPhotoURL: from.photoURL,
       fromSlug: from.slug,
       fromHeadline: from.headline ?? '',
+      toDisplayName: to?.displayName ?? '',
+      toPhotoURL: to?.photoURL ?? '',
+      toSlug: to?.slug ?? '',
       relationship,
       comment,
       updatedAt: serverTimestamp(),
       createdAt: existing.exists() ? existing.data().createdAt : serverTimestamp(),
+    })
+  }
+
+  // この人が贈ったエピソード（fromUserId == 指定ユーザー）を新しい順で取得
+  async function getGivenReviews(fromUserId: string): Promise<Review[]> {
+    const q = query(collection(db, 'reviews'), where('fromUserId', '==', fromUserId))
+    const snap = await getDocs(q)
+    const list = snap.docs.map(d => ({ id: d.id, ...d.data() }) as Review)
+    return list.sort((a, b) => {
+      const ta = (a.createdAt as any)?.toMillis?.() ?? 0
+      const tb = (b.createdAt as any)?.toMillis?.() ?? 0
+      return tb - ta
     })
   }
 
@@ -65,5 +81,5 @@ export function useReviews() {
     return snap.data().count
   }
 
-  return { getReviews, getMyReview, upsertReview, deleteReview, getGivenCount }
+  return { getReviews, getMyReview, upsertReview, deleteReview, getGivenCount, getGivenReviews }
 }

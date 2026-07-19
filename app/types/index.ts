@@ -61,6 +61,10 @@ export interface Review {
   fromPhotoURL: string
   fromSlug: string
   fromHeadline?: string
+  toDisplayName?: string
+  toPhotoURL?: string
+  toSlug?: string
+  toHeadline?: string
   relationship: Relationship
   comment: string
   createdAt: Date
