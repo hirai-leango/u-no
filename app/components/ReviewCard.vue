@@ -9,7 +9,7 @@
     </div>
 
     <!-- レビュアー情報 -->
-    <div class="flex items-center gap-3 mb-3">
+    <div class="flex items-start gap-3 mb-3">
       <NuxtLink :to="`/u/${review.fromSlug}/`">
         <img :src="review.fromPhotoURL" class="w-9 h-9 rounded-full object-cover hover:ring-2 ring-brand transition-all" />
       </NuxtLink>
