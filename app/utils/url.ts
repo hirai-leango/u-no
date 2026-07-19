@@ -16,3 +16,14 @@ export function safeInternalRedirect(r?: string | null, fallback = ''): string {
   if (/^\/(?![/\\])/.test(v)) return v
   return fallback
 }
+
+// Google等のアバターURLを高解像度で取得（=s96-c → =s{size}-c）。それ以外はそのまま。
+export function hiResAvatar(u?: string | null, size = 256): string {
+  const v = (u ?? '').trim()
+  if (!v) return ''
+  // googleusercontent の「=s96-c」「=s96」等のサイズ指定を差し替え
+  if (/googleusercontent\.com/.test(v)) {
+    return v.replace(/=s\d+(-c)?$/, `=s${size}-c`)
+  }
+  return v
+}

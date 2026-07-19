@@ -1,24 +1,31 @@
 <template>
   <div v-if="profile">
     <!-- ヘッダー -->
-    <div class="mb-8">
-      <div class="flex items-start gap-4">
-        <img :src="profile.photoURL" class="w-16 h-16 rounded-full object-cover flex-none" />
-        <div class="flex-1 min-w-0">
-          <h1 class="text-xl font-extrabold text-ink">{{ profile.displayName }}</h1>
-          <p v-if="profile.headline" class="text-brand text-sm font-semibold mt-0.5">{{ profile.headline }}</p>
+    <div class="-mt-8 -mx-4 mb-8 overflow-hidden">
+      <!-- カバー（藍色ヒーロー・湯呑み模様） -->
+      <div class="relative bg-gradient-to-br from-brand to-brand-press px-6 pt-10 pb-6 overflow-hidden">
+        <div class="absolute inset-0 opacity-[0.16] bg-repeat pointer-events-none" style="background-image:url('/og-yunomi.png'); background-size:56px 73px;" />
+        <div class="relative flex items-end justify-between gap-4">
+          <div class="min-w-0 flex-1">
+            <h1 class="text-3xl font-black text-white leading-tight break-words">{{ profile.displayName }}</h1>
+            <p v-if="profile.headline" class="text-white/85 text-sm font-semibold mt-2 leading-snug">{{ profile.headline }}</p>
+          </div>
+          <img :src="hiResAvatar(profile.photoURL)" @error="onAvatarError" class="w-24 h-24 rounded-full object-cover flex-none ring-4 ring-white/90 shadow-lg" />
         </div>
       </div>
-      <p v-if="profile.bio" class="text-ink-soft text-sm mt-3 leading-relaxed whitespace-pre-wrap">{{ profile.bio }}</p>
-      <div v-if="safeLinks.length" class="flex flex-wrap gap-2 mt-3">
-        <a
-          v-for="l in safeLinks"
-          :key="l.url"
-          :href="l.url"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="text-xs text-brand border border-surface-border rounded px-2 py-1 hover:border-brand transition-colors"
-        >{{ l.label }}</a>
+      <!-- 本文・リンク（白地） -->
+      <div v-if="profile.bio || safeLinks.length" class="bg-surface px-6 py-5">
+        <p v-if="profile.bio" class="text-ink-soft text-sm leading-relaxed whitespace-pre-wrap">{{ profile.bio }}</p>
+        <div v-if="safeLinks.length" class="flex flex-wrap gap-2" :class="profile.bio ? 'mt-3' : ''">
+          <a
+            v-for="l in safeLinks"
+            :key="l.url"
+            :href="l.url"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="text-xs text-brand border border-surface-border rounded px-2 py-1 hover:border-brand transition-colors"
+          >{{ l.label }}</a>
+        </div>
       </div>
     </div>
 
@@ -212,6 +219,13 @@ watch(profile, async (p) => {
     try { givenCount.value = await getGivenCount(p.uid) } catch { /* noop */ }
   }
 }, { immediate: true })
+
+// アバターが高解像度URLで読めない場合は元URLにフォールバック
+function onAvatarError(e: Event) {
+  const img = e.target as HTMLImageElement
+  const original = profile.value?.photoURL ?? ''
+  if (original && img.src !== original) img.src = original
+}
 
 const copied = ref(false)
 async function shareProfile() {
