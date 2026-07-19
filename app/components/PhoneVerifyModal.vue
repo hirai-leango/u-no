@@ -86,7 +86,7 @@ async function onSend() {
   } catch (e: any) {
     error.value = e?.message?.includes('already')
       ? 'この電話番号は既に使われています'
-      : '送信に失敗しました。番号を確認してください。'
+      : `送信に失敗しました（${e?.code ?? e?.message ?? 'unknown'}）`
   } finally {
     loading.value = false
   }
