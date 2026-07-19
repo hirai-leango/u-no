@@ -125,6 +125,10 @@
             <label class="text-xs text-ink-mute mb-1 block">業務内容</label>
             <textarea v-model="exp.description" v-autogrow rows="2" class="input-field resize-none min-h-[4.5rem]" placeholder="担当業務の概要" />
           </div>
+          <div>
+            <label class="text-xs text-ink-mute mb-1 block">URL（任意）</label>
+            <input v-model="exp.url" type="url" class="input-field" placeholder="https://…（実績・会社サイトなど）" />
+          </div>
         </div>
       </div>
     </section>
@@ -208,7 +212,7 @@ function addLink() {
 }
 
 function addExperience() {
-  form.experience.push({ company: '', title: '', startDate: '', endDate: '', description: '' })
+  form.experience.push({ company: '', title: '', startDate: '', endDate: '', description: '', url: '' })
 }
 
 function addEducation() {

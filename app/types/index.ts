@@ -29,6 +29,7 @@ export interface Experience {
   startDate: string
   endDate: string
   description: string
+  url?: string
 }
 
 export interface Education {

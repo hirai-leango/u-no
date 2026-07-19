@@ -90,6 +90,13 @@
               <div class="font-semibold text-sm text-ink">{{ exp.title }} @ {{ exp.company }}</div>
               <div class="text-xs text-ink-mute mt-0.5">{{ exp.startDate }} – {{ exp.endDate }}</div>
               <p v-if="exp.description" class="text-xs text-ink-mute mt-1 leading-relaxed">{{ exp.description }}</p>
+              <a
+                v-if="exp.url && isHttpUrl(exp.url)"
+                :href="exp.url"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="text-xs text-brand hover:underline mt-1 inline-block break-all"
+              >{{ exp.url }}</a>
             </div>
           </div>
         </div>
