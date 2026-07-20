@@ -12,8 +12,8 @@
       <NuxtLink :to="`/u/${review.fromSlug}/`">
         <img :src="hiResAvatar(review.fromPhotoURL)" class="w-9 h-9 rounded-full object-cover hover:ring-2 ring-brand transition-all" />
       </NuxtLink>
-      <div>
-        <div class="flex items-center gap-2">
+      <div class="min-w-0 flex-1">
+        <div class="flex items-center gap-2 flex-wrap">
           <NuxtLink :to="`/u/${review.fromSlug}/`" class="text-sm font-bold text-brand hover:underline">
             {{ review.fromDisplayName }}
           </NuxtLink>
@@ -30,13 +30,13 @@
       <NuxtLink
         v-if="currentUser?.uid === review.fromUserId"
         :to="`/u/${profileSlug}/review/`"
-        class="ml-auto text-xs text-ink-mute hover:text-ink-soft transition-colors"
+        class="ml-auto flex-none whitespace-nowrap text-xs text-ink-mute hover:text-ink-soft transition-colors"
       >
         編集
       </NuxtLink>
       <button
         v-else-if="currentUser"
-        class="ml-auto text-xs text-ink-mute hover:text-warn transition-colors"
+        class="ml-auto flex-none whitespace-nowrap text-xs text-ink-mute hover:text-warn transition-colors"
         @click="reportReview"
       >
         通報
