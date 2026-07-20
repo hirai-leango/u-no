@@ -1,3 +1,23 @@
+import { readdirSync, readFileSync } from 'node:fs'
+import { fileURLToPath } from 'node:url'
+
+// content/media/*.md から静的化（プリレンダー）するメディアURLを算出（ビルド時のみ実行）
+function mediaPrerenderRoutes(): string[] {
+  const dir = fileURLToPath(new URL('./app/content/media', import.meta.url))
+  const routes = new Set<string>(['/media/'])
+  const cats = new Set<string>()
+  for (const f of readdirSync(dir)) {
+    if (!f.endsWith('.md')) continue
+    const src = readFileSync(`${dir}/${f}`, 'utf-8')
+    const fm = src.match(/^---\r?\n([\s\S]*?)\r?\n---/)?.[1] ?? ''
+    const slug = (fm.match(/^slug:\s*(.+)$/m)?.[1] ?? f.replace(/\.md$/, '')).trim().replace(/^["']|["']$/g, '')
+    const cat = fm.match(/^categorySlug:\s*(.+)$/m)?.[1]?.trim().replace(/^["']|["']$/g, '')
+    routes.add(`/media/${slug}/`)
+    if (cat) cats.add(`/media/category/${cat}/`)
+  }
+  return [...routes, ...cats]
+}
+
 export default defineNuxtConfig({
   compatibilityDate: '2025-07-15',
   devtools: { enabled: true },
@@ -18,6 +38,11 @@ export default defineNuxtConfig({
   },
   nitro: {
     preset: 'cloudflare_module',
+    // SEO記事は固定コンテンツなのでビルド時に静的HTML化（Workers起動時の重い処理＝間欠500を回避）
+    prerender: {
+      crawlLinks: false,
+      routes: [...mediaPrerenderRoutes(), '/terms/', '/privacy/'],
+    },
     routeRules: {
       // ハッシュ付きJS/CSSは長期キャッシュ（不変）
       '/_nuxt/**': { headers: { 'cache-control': 'public, max-age=31536000, immutable' } },
