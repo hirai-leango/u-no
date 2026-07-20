@@ -151,7 +151,7 @@
 </template>
 
 <script setup lang="ts">
-import type { Review, Vote, ReviewComment } from '~/types'
+import type { Review, Vote, ReviewComment, Relationship } from '~/types'
 import { hiResAvatar } from '~/utils/url'
 import { RELATIONSHIP_LABELS } from '~/types'
 
@@ -161,8 +161,17 @@ const props = defineProps<{
   showGiveback?: boolean
 }>()
 
-const relationshipLabel = computed(() =>
-  props.review.relationship ? RELATIONSHIP_LABELS[props.review.relationship] : '')
+// 格納は「相手（＝◯◯さん）が投稿者にとって何か」。プロフィール上では
+// 「投稿者が◯◯さんにとって何者か」を出したいので上司/部下を反転して表示。
+const RECEIVED_REL_DISPLAY: Partial<Record<Relationship, string>> = {
+  boss: '部下',        // ◯◯さんが投稿者の上司 → 投稿者は◯◯さんの部下
+  subordinate: '上司', // ◯◯さんが投稿者の部下 → 投稿者は◯◯さんの上司
+}
+const relationshipLabel = computed(() => {
+  const r = props.review.relationship
+  if (!r) return ''
+  return RECEIVED_REL_DISPLAY[r] ?? RELATIONSHIP_LABELS[r]
+})
 
 const currentUser = useCurrentUser()
 const { getVotes, setVote, getComments, addComment, deleteComment } = useReviewInteractions()

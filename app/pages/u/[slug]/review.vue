@@ -1,5 +1,5 @@
 <template>
-  <div class="max-w-sm mx-auto pt-8">
+  <div class="max-w-md mx-auto pt-8">
     <NuxtLink :to="`/u/${slug}/`" class="inline-flex items-center gap-1 text-ink-mute text-sm hover:text-ink-soft mb-6 transition-colors">
       ← {{ profile?.displayName ?? '' }}のページへ戻る
     </NuxtLink>
@@ -31,11 +31,11 @@
 
     <div class="mb-6">
       <label class="block text-xs font-bold tracking-widest text-ink-mute mb-2">
-        関係性
+        {{ profile?.displayName }}さんとの関係
       </label>
       <div class="grid grid-cols-4 gap-2">
         <button
-          v-for="(label, key) in RELATIONSHIP_LABELS"
+          v-for="(label, key) in SELECT_REL_LABELS"
           :key="key"
           type="button"
           class="px-2 py-2.5 rounded text-xs font-semibold border transition-colors"
@@ -51,6 +51,13 @@
 
     <div class="mb-6">
       <label class="block text-xs font-bold tracking-widest text-ink-mute mb-2">エピソード</label>
+      <div v-if="relHints.length" class="mb-3">
+        <p class="text-[11px] text-ink-mute mb-1.5">こういうことを書きませんか？</p>
+        <div class="flex flex-wrap gap-1.5 mb-2">
+          <span v-for="h in relHints" :key="h" class="text-[11px] px-2 py-0.5 rounded-full bg-surface-card text-ink-soft">{{ h }}</span>
+        </div>
+        <p v-if="relExample" class="text-xs text-ink-soft leading-relaxed">{{ relExample }}</p>
+      </div>
       <textarea
         v-model="comment"
         :maxlength="1000"
@@ -132,6 +139,25 @@
       @close="showPhoneModal = false"
       @verified="onPhoneVerified"
     />
+
+    <!-- 完了：お返し依頼ナッジ -->
+    <div v-if="showDoneModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/70 px-4">
+      <div class="w-full max-w-sm bg-surface border border-surface-border rounded-lg p-6 text-center">
+        <img src="/og-yunomi.png" alt="" class="w-10 mx-auto mb-3" />
+        <h2 class="text-base font-black text-ink mb-1">{{ profile?.displayName }}さんへ贈りました</h2>
+        <p class="text-sm text-ink-soft leading-relaxed mb-5">
+          お返しに、{{ profile?.displayName }}さんにも<br>あなたのことを書いてもらいませんか？
+        </p>
+        <button
+          class="w-full py-3 rounded font-bold text-sm bg-brand text-white hover:bg-brand-hover transition-colors mb-2"
+          @click="shareMe"
+        >{{ doneCopied ? 'URLをコピーしました！' : '自分のプロフィールを送る' }}</button>
+        <button
+          class="w-full py-2 text-sm text-ink-mute hover:text-ink-soft transition-colors"
+          @click="navigateTo(`/u/${slug}/`)"
+        >{{ profile?.displayName }}さんのページへ</button>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -161,7 +187,46 @@ const { getMyReview, upsertReview, deleteReview } = useReviews()
 const isPhoneVerified = useIsPhoneVerified()
 const showPhoneModal = ref(false)
 const showConfirmModal = ref(false)
-const relationshipLabel = computed(() => relationship.value ? RELATIONSHIP_LABELS[relationship.value] : '')
+const showDoneModal = ref(false)
+const mySlug = ref('')
+const doneCopied = ref(false)
+// 投稿画面用：上司/部下の向きを明示（自分の立場を選ぶ）
+const SELECT_REL_LABELS: Record<Relationship, string> = {
+  boss: '相手が上司',
+  subordinate: '相手が部下',
+  colleague: '同僚',
+  client: '取引先',
+  contractor: '業務委託',
+  acquaintance: '知人',
+  other: 'その他',
+}
+// 関係性ごとの「書くヒント」（＝どんな観点で書けるか）
+const REL_HINTS: Record<Relationship, string[]> = {
+  boss: ['受けた指導・サポート', 'チームへの影響', '学んだこと', '人柄'],
+  subordinate: ['任せた仕事ぶり', '期待を超えた場面', '成長した点', '印象的な成果'],
+  colleague: ['一緒に取り組んだこと', '協働での強み', '助けられた場面', '人柄'],
+  client: ['一緒に進めた案件', '仕事の進め方・誠実さ', '印象的な対応', 'また依頼したい理由'],
+  contractor: ['依頼した業務', '成果物の質・スピード', 'コミュニケーション', '安心して任せられた点'],
+  acquaintance: ['知り合った場', '人柄・第一印象', '信頼できると感じた場面'],
+  other: ['その人との関わり', '印象に残っていること', '強み・人柄'],
+}
+const relHints = computed(() => relationship.value ? REL_HINTS[relationship.value] : [])
+// 関係性ごとの参考例文（◯◯は相手名に差し替え）
+const REL_EXAMPLES: Record<Relationship, string> = {
+  boss: 'プロジェクトが炎上しかけた時、◯◯さんは冷静に優先順位を整理してチームを立て直してくれました。詰めるのではなく「次どうするか」に集中させてくれるので、部下として本当に動きやすかったです。判断が速く、責任は自分で取る。理想の上司でした。',
+  subordinate: '任せた業務はいつも期待以上で返してくれました。特にABテストの設計では、こちらが気づかない改善案を自ら出してくれて驚いたことが何度もあります。指示待ちではなく自分で考えて動ける人で、安心して仕事を任せられる、伸びしろの大きいメンバーです。',
+  colleague: '同じチームで新機能の開発を進めた時、◯◯さんは常に全体最適で動いてくれました。自分の担当外でも困っている人がいれば率先して助け、締切前の修羅場でも決して雑にならず細部まで丁寧。一緒に働いていて心から信頼できる同僚です。',
+  client: '半年間、施策をご一緒しました。要望の背景まで汲み取った提案をくださり、こちらの想定を超える成果につながりました。レスポンスが早く認識のズレもない。誠実で仕事が速い方で、またぜひご一緒したいと思える取引先です。',
+  contractor: 'デザイン制作をお願いしました。要件が曖昧な段階でも意図を的確に汲み取り、期待以上のアウトプットをスピーディに仕上げてくれました。修正の相談にも柔軟で進行のストレスが一切なく、安心して任せられる方です。',
+  acquaintance: '勉強会で知り合い、以来何度か情報交換をしています。いつも相手目線で親身に相談に乗ってくれる方で、知識も豊富。話すたびに新しい学びがあり、周囲からの信頼も厚い人だと感じています。',
+  other: '◯◯さんとは仕事を通じて関わりました。どんな時も誠実で、周囲への気配りを欠かさない方です。約束は必ず守り、細部まで手を抜かない姿勢に何度も助けられました。信頼できる人だと自信を持って言えます。',
+}
+const relExample = computed(() => {
+  if (!relationship.value) return ''
+  const name = profile.value?.displayName ?? '◯◯'
+  return REL_EXAMPLES[relationship.value].replaceAll('◯◯', name)
+})
+const relationshipLabel = computed(() => relationship.value ? SELECT_REL_LABELS[relationship.value] : '')
 
 // 入力状態に応じたボタンのラベル
 const buttonLabel = computed(() => {
@@ -226,7 +291,25 @@ async function doSubmit() {
     photoURL: profile.value.photoURL,
     slug: slug.value,
   })
-  navigateTo(`/u/${slug.value}/`)
+  mySlug.value = myProfile?.slug ?? ''
+  submitting.value = false
+  showDoneModal.value = true
+}
+
+// 完了後：お返し依頼のため自分のプロフィールを共有
+async function shareMe() {
+  if (!mySlug.value) return
+  const url = `${window.location.origin}/u/${mySlug.value}/`
+  const myName = currentUser.value?.displayName ?? ''
+  if (navigator.share) {
+    try {
+      await navigator.share({ title: `${myName}さんへのエピソードをお願いします`, text: `${myName}さんへエピソードを書いてください`, url })
+    } catch { /* キャンセル */ }
+  } else {
+    await navigator.clipboard.writeText(url)
+    doneCopied.value = true
+    setTimeout(() => (doneCopied.value = false), 2000)
+  }
 }
 
 async function onPhoneVerified() {
