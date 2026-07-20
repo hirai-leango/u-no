@@ -150,19 +150,53 @@
         <p class="text-sm">まだエピソードがありません。</p>
       </div>
       <div v-else>
-        <ReviewCard
-          v-for="review in visibleReviews"
-          :key="review.id"
-          :review="review"
-          :profile-slug="slug"
-        />
-        <button
-          v-if="reviews.length > visibleCount"
-          class="w-full mt-4 py-3 rounded border border-surface-border text-sm font-semibold text-ink-mute hover:text-ink hover:border-brand transition-colors"
-          @click="visibleCount += 10"
-        >
-          もっと見る（残り{{ reviews.length - visibleCount }}件）
-        </button>
+        <!-- 関係性の切り替え（全種類・0件も表示して収集を促す） -->
+        <div class="flex flex-wrap gap-2 mb-5">
+          <button
+            class="px-3 py-1 rounded-full text-xs font-semibold border transition-colors"
+            :class="relFilter === 'all' ? 'bg-brand text-white border-brand' : 'bg-surface border-line text-ink-soft hover:text-ink'"
+            @click="relFilter = 'all'"
+          >すべて<span class="tabular-nums">({{ reviews.length }})</span></button>
+          <button
+            v-for="rel in relOrder"
+            :key="rel"
+            class="px-3 py-1 rounded-full text-xs font-semibold border transition-colors"
+            :class="relFilter === rel ? 'bg-brand text-white border-brand' : (countByRel(rel) === 0 ? 'bg-surface border-line text-ink-mute hover:text-ink-soft' : 'bg-surface border-line text-ink-soft hover:text-ink')"
+            @click="relFilter = rel"
+          >{{ RELATIONSHIP_LABELS[rel] }}<span class="tabular-nums">({{ countByRel(rel) }})</span></button>
+        </div>
+
+        <template v-if="filteredReviews.length">
+          <ReviewCard
+            v-for="review in visibleReviews"
+            :key="review.id"
+            :review="review"
+            :profile-slug="slug"
+          />
+          <button
+            v-if="filteredReviews.length > visibleCount"
+            class="w-full mt-4 py-3 rounded border border-surface-border text-sm font-semibold text-ink-mute hover:text-ink hover:border-brand transition-colors"
+            @click="visibleCount += 10"
+          >
+            もっと見る（残り{{ filteredReviews.length - visibleCount }}件）
+          </button>
+        </template>
+
+        <!-- 選択した関係性が0件：収集CTA -->
+        <div v-else class="text-center py-10">
+          <p class="text-sm text-ink-mute mb-4 leading-relaxed">
+            <template v-if="relFilter !== 'all'">
+              {{ RELATIONSHIP_LABELS[relFilter] }}からのエピソードはまだありません。<br>
+              様々な方とのエピソードがあなたの信頼をつくりあげます。
+            </template>
+            <template v-else>まだエピソードがありません。</template>
+          </p>
+          <button
+            v-if="isMyPage"
+            class="inline-flex items-center justify-center px-5 py-2.5 bg-brand text-white rounded text-sm font-bold hover:bg-brand-hover transition-colors"
+            @click="shareProfile"
+          >{{ copied ? 'URLをコピーしました！' : 'URLをシェアしてエピソードを受け取る' }}</button>
+        </div>
       </div>
     </section>
 
@@ -205,7 +239,8 @@
 </template>
 
 <script setup lang="ts">
-import type { UserProfile, Review } from '~/types'
+import type { UserProfile, Review, Relationship } from '~/types'
+import { RELATIONSHIP_LABELS } from '~/types'
 
 const route = useRoute()
 const slug = computed(() => route.params.slug as string)
@@ -255,9 +290,22 @@ const showSignupToReview = computed(() => !currentUser.value && !!profile.value)
 
 const tab = ref<'reviews' | 'given' | 'resume'>('reviews')
 
-// エピソードは10件ずつ表示
+// 受け取ったエピソードの関係性フィルター
+const relFilter = ref<Relationship | 'all'>('all')
+// 全関係性を切り替えボタンに（0件も表示して「集めよう」を促す）
+const relOrder = Object.keys(RELATIONSHIP_LABELS) as Relationship[]
+function countByRel(rel: Relationship) {
+  return reviews.value.filter(r => r.relationship === rel).length
+}
+const filteredReviews = computed(() =>
+  relFilter.value === 'all'
+    ? reviews.value
+    : reviews.value.filter(r => r.relationship === relFilter.value))
+
+// エピソードは10件ずつ表示（フィルター切替でリセット）
 const visibleCount = ref(10)
-const visibleReviews = computed(() => reviews.value.slice(0, visibleCount.value))
+watch(relFilter, () => { visibleCount.value = 10 })
+const visibleReviews = computed(() => filteredReviews.value.slice(0, visibleCount.value))
 
 // Facepile用：他己紹介をくれた人のアイコン（先頭6人）
 const facepile = computed(() => reviews.value.slice(0, 6))
