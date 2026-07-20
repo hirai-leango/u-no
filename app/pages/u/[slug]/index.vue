@@ -207,7 +207,11 @@
       </div>
       <div v-else>
         <div v-for="g in givenReviews" :key="g.id" class="py-5 border-b border-line">
-          <div class="flex items-center gap-3 mb-2">
+          <div class="flex items-center gap-2 mb-2">
+            <!-- 贈った本人（プロフィール主） -->
+            <img :src="hiResAvatar(profile.photoURL, 96)" alt="" class="w-8 h-8 rounded-full object-cover flex-none ring-1 ring-line" />
+            <span class="text-ink-mute text-sm flex-none">→</span>
+            <!-- 宛先 -->
             <NuxtLink v-if="g.toSlug" :to="`/u/${g.toSlug}/`" class="flex-none">
               <img :src="hiResAvatar(g.toPhotoURL, 96)" alt="" class="w-9 h-9 rounded-full object-cover bg-surface-card hover:ring-2 ring-brand transition-all" />
             </NuxtLink>
@@ -215,10 +219,13 @@
               <img :src="hiResAvatar(g.toPhotoURL, 96)" alt="" class="w-9 h-9 rounded-full object-cover bg-surface-card" />
             </div>
             <div class="min-w-0">
-              <NuxtLink v-if="g.toSlug" :to="`/u/${g.toSlug}/`" class="block text-sm font-bold text-brand hover:underline">
-                {{ g.toDisplayName || 'ユーザー' }}
-              </NuxtLink>
-              <span v-else class="block text-sm font-bold text-ink">{{ g.toDisplayName || 'ユーザー' }}</span>
+              <div class="flex items-center gap-2">
+                <NuxtLink v-if="g.toSlug" :to="`/u/${g.toSlug}/`" class="text-sm font-bold text-brand hover:underline truncate">
+                  {{ g.toDisplayName || 'ユーザー' }}さんへ
+                </NuxtLink>
+                <span v-else class="text-sm font-bold text-ink truncate">{{ g.toDisplayName || 'ユーザー' }}さんへ</span>
+                <span v-if="g.relationship" class="text-[10px] px-2 py-0.5 rounded-sm bg-surface-card text-ink-soft font-semibold flex-none">{{ RELATIONSHIP_LABELS[g.relationship] }}</span>
+              </div>
               <p v-if="g.toHeadline" class="text-xs text-ink-mute truncate">{{ g.toHeadline }}</p>
             </div>
           </div>
