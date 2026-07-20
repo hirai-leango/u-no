@@ -10,7 +10,7 @@
     <!-- レビュアー情報 -->
     <div class="flex items-start gap-3 mb-3">
       <NuxtLink :to="`/u/${review.fromSlug}/`">
-        <img :src="review.fromPhotoURL" class="w-9 h-9 rounded-full object-cover hover:ring-2 ring-brand transition-all" />
+        <img :src="hiResAvatar(review.fromPhotoURL)" class="w-9 h-9 rounded-full object-cover hover:ring-2 ring-brand transition-all" />
       </NuxtLink>
       <div>
         <div class="flex items-center gap-2">
@@ -134,16 +134,31 @@
         返信中… <button class="text-brand-light" @click="replyTo = null">キャンセル</button>
       </div>
     </div>
+
+    <!-- お返しナッジ（本人閲覧＆未お返しのみ） -->
+    <NuxtLink
+      v-if="showGiveback"
+      :to="`/u/${review.fromSlug}/review/`"
+      class="mt-4 flex items-center gap-3 rounded-lg bg-surface-deep px-4 py-3 hover:bg-surface-card transition-colors"
+    >
+      <img src="/og-yunomi.png" alt="" class="w-6 flex-none" />
+      <span class="text-xs text-ink-soft leading-relaxed">
+        {{ review.fromDisplayName }}さんも、あなたへエピソードを贈っています。<br>
+        <span class="font-bold text-brand">エピソードを贈り返す</span>
+      </span>
+    </NuxtLink>
   </div>
 </template>
 
 <script setup lang="ts">
 import type { Review, Vote, ReviewComment } from '~/types'
+import { hiResAvatar } from '~/utils/url'
 import { RELATIONSHIP_LABELS } from '~/types'
 
 const props = defineProps<{
   review: Review
   profileSlug: string
+  showGiveback?: boolean
 }>()
 
 const relationshipLabel = computed(() =>

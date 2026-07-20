@@ -172,6 +172,7 @@
             :key="review.id"
             :review="review"
             :profile-slug="slug"
+            :show-giveback="isMyPage && !givenToUserIds.has(review.fromUserId)"
           />
           <button
             v-if="filteredReviews.length > visibleCount"
@@ -277,7 +278,7 @@ defineOgImageComponent('Profile', {
 const profile = computed(() => data.value?.profile ?? null)
 // リンクは http(s) のみ許可（javascript: 等のXSSを排除）
 const safeLinks = computed(() => (profile.value?.links ?? []).filter(l => isHttpUrl(l.url)))
-const reviews = computed(() => data.value?.reviews ?? [])
+const reviews = ref<Review[]>(data.value?.reviews ?? [])
 const notFound = computed(() => data.value?.profile === null)
 
 const hasResume = computed(() => {
@@ -323,8 +324,26 @@ const isMyPage = computed(() =>
 // この人が贈ったエピソード一覧（受け取った数は reviews.length）
 const { getGivenReviews } = useReviews()
 const { getProfileByUid } = useUserProfile()
+
+// 受け取ったエピソードの投稿者を最新プロフィール（写真・名前・肩書き）に同期
+onMounted(async () => {
+  await Promise.all(reviews.value.map(async (r) => {
+    try {
+      const ap = await getProfileByUid(r.fromUserId)
+      if (ap) {
+        r.fromDisplayName = ap.displayName
+        r.fromPhotoURL = ap.photoURL
+        r.fromHeadline = ap.headline
+        r.fromSlug = ap.slug
+      }
+    } catch { /* この1件はスキップ */ }
+  }))
+  reviews.value = [...reviews.value]
+})
 const givenReviews = ref<Review[]>([])
 const givenCount = computed(() => givenReviews.value.length)
+// お返しナッジ用：自分が既にエピソードを贈った相手のuid集合
+const givenToUserIds = computed(() => new Set(givenReviews.value.map(g => g.toUserId)))
 watch(profile, async (p) => {
   if (import.meta.client && p?.uid) {
     try {
