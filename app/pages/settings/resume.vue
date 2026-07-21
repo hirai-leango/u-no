@@ -86,7 +86,7 @@
     </section>
 
     <!-- 検索設定 -->
-    <div class="bg-surface border border-surface-border rounded-none p-6 mb-8 flex items-center justify-between">
+    <div class="bg-surface border border-surface-border rounded-none p-6 mb-8 flex flex-wrap items-center justify-between">
       <div>
         <h2 class="text-sm font-bold text-ink-soft mb-1">検索エンジンに表示する</h2>
         <p class="text-xs text-ink-mute">オフにすると Google などの検索結果に出なくなります（URLを知っている人は閲覧可）</p>
@@ -94,14 +94,17 @@
       <button
         type="button"
         class="relative w-12 h-7 rounded-full transition-colors flex-shrink-0 ml-4"
-        :class="isSearchable ? 'bg-brand' : 'bg-surface-border'"
-        @click="isSearchable = !isSearchable"
+        :class="isSearchable ? 'bg-brand' : (canIndex ? 'bg-surface-border' : 'bg-disabled-bg cursor-not-allowed')"
+        @click="toggleSearchable"
       >
         <span
           class="absolute top-1 left-1 w-5 h-5 bg-white rounded-full transition-transform"
           :class="isSearchable ? 'translate-x-5' : 'translate-x-0'"
         />
       </button>
+      <p v-if="!canIndex && !isSearchable" class="w-full text-xs text-warn mt-3 order-last">
+        エピソード数が3件未満だとindexをONにすることができません（現在{{ episodeTotal }}件）
+      </p>
     </div>
 
     <!-- 職歴 -->
@@ -212,6 +215,14 @@ const headline = ref('')
 const bio = ref('')
 const links = ref<ProfileLink[]>([])
 const isSearchable = ref(true)
+// エピソード3件以上でないと検索表示ONにできない（OFFはいつでも可）
+const { getReviews, getGivenCount } = useReviews()
+const episodeTotal = ref(0)
+const canIndex = computed(() => episodeTotal.value >= 3)
+function toggleSearchable() {
+  if (!isSearchable.value && !canIndex.value) return // 3件未満はONにできない
+  isSearchable.value = !isSearchable.value
+}
 const sns = reactive<SnsLinks>({})
 const SNS_FIELDS: { key: keyof SnsLinks; label: string; ph: string }[] = [
   { key: 'x', label: 'X (Twitter)', ph: 'https://x.com/...' },
@@ -232,6 +243,11 @@ onMounted(async () => {
   links.value = profile?.links ?? []
   isSearchable.value = profile?.isSearchable ?? true
   Object.assign(sns, profile?.sns ?? {})
+  const [recv, given] = await Promise.all([
+    getReviews(user.value.uid),
+    getGivenCount(user.value.uid),
+  ])
+  episodeTotal.value = (recv?.length ?? 0) + (given ?? 0)
 })
 
 function addLink() {
