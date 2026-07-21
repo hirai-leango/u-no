@@ -20,7 +20,7 @@
               :key="l.url"
               :href="l.url"
               target="_blank"
-              rel="noopener noreferrer"
+              rel="nofollow ugc noopener noreferrer"
               class="text-xs text-white/90 border border-white/40 rounded px-2 py-1 hover:border-white hover:bg-white/10 transition-colors"
             >{{ l.label }}</a>
           </div>
@@ -30,7 +30,7 @@
               :key="s.key"
               :href="s.url"
               target="_blank"
-              rel="noopener noreferrer"
+              rel="nofollow ugc noopener noreferrer"
               :aria-label="s.label"
               class="text-white/75 hover:text-white transition-colors"
             >
