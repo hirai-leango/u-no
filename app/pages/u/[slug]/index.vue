@@ -131,7 +131,7 @@
                 :is="exp.url && isHttpUrl(exp.url) ? 'a' : 'div'"
                 :href="exp.url && isHttpUrl(exp.url) ? exp.url : undefined"
                 :target="exp.url && isHttpUrl(exp.url) ? '_blank' : undefined"
-                :rel="exp.url && isHttpUrl(exp.url) ? 'noopener noreferrer' : undefined"
+                :rel="exp.url && isHttpUrl(exp.url) ? 'nofollow ugc noopener noreferrer' : undefined"
                 class="font-semibold text-sm text-ink flex items-center gap-2"
                 :class="exp.url && isHttpUrl(exp.url) ? 'hover:text-brand transition-colors' : ''"
               >
