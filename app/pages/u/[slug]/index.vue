@@ -275,7 +275,13 @@ useSeoMeta({
   title: () => profileData.value ? `${profileData.value.displayName} | ユーノーミー` : 'ユーノーミー',
   ogTitle: () => profileData.value ? `${profileData.value.displayName} | ユーノーミー` : 'ユーノーミー',
   description: () => profileData.value ? (profileData.value.bio || `${profileData.value.displayName}のプロフィール`) : '',
-  robots: () => (profileData.value && profileData.value.isSearchable === false) ? 'noindex, nofollow' : 'index, follow',
+  // 検索設定OFF、または エピソード（受け取り＋贈り）が3件未満なら noindex（薄いページを出さない）
+  robots: () => {
+    const p = profileData.value
+    if (!p || p.isSearchable === false) return 'noindex, nofollow'
+    const total = (data.value?.reviews?.length ?? 0) + (data.value?.givenCount ?? 0)
+    return total >= 3 ? 'index, follow' : 'noindex, nofollow'
+  },
 })
 
 // プロフィールごとの動的OG画像（氏名・肩書き・顔写真）
@@ -286,6 +292,24 @@ defineOgImageComponent('Profile', {
 }, {
   width: 1200,
   height: 630,
+})
+
+// Person 構造化データ（JSON-LD）
+useHead(() => {
+  const p = profileData.value
+  if (!p) return {}
+  const sameAs = Object.values(p.sns ?? {}).filter(u => isHttpUrl(u ?? '')) as string[]
+  const json: Record<string, any> = {
+    '@context': 'https://schema.org',
+    '@type': 'Person',
+    name: p.displayName,
+    url: `https://u-no.me/u/${p.slug}/`,
+  }
+  if (p.photoURL) json.image = p.photoURL
+  if (p.headline) json.jobTitle = p.headline
+  if (p.bio) json.description = p.bio
+  if (sameAs.length) json.sameAs = sameAs
+  return { script: [{ type: 'application/ld+json', innerHTML: JSON.stringify(json) }] }
 })
 
 const profile = computed(() => data.value?.profile ?? null)

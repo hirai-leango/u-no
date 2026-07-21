@@ -82,5 +82,23 @@ export default defineEventHandler(async (event) => {
       return tb - ta
     })
 
-  return { profile, reviews }
+  // 贈った件数（fromUserId == uid）— SSRでのindex判定に使用
+  const givenRes = await $fetch<any>(`${BASE}:runQuery`, {
+    method: 'POST',
+    body: {
+      structuredQuery: {
+        from: [{ collectionId: 'reviews' }],
+        where: {
+          fieldFilter: {
+            field: { fieldPath: 'fromUserId' },
+            op: 'EQUAL',
+            value: { stringValue: uid },
+          },
+        },
+      },
+    },
+  })
+  const givenCount = givenRes.filter((r: any) => r.document).length
+
+  return { profile, reviews, givenCount }
 })
