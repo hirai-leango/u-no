@@ -116,7 +116,7 @@
 
         <div class="text-center mt-12">
           <button
-            class="bg-white text-gray-800 flex items-center justify-center gap-3 px-5 py-3 rounded font-semibold text-sm transition-opacity hover:opacity-80 active:scale-95 mx-auto"
+            class="bg-white text-gray-800 border border-surface-border flex items-center justify-center gap-3 px-5 py-3 rounded font-semibold text-sm transition-opacity hover:opacity-80 active:scale-95 mx-auto"
             @click="login('google')"
           >
             <Icon name="logos:google-icon" class="text-lg" />
@@ -154,7 +154,7 @@ const user = useCurrentUser()
 const userSlug = ref('')
 
 const providers = [
-  { id: 'google', label: 'Googleでログイン', icon: 'logos:google-icon', class: 'bg-white text-gray-800' },
+  { id: 'google', label: 'Googleでログイン', icon: 'logos:google-icon', class: 'bg-white text-gray-800 border border-surface-border' },
   // TODO: いつか実装する（Meta/GitHub側の設定・審査が必要）
   // { id: 'github', label: 'GitHubでログイン', icon: 'logos:github-icon', class: 'bg-gray-900 text-white border border-surface-border' },
   // { id: 'facebook', label: 'Facebookでログイン', icon: 'logos:facebook', class: 'bg-[#1877f2] text-white' },
