@@ -69,6 +69,22 @@
       </div>
     </section>
 
+    <!-- SNS -->
+    <section class="mb-6">
+      <label class="block text-xs font-bold tracking-widest text-ink-mute mb-2">SNS（任意）</label>
+      <div class="space-y-2">
+        <div v-for="s in SNS_FIELDS" :key="s.key" class="flex items-center gap-2">
+          <span class="w-24 text-xs text-ink-soft flex-none">{{ s.label }}</span>
+          <input
+            v-model="sns[s.key]"
+            type="url"
+            :placeholder="s.ph"
+            class="flex-1 min-w-0 bg-surface border border-surface-border rounded px-3 py-2 text-sm outline-none focus:border-brand transition-colors text-ink placeholder-ink-mute"
+          />
+        </div>
+      </div>
+    </section>
+
     <!-- 検索設定 -->
     <div class="bg-surface border border-surface-border rounded-none p-6 mb-8 flex items-center justify-between">
       <div>
@@ -180,7 +196,7 @@
 definePageMeta({ middleware: 'auth' })
 useSeoMeta({ robots: 'noindex, nofollow' })
 
-import type { Resume, ProfileLink } from '~/types'
+import type { Resume, ProfileLink, SnsLinks } from '~/types'
 
 const user = useCurrentUser()
 const { getProfileByUid, saveProfile } = useUserProfile()
@@ -196,6 +212,16 @@ const headline = ref('')
 const bio = ref('')
 const links = ref<ProfileLink[]>([])
 const isSearchable = ref(true)
+const sns = reactive<SnsLinks>({})
+const SNS_FIELDS: { key: keyof SnsLinks; label: string; ph: string }[] = [
+  { key: 'x', label: 'X (Twitter)', ph: 'https://x.com/...' },
+  { key: 'instagram', label: 'Instagram', ph: 'https://instagram.com/...' },
+  { key: 'linkedin', label: 'LinkedIn', ph: 'https://linkedin.com/in/...' },
+  { key: 'facebook', label: 'Facebook', ph: 'https://facebook.com/...' },
+  { key: 'youtube', label: 'YouTube', ph: 'https://youtube.com/@...' },
+  { key: 'note', label: 'note', ph: 'https://note.com/...' },
+  { key: 'github', label: 'GitHub', ph: 'https://github.com/...' },
+]
 
 onMounted(async () => {
   if (!user.value) return
@@ -205,6 +231,7 @@ onMounted(async () => {
   bio.value = profile?.bio ?? ''
   links.value = profile?.links ?? []
   isSearchable.value = profile?.isSearchable ?? true
+  Object.assign(sns, profile?.sns ?? {})
 })
 
 function addLink() {
@@ -244,6 +271,10 @@ async function save() {
       links: links.value.filter(l => l.label && isHttpUrl(l.url)),
       resume: { ...form },
       isSearchable: isSearchable.value,
+      sns: Object.fromEntries(
+        SNS_FIELDS.map(s => [s.key, (sns[s.key] ?? '').trim()])
+          .filter(([, v]) => isHttpUrl(v as string)),
+      ),
     })
     showToast('プロフィールを保存しました')
   } catch (e) {

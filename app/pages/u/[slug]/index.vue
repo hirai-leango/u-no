@@ -24,6 +24,19 @@
               class="text-xs text-white/90 border border-white/40 rounded px-2 py-1 hover:border-white hover:bg-white/10 transition-colors"
             >{{ l.label }}</a>
           </div>
+          <div v-if="snsList.length" class="flex flex-wrap items-center gap-3.5 mt-3">
+            <a
+              v-for="s in snsList"
+              :key="s.key"
+              :href="s.url"
+              target="_blank"
+              rel="noopener noreferrer"
+              :aria-label="s.label"
+              class="text-white/75 hover:text-white transition-colors"
+            >
+              <Icon :name="s.icon" class="text-xl" />
+            </a>
+          </div>
         </div>
       </div>
     </div>
@@ -247,7 +260,7 @@
 </template>
 
 <script setup lang="ts">
-import type { UserProfile, Review, Relationship } from '~/types'
+import type { UserProfile, Review, Relationship, SnsLinks } from '~/types'
 import { RELATIONSHIP_LABELS } from '~/types'
 
 const route = useRoute()
@@ -278,6 +291,21 @@ defineOgImageComponent('Profile', {
 const profile = computed(() => data.value?.profile ?? null)
 // リンクは http(s) のみ許可（javascript: 等のXSSを排除）
 const safeLinks = computed(() => (profile.value?.links ?? []).filter(l => isHttpUrl(l.url)))
+
+// SNSアイコン（入力済みのみ・http(s)のみ）
+const SNS_META: { key: keyof SnsLinks; icon: string; label: string }[] = [
+  { key: 'x', icon: 'simple-icons:x', label: 'X' },
+  { key: 'instagram', icon: 'simple-icons:instagram', label: 'Instagram' },
+  { key: 'linkedin', icon: 'simple-icons:linkedin', label: 'LinkedIn' },
+  { key: 'facebook', icon: 'simple-icons:facebook', label: 'Facebook' },
+  { key: 'youtube', icon: 'simple-icons:youtube', label: 'YouTube' },
+  { key: 'note', icon: 'simple-icons:note', label: 'note' },
+  { key: 'github', icon: 'simple-icons:github', label: 'GitHub' },
+]
+const snsList = computed(() =>
+  SNS_META
+    .map(m => ({ ...m, url: profile.value?.sns?.[m.key] ?? '' }))
+    .filter(m => isHttpUrl(m.url)))
 const reviews = ref<Review[]>(data.value?.reviews ?? [])
 const notFound = computed(() => data.value?.profile === null)
 

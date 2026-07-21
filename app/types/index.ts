@@ -13,7 +13,18 @@ export interface UserProfile {
   links: ProfileLink[]
   resume: Resume
   isSearchable: boolean
+  sns?: SnsLinks
   createdAt: Date
+}
+
+export interface SnsLinks {
+  x?: string
+  instagram?: string
+  linkedin?: string
+  facebook?: string
+  youtube?: string
+  note?: string
+  github?: string
 }
 
 export interface Resume {
