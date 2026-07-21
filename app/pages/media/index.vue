@@ -26,7 +26,7 @@
 const articles = useMediaList()
 
 useSeoMeta({
-  title: 'メディア | u-no.me（ユーノーミー）',
+  title: 'ブログ | ユーノーミー（u-no.me）',
   description: '他己紹介・リファレンス・プロフィールで「信頼を示す」ための実践知をまとめたu-no.meのメディア。',
 })
 </script>

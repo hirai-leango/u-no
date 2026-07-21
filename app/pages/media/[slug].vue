@@ -115,7 +115,7 @@ const relatedArticles = computed(() =>
 if (a) {
   const url = `${SITE}/media/${a.slug}/`
   useSeoMeta({
-    title: `${a.title} | u-no.me`,
+    title: `${a.title} | ユーノーミー（u-no.me）`,
     ogTitle: a.title,
     description: a.description,
     ogDescription: a.description,
