@@ -1,7 +1,6 @@
 <script setup lang="ts">
-definePageMeta({ middleware: 'auth' })
-useSeoMeta({ robots: 'noindex, nofollow' })
-navigateTo('/settings/resume/', { redirectCode: 301 })
+// /settings/ は /settings/resume/ へリダイレクト（ルート解決時に処理＝SSRでも安全）
+definePageMeta({ redirect: '/settings/resume/' })
 </script>
 
 <template>
