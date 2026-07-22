@@ -144,18 +144,30 @@
     <div v-if="showDoneModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/70 px-4">
       <div class="w-full max-w-sm bg-surface border border-surface-border rounded-lg p-6 text-center">
         <img src="/og-yunomi.png" alt="" class="w-10 mx-auto mb-3" />
-        <h2 class="text-base font-black text-ink mb-1">{{ profile?.displayName }}さんへ贈りました</h2>
-        <p class="text-sm text-ink-soft leading-relaxed mb-5">
-          お返しに、{{ profile?.displayName }}さんにも<br>あなたのことを書いてもらいませんか？
-        </p>
-        <button
-          class="w-full py-3 rounded font-bold text-sm bg-brand text-white hover:bg-brand-hover transition-colors mb-2"
-          @click="shareMe"
-        >{{ doneCopied ? 'URLをコピーしました！' : '自分のプロフィールを送る' }}</button>
-        <button
-          class="w-full py-2 text-sm text-ink-mute hover:text-ink-soft transition-colors"
-          @click="navigateTo(`/u/${slug}/`)"
-        >{{ profile?.displayName }}さんのページへ</button>
+        <template v-if="reciprocated">
+          <h2 class="text-base font-black text-ink mb-1">{{ profile?.displayName }}さんとエピソードを贈りあいました 🎉</h2>
+          <p class="text-sm text-ink-soft leading-relaxed mb-5">
+            {{ profile?.displayName }}さんも、あなたにエピソードを贈っています。<br>相互の信頼が可視化されました。
+          </p>
+          <button
+            class="w-full py-3 rounded font-bold text-sm bg-brand text-white hover:bg-brand-hover transition-colors"
+            @click="navigateTo(`/u/${slug}/`)"
+          >{{ profile?.displayName }}さんのページへ</button>
+        </template>
+        <template v-else>
+          <h2 class="text-base font-black text-ink mb-1">{{ profile?.displayName }}さんへ贈りました</h2>
+          <p class="text-sm text-ink-soft leading-relaxed mb-5">
+            お返しに、{{ profile?.displayName }}さんにも<br>あなたのことを書いてもらいませんか？
+          </p>
+          <button
+            class="w-full py-3 rounded font-bold text-sm bg-brand text-white hover:bg-brand-hover transition-colors mb-2"
+            @click="shareMe"
+          >{{ doneCopied ? 'URLをコピーしました！' : '自分のプロフィールを送る' }}</button>
+          <button
+            class="w-full py-2 text-sm text-ink-mute hover:text-ink-soft transition-colors"
+            @click="navigateTo(`/u/${slug}/`)"
+          >{{ profile?.displayName }}さんのページへ</button>
+        </template>
       </div>
     </div>
   </div>
@@ -188,6 +200,7 @@ const isPhoneVerified = useIsPhoneVerified()
 const showPhoneModal = ref(false)
 const showConfirmModal = ref(false)
 const showDoneModal = ref(false)
+const reciprocated = ref(false)
 const mySlug = ref('')
 const doneCopied = ref(false)
 // 投稿画面用：上司/部下の向きを明示（自分の立場を選ぶ）
@@ -292,6 +305,8 @@ async function doSubmit() {
     slug: slug.value,
   })
   mySlug.value = myProfile?.slug ?? ''
+  // 相手が既に自分にエピソードを書いているか（＝相互）
+  reciprocated.value = !!(await getMyReview(currentUser.value.uid, profile.value.uid))
   submitting.value = false
   showDoneModal.value = true
 }
