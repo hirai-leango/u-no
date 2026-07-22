@@ -142,19 +142,38 @@
 
     <!-- 完了：お返し依頼ナッジ -->
     <div v-if="showDoneModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/70 px-4">
-      <div class="w-full max-w-sm bg-surface border border-surface-border rounded-lg p-6 text-center">
-        <img src="/og-yunomi.png" alt="" class="w-10 mx-auto mb-3" />
+      <!-- 湯呑みの紙吹雪（相互のときだけ） -->
+      <div v-if="reciprocated" class="pointer-events-none absolute inset-0 overflow-hidden">
+        <img
+          v-for="c in confetti"
+          :key="c.id"
+          src="/og-yunomi.png"
+          alt=""
+          class="confetti-piece"
+          :style="{ left: c.left + '%', width: c.size + 'px', opacity: c.opacity, animationDelay: c.delay + 's', animationDuration: c.dur + 's' }"
+        />
+      </div>
+      <div class="done-pop relative w-full max-w-sm bg-surface border border-surface-border rounded-2xl p-7 text-center">
+        <!-- 相互：二人の顔＋ハートで祝福 -->
         <template v-if="reciprocated">
-          <h2 class="text-base font-black text-ink mb-1">{{ profile?.displayName }}さんとエピソードを贈りあいました 🎉</h2>
-          <p class="text-sm text-ink-soft leading-relaxed mb-5">
-            {{ profile?.displayName }}さんも、あなたにエピソードを贈っています。<br>相互の信頼が可視化されました。
+          <div class="flex items-center justify-center gap-1 mb-4">
+            <img :src="currentUser?.photoURL || '/favicon-192.png'" class="done-av done-av-l w-16 h-16 rounded-full object-cover ring-2 ring-white shadow-md" alt="" />
+            <img src="/og-yunomi.png" alt="" class="done-heart w-6 mx-1" />
+            <img :src="profile?.photoURL || '/favicon-192.png'" class="done-av done-av-r w-16 h-16 rounded-full object-cover ring-2 ring-white shadow-md" alt="" />
+          </div>
+          <h2 class="text-lg font-black text-ink mb-2">エピソードを贈りあいました</h2>
+          <p class="text-sm text-ink-soft leading-relaxed mb-6">
+            {{ profile?.displayName }}さんと、<br>お互いのエピソードを投稿しました。<br>
+            あなたのエピソードが信頼を紡ぎます。<br>
+            <span class="text-brand font-black">You know me !</span>
           </p>
           <button
-            class="w-full py-3 rounded font-bold text-sm bg-brand text-white hover:bg-brand-hover transition-colors"
+            class="w-full py-3 rounded-lg font-bold text-sm bg-brand text-white hover:bg-brand-hover transition-colors"
             @click="navigateTo(`/u/${slug}/`)"
           >{{ profile?.displayName }}さんのページへ</button>
         </template>
         <template v-else>
+          <img src="/og-yunomi.png" alt="" class="w-10 mx-auto mb-3" />
           <h2 class="text-base font-black text-ink mb-1">{{ profile?.displayName }}さんへ贈りました</h2>
           <p class="text-sm text-ink-soft leading-relaxed mb-5">
             お返しに、{{ profile?.displayName }}さんにも<br>あなたのことを書いてもらいませんか？
@@ -201,6 +220,15 @@ const showPhoneModal = ref(false)
 const showConfirmModal = ref(false)
 const showDoneModal = ref(false)
 const reciprocated = ref(false)
+// 湯呑みの紙吹雪（相互達成の演出）。クライアントで一度だけ生成
+const confetti = Array.from({ length: 30 }, (_, i) => ({
+  id: i,
+  left: Math.round(Math.random() * 100),
+  size: Math.round(14 + Math.random() * 22),
+  delay: +(Math.random() * 1.4).toFixed(2),
+  dur: +(2.4 + Math.random() * 2.4).toFixed(2),
+  opacity: +(0.35 + Math.random() * 0.5).toFixed(2),
+}))
 const mySlug = ref('')
 const doneCopied = ref(false)
 // 投稿画面用：上司/部下の向きを明示（自分の立場を選ぶ）
@@ -339,3 +367,29 @@ async function confirmDelete() {
   navigateTo(`/u/${slug.value}/`)
 }
 </script>
+
+<style scoped>
+.done-pop { animation: donePop .38s cubic-bezier(.2, .8, .2, 1); }
+@keyframes donePop { from { opacity: 0; transform: scale(.92) translateY(10px); } to { opacity: 1; transform: none; } }
+.done-av { animation: avIn .5s .08s backwards cubic-bezier(.2, .9, .3, 1.4); }
+.done-av-r { animation-delay: .18s; }
+.done-heart { display: inline-block; animation: heart .9s .34s both ease; }
+@keyframes avIn { from { opacity: 0; transform: scale(.4); } to { opacity: 1; transform: none; } }
+@keyframes heart { 0% { transform: scale(0); } 55% { transform: scale(1.35); } 75% { transform: scale(.9); } 100% { transform: scale(1); } }
+.confetti-piece {
+  position: absolute;
+  bottom: -8%;
+  animation-name: floatUp;
+  animation-timing-function: ease-out;
+  animation-iteration-count: 1;
+  animation-fill-mode: forwards;
+  will-change: transform, opacity;
+}
+@keyframes floatUp {
+  0% { transform: translateY(0) rotate(0deg); opacity: 0; }
+  15% { opacity: .7; }
+  85% { opacity: .7; }
+  100% { transform: translateY(-118vh) rotate(300deg); opacity: 0; }
+}
+@media (prefers-reduced-motion: reduce) { .done-pop, .done-av, .done-heart, .confetti-piece { animation: none; } .confetti-piece { display: none; } }
+</style>
