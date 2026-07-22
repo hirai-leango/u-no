@@ -29,6 +29,26 @@
     </Transition>
 
 
+    <!-- プロフィール画像 -->
+    <section class="mb-6">
+      <label class="block text-xs font-bold tracking-widest text-ink-mute mb-2">プロフィール画像</label>
+      <div class="flex items-center gap-4">
+        <img :src="photoURL || '/favicon-192.png'" class="w-20 h-20 rounded-full object-cover bg-surface-card flex-none" alt="" />
+        <div>
+          <button
+            type="button"
+            :disabled="uploadingAvatar"
+            class="px-4 py-2 rounded border border-surface-border text-sm font-semibold text-ink-soft hover:text-ink disabled:opacity-50 transition-colors"
+            @click="avatarInput?.click()"
+          >
+            {{ uploadingAvatar ? 'アップロード中…' : '画像を変更' }}
+          </button>
+          <input ref="avatarInput" type="file" accept="image/*" class="hidden" @change="onAvatarChange" />
+          <p class="text-[11px] text-ink-mute mt-1.5">正方形で表示されます（自動でトリミング）。変更後は保存してください。</p>
+        </div>
+      </div>
+    </section>
+
     <!-- 肩書き -->
     <section class="mb-6">
       <label class="block text-xs font-bold tracking-widest text-ink-mute mb-2">肩書き（会社・役職）</label>
@@ -200,10 +220,40 @@ definePageMeta({ middleware: 'auth' })
 useSeoMeta({ robots: 'noindex, nofollow' })
 
 import type { Resume, ProfileLink, SnsLinks } from '~/types'
+import { getStorage, ref as storageRef, uploadBytes, getDownloadURL } from 'firebase/storage'
 
 const user = useCurrentUser()
 const { getProfileByUid, saveProfile } = useUserProfile()
 const saving = ref(false)
+// プロフィール画像（クライアントで正方形リサイズ→Firebase Storage）
+async function uploadAvatar(uid: string, file: File): Promise<string> {
+  const bitmap = await createImageBitmap(file)
+  const side = Math.min(bitmap.width, bitmap.height)
+  const canvas = document.createElement('canvas')
+  canvas.width = 512
+  canvas.height = 512
+  canvas.getContext('2d')!.drawImage(bitmap, (bitmap.width - side) / 2, (bitmap.height - side) / 2, side, side, 0, 0, 512, 512)
+  const blob = await new Promise<Blob>((res, rej) => canvas.toBlob(b => (b ? res(b) : rej(new Error('failed'))), 'image/jpeg', 0.85))
+  const r = storageRef(getStorage(), 'avatars/' + uid)
+  await uploadBytes(r, blob, { contentType: 'image/jpeg', cacheControl: 'public, max-age=3600' })
+  return await getDownloadURL(r)
+}
+const photoURL = ref('')
+const uploadingAvatar = ref(false)
+const avatarInput = ref<HTMLInputElement | null>(null)
+async function onAvatarChange(e: Event) {
+  const file = (e.target as HTMLInputElement).files?.[0]
+  if (!file || !user.value) return
+  uploadingAvatar.value = true
+  try {
+    photoURL.value = await uploadAvatar(user.value.uid, file)
+    showToast('画像をアップロードしました。保存してください')
+  } catch {
+    showToast('画像のアップロードに失敗しました', { type: 'error' })
+  } finally {
+    uploadingAvatar.value = false
+  }
+}
 
 const form = reactive<Resume>({
   skills: [],
@@ -238,6 +288,7 @@ onMounted(async () => {
   if (!user.value) return
   const profile = await getProfileByUid(user.value.uid)
   if (profile?.resume) Object.assign(form, profile.resume)
+  photoURL.value = profile?.photoURL ?? user.value?.photoURL ?? ''
   headline.value = profile?.headline ?? ''
   bio.value = profile?.bio ?? ''
   links.value = profile?.links ?? []
@@ -282,6 +333,7 @@ async function save() {
   saving.value = true
   try {
     await saveProfile(user.value.uid, {
+      photoURL: photoURL.value,
       headline: headline.value,
       bio: bio.value,
       links: links.value.filter(l => l.label && isHttpUrl(l.url)),
