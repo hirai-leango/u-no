@@ -49,6 +49,18 @@
       </div>
     </section>
 
+    <!-- 氏名 -->
+    <section class="mb-6">
+      <label class="block text-xs font-bold tracking-widest text-ink-mute mb-2">氏名</label>
+      <input
+        v-model="displayName"
+        type="text"
+        maxlength="50"
+        placeholder="山田 太郎"
+        class="w-full bg-surface border border-surface-border rounded px-4 py-3 text-sm outline-none focus:border-brand transition-colors text-ink placeholder-ink-mute"
+      />
+    </section>
+
     <!-- 肩書き -->
     <section class="mb-6">
       <label class="block text-xs font-bold tracking-widest text-ink-mute mb-2">肩書き（会社・役職）</label>
@@ -240,6 +252,7 @@ async function uploadAvatar(uid: string, file: File): Promise<string> {
   return await getDownloadURL(r)
 }
 const photoURL = ref('')
+const displayName = ref('')
 const uploadingAvatar = ref(false)
 const avatarInput = ref<HTMLInputElement | null>(null)
 async function onAvatarChange(e: Event) {
@@ -290,6 +303,7 @@ onMounted(async () => {
   const profile = await getProfileByUid(user.value.uid)
   if (profile?.resume) Object.assign(form, profile.resume)
   photoURL.value = profile?.photoURL ?? user.value?.photoURL ?? ''
+  displayName.value = profile?.displayName ?? user.value?.displayName ?? ''
   headline.value = profile?.headline ?? ''
   bio.value = profile?.bio ?? ''
   links.value = profile?.links ?? []
@@ -335,6 +349,7 @@ async function save() {
   try {
     await saveProfile(user.value.uid, {
       photoURL: photoURL.value,
+      displayName: displayName.value.trim() || (user.value.displayName ?? ''),
       headline: headline.value,
       bio: bio.value,
       links: links.value.filter(l => l.label && isHttpUrl(l.url)),
@@ -347,7 +362,7 @@ async function save() {
     })
     // 認証側の写真も更新 → ヘッダー・確認モーダル・今後の投稿スナップショットが同じ画像になる
     const authUser = getAuth().currentUser
-    if (authUser && photoURL.value) await updateProfile(authUser, { photoURL: photoURL.value })
+    if (authUser) await updateProfile(authUser, { displayName: displayName.value.trim() || undefined, photoURL: photoURL.value || undefined })
     showToast('プロフィールを保存しました')
   } catch (e) {
     showToast('保存に失敗しました。時間をおいて再度お試しください', { type: 'error' })

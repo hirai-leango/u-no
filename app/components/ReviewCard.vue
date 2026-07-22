@@ -215,6 +215,7 @@ async function loadInteractions() {
     try {
       const p = await getProfileByUid(v.voterUid)
       if (p?.photoURL) v.voterPhoto = p.photoURL
+      if (p?.displayName) v.voterName = p.displayName
     } catch { /* この1件はスキップ */ }
   }))
   votes.value = [...votes.value]
@@ -223,6 +224,7 @@ async function loadInteractions() {
     try {
       const p = await getProfileByUid(c.authorUid)
       if (p?.photoURL) c.authorPhoto = p.photoURL
+      if (p?.displayName) c.authorName = p.displayName
     } catch { /* この1件はスキップ */ }
   }))
   comments.value = [...comments.value]
