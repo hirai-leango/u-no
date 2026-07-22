@@ -257,6 +257,37 @@
   <div v-else class="text-center py-20 text-ink-mute">
     <p class="text-sm">読み込み中...</p>
   </div>
+
+  <!-- 相互達成の祝福（マイページ再訪時） -->
+  <div v-if="showMutualModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/70 px-4" @click.self="showMutualModal = false">
+    <div class="pointer-events-none absolute inset-0 overflow-hidden">
+      <img
+        v-for="c in mutualConfetti"
+        :key="c.id"
+        src="/og-yunomi.png"
+        alt=""
+        class="mconfetti"
+        :style="{ left: c.left + '%', width: c.size + 'px', opacity: c.opacity, animationDelay: c.delay + 's', animationDuration: c.dur + 's' }"
+      />
+    </div>
+    <div class="mpop relative w-full max-w-sm bg-surface border border-surface-border rounded-2xl p-7 text-center">
+      <div class="flex items-center justify-center gap-1 mb-4">
+        <img :src="hiResAvatar(profile?.photoURL) || '/favicon-192.png'" class="mav mav-l w-16 h-16 rounded-full object-cover ring-2 ring-white shadow-md" alt="" />
+        <img src="/og-yunomi.png" alt="" class="mheart w-6 mx-1" />
+        <img :src="hiResAvatar(mutualPartner?.photo) || '/favicon-192.png'" class="mav mav-r w-16 h-16 rounded-full object-cover ring-2 ring-white shadow-md" alt="" />
+      </div>
+      <h2 class="text-lg font-black text-ink mb-2">エピソードを贈りあいました</h2>
+      <p class="text-sm text-ink-soft leading-relaxed mb-6">
+        {{ mutualPartner?.name }}さんと、<br>お互いのエピソードを投稿しました。<br>
+        あなたのエピソードが信頼を紡ぎます。<br>
+        <span class="text-brand font-black">You know me !</span>
+      </p>
+      <button
+        class="w-full py-3 rounded-lg font-bold text-sm bg-brand text-white hover:bg-brand-hover transition-colors"
+        @click="showMutualModal = false"
+      >閉じる</button>
+    </div>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -375,7 +406,7 @@ const isMyPage = computed(() =>
 
 // この人が贈ったエピソード一覧（受け取った数は reviews.length）
 const { getGivenReviews } = useReviews()
-const { getProfileByUid } = useUserProfile()
+const { getProfileByUid, saveProfile } = useUserProfile()
 
 // 受け取ったエピソードの投稿者を最新プロフィール（写真・名前・肩書き）に同期
 onMounted(async () => {
@@ -394,6 +425,17 @@ onMounted(async () => {
 })
 const givenReviews = ref<Review[]>([])
 const givenCount = computed(() => givenReviews.value.length)
+// 相互達成の祝福（マイページ再訪時に、未祝福の相互があれば表示）
+const showMutualModal = ref(false)
+const mutualPartner = ref<{ name: string; photo: string; slug: string } | null>(null)
+const mutualConfetti = Array.from({ length: 30 }, (_, i) => ({
+  id: i,
+  left: Math.round(Math.random() * 100),
+  size: Math.round(14 + Math.random() * 22),
+  delay: +(Math.random() * 1.4).toFixed(2),
+  dur: +(2.4 + Math.random() * 2.4).toFixed(2),
+  opacity: +(0.35 + Math.random() * 0.5).toFixed(2),
+}))
 // お返しナッジ用：自分が既にエピソードを贈った相手のuid集合
 const givenToUserIds = computed(() => new Set(givenReviews.value.map(g => g.toUserId)))
 watch(profile, async (p) => {
@@ -414,6 +456,19 @@ watch(profile, async (p) => {
         } catch { /* この1件はスキップ */ }
       }))
       givenReviews.value = [...list] // 補完後に反映
+      // 自分のマイページ：未祝福の相互があれば祝福モーダルを表示
+      if (isMyPage.value) {
+        const givenUids = new Set(list.map(g => g.toUserId))
+        const celebrated = new Set(((p as any).celebratedMutuals ?? []) as string[])
+        const partner = reviews.value.find(r => givenUids.has(r.fromUserId) && !celebrated.has(r.fromUserId))
+        if (partner) {
+          mutualPartner.value = { name: partner.fromDisplayName, photo: partner.fromPhotoURL, slug: partner.fromSlug }
+          showMutualModal.value = true
+          try {
+            await saveProfile(p.uid, { celebratedMutuals: [...((p as any).celebratedMutuals ?? []), partner.fromUserId] })
+          } catch { /* noop */ }
+        }
+      }
     } catch { /* noop */ }
   }
 }, { immediate: true })
@@ -448,3 +503,16 @@ async function shareProfile() {
 }
 
 </script>
+
+<style scoped>
+.mpop { animation: mpop .38s cubic-bezier(.2, .8, .2, 1); }
+@keyframes mpop { from { opacity: 0; transform: scale(.92) translateY(10px); } to { opacity: 1; transform: none; } }
+.mav { animation: mav .5s .08s backwards cubic-bezier(.2, .9, .3, 1.4); }
+.mav-r { animation-delay: .18s; }
+.mheart { display: inline-block; animation: mheart .9s .34s both ease; }
+@keyframes mav { from { opacity: 0; transform: scale(.4); } to { opacity: 1; transform: none; } }
+@keyframes mheart { 0% { transform: scale(0); } 55% { transform: scale(1.35); } 75% { transform: scale(.9); } 100% { transform: scale(1); } }
+.mconfetti { position: absolute; bottom: -8%; animation-name: mfloat; animation-timing-function: ease-out; animation-iteration-count: 1; animation-fill-mode: forwards; will-change: transform, opacity; }
+@keyframes mfloat { 0% { transform: translateY(0) rotate(0deg); opacity: 0; } 15% { opacity: .7; } 85% { opacity: .7; } 100% { transform: translateY(-118vh) rotate(300deg); opacity: 0; } }
+@media (prefers-reduced-motion: reduce) { .mpop, .mav, .mheart, .mconfetti { animation: none; } .mconfetti { display: none; } }
+</style>

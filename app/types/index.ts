@@ -14,6 +14,7 @@ export interface UserProfile {
   resume: Resume
   isSearchable: boolean
   sns?: SnsLinks
+  celebratedMutuals?: string[]
   createdAt: Date
 }
 

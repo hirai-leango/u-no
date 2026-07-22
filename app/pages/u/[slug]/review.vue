@@ -213,7 +213,7 @@ const comment = ref('')
 const relationship = ref<Relationship | null>(null)
 const submitting = ref(false)
 
-const { getProfileBySlug, getProfileByUid } = useUserProfile()
+const { getProfileBySlug, getProfileByUid, saveProfile } = useUserProfile()
 const { getMyReview, upsertReview, deleteReview } = useReviews()
 const isPhoneVerified = useIsPhoneVerified()
 const showPhoneModal = ref(false)
@@ -335,6 +335,13 @@ async function doSubmit() {
   mySlug.value = myProfile?.slug ?? ''
   // 相手が既に自分にエピソードを書いているか（＝相互）
   reciprocated.value = !!(await getMyReview(currentUser.value.uid, profile.value.uid))
+  if (reciprocated.value) {
+    // この相互を「祝福表示済み」に記録（マイページで二重表示しない）
+    const seen = myProfile?.celebratedMutuals ?? []
+    if (!seen.includes(profile.value.uid)) {
+      await saveProfile(currentUser.value.uid, { celebratedMutuals: [...seen, profile.value.uid] })
+    }
+  }
   submitting.value = false
   showDoneModal.value = true
 }
