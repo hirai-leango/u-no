@@ -210,6 +210,22 @@ function formatDate(date: any) {
 async function loadInteractions() {
   votes.value = await getVotes(props.review.id)
   comments.value = await getComments(props.review.id)
+  // 投票者アイコンを最新プロフィール写真に反映（画像変更後の食い違いを防ぐ）
+  await Promise.all(votes.value.map(async (v) => {
+    try {
+      const p = await getProfileByUid(v.voterUid)
+      if (p?.photoURL) v.voterPhoto = p.photoURL
+    } catch { /* この1件はスキップ */ }
+  }))
+  votes.value = [...votes.value]
+  // コメント投稿者アイコンも最新プロフィール写真に反映
+  await Promise.all(comments.value.map(async (c) => {
+    try {
+      const p = await getProfileByUid(c.authorUid)
+      if (p?.photoURL) c.authorPhoto = p.photoURL
+    } catch { /* この1件はスキップ */ }
+  }))
+  comments.value = [...comments.value]
 }
 
 async function vote(value: 'fair' | 'unfair') {

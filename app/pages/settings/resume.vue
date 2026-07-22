@@ -221,6 +221,7 @@ useSeoMeta({ robots: 'noindex, nofollow' })
 
 import type { Resume, ProfileLink, SnsLinks } from '~/types'
 import { getStorage, ref as storageRef, uploadBytes, getDownloadURL } from 'firebase/storage'
+import { getAuth, updateProfile } from 'firebase/auth'
 
 const user = useCurrentUser()
 const { getProfileByUid, saveProfile } = useUserProfile()
@@ -344,6 +345,9 @@ async function save() {
           .filter(([, v]) => isHttpUrl(v as string)),
       ),
     })
+    // 認証側の写真も更新 → ヘッダー・確認モーダル・今後の投稿スナップショットが同じ画像になる
+    const authUser = getAuth().currentUser
+    if (authUser && photoURL.value) await updateProfile(authUser, { photoURL: photoURL.value })
     showToast('プロフィールを保存しました')
   } catch (e) {
     showToast('保存に失敗しました。時間をおいて再度お試しください', { type: 'error' })
