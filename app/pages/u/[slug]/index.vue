@@ -434,7 +434,7 @@ const givenCount = computed(() => givenReviews.value.length)
 const givenShareCopiedId = ref('')
 async function shareGiven(g: Review) {
   if (!g.toSlug) return
-  const url = `${window.location.origin}/u/${g.toSlug}/`
+  const url = `${window.location.origin}/u/${g.toSlug}/e/${g.id}/`
   if (navigator.share) {
     try {
       await navigator.share({ title: 'ユーノーミー', text: `${g.toDisplayName || 'この方'}さんについて、エピソードを書きました。`, url })
