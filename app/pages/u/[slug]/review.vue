@@ -353,7 +353,7 @@ async function shareMe() {
   const myName = currentUser.value?.displayName ?? ''
   if (navigator.share) {
     try {
-      await navigator.share({ title: `${myName}さんへのエピソードをお願いします`, text: `${myName}さんへエピソードを書いてください`, url })
+      await navigator.share({ title: `${myName}さんへのエピソードをお願いします`, text: `${myName}さんとのエピソードを書いていただけませんか？`, url })
     } catch { /* キャンセル */ }
   } else {
     await navigator.clipboard.writeText(url)

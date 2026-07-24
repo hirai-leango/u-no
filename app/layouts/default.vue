@@ -147,7 +147,7 @@ async function shareMyProfile() {
     try {
       await navigator.share({
         title: `${user.value?.displayName ?? ''}さんへのエピソードをお願いします`,
-        text: `${user.value?.displayName ?? ''}さんへエピソードを書いてください`,
+        text: `${user.value?.displayName ?? ''}さんとのエピソードを書いていただけませんか？`,
         url,
       })
     } catch {
