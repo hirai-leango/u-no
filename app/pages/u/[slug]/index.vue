@@ -242,6 +242,11 @@
               </div>
               <p v-if="g.toHeadline" class="text-xs text-ink-mute truncate">{{ g.toHeadline }}</p>
             </div>
+            <button
+              v-if="isMyPage"
+              class="ml-auto flex-none text-xs font-semibold text-brand hover:underline whitespace-nowrap"
+              @click="shareGiven(g)"
+            >{{ givenShareCopiedId === g.id ? 'コピー済み！' : 'シェア' }}</button>
           </div>
           <p class="text-sm text-ink-soft leading-relaxed whitespace-pre-wrap">{{ g.comment }}</p>
         </div>
@@ -425,6 +430,21 @@ onMounted(async () => {
 })
 const givenReviews = ref<Review[]>([])
 const givenCount = computed(() => givenReviews.value.length)
+// 贈ったエピソードを本人がシェア（相手について書いたことを拡散）
+const givenShareCopiedId = ref('')
+async function shareGiven(g: Review) {
+  if (!g.toSlug) return
+  const url = `${window.location.origin}/u/${g.toSlug}/`
+  if (navigator.share) {
+    try {
+      await navigator.share({ title: 'ユーノーミー', text: `${g.toDisplayName || 'この方'}さんについて、エピソードを書きました。`, url })
+    } catch { /* キャンセル */ }
+  } else {
+    await navigator.clipboard.writeText(url)
+    givenShareCopiedId.value = g.id
+    setTimeout(() => (givenShareCopiedId.value = ''), 2000)
+  }
+}
 // 相互達成の祝福（マイページ再訪時に、未祝福の相互があれば表示）
 const showMutualModal = ref(false)
 const mutualPartner = ref<{ name: string; photo: string; slug: string } | null>(null)

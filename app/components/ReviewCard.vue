@@ -27,20 +27,27 @@
         <div v-if="review.fromHeadline" class="text-xs text-ink-soft">{{ review.fromHeadline }}</div>
         <div class="text-xs text-ink-mute">{{ formatDate(review.updatedAt) }}</div>
       </div>
-      <NuxtLink
-        v-if="currentUser?.uid === review.fromUserId"
-        :to="`/u/${profileSlug}/review/`"
-        class="ml-auto flex-none whitespace-nowrap text-xs text-ink-mute hover:text-ink-soft transition-colors"
-      >
-        編集
-      </NuxtLink>
-      <button
-        v-else-if="currentUser"
-        class="ml-auto flex-none whitespace-nowrap text-xs text-ink-mute hover:text-warn transition-colors"
-        @click="reportReview"
-      >
-        通報
-      </button>
+      <div class="ml-auto flex items-center gap-3 flex-none">
+        <button
+          v-if="currentUser?.uid === review.toUserId"
+          class="whitespace-nowrap text-xs font-semibold text-brand hover:underline transition-colors"
+          @click="shareEpisode"
+        >{{ shareCopied ? 'コピー済み！' : 'シェア' }}</button>
+        <NuxtLink
+          v-if="currentUser?.uid === review.fromUserId"
+          :to="`/u/${profileSlug}/review/`"
+          class="whitespace-nowrap text-xs text-ink-mute hover:text-ink-soft transition-colors"
+        >
+          編集
+        </NuxtLink>
+        <button
+          v-else-if="currentUser"
+          class="whitespace-nowrap text-xs text-ink-mute hover:text-warn transition-colors"
+          @click="reportReview"
+        >
+          通報
+        </button>
+      </div>
     </div>
 
     <p class="text-sm text-ink-soft leading-relaxed mb-4 whitespace-pre-wrap">{{ review.comment }}</p>
@@ -174,6 +181,26 @@ const relationshipLabel = computed(() => {
 })
 
 const currentUser = useCurrentUser()
+
+// このエピソード（自分についての証言）を本人がシェア
+const shareCopied = ref(false)
+async function shareEpisode() {
+  const url = `${window.location.origin}/u/${props.profileSlug}/`
+  const from = props.review.fromDisplayName
+  if (navigator.share) {
+    try {
+      await navigator.share({
+        title: 'ユーノーミー',
+        text: `${from}さんが私についてこんなエピソードを書いてくれました。`,
+        url,
+      })
+    } catch { /* キャンセル */ }
+  } else {
+    await navigator.clipboard.writeText(url)
+    shareCopied.value = true
+    setTimeout(() => (shareCopied.value = false), 2000)
+  }
+}
 const { getVotes, setVote, getComments, addComment, deleteComment } = useReviewInteractions()
 const { getProfileByUid } = useUserProfile()
 const { reportTarget } = useReports()
