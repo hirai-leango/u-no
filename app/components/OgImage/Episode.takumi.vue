@@ -55,8 +55,11 @@ withDefaults(defineProps<{
         <div v-if="relationship" :style="{ display: 'flex', fontSize: '20px', color: '#C9D6E5', marginTop: '3px' }">{{ relationship }}</div>
       </div>
 
-      <!-- 矢印 -->
-      <div :style="{ display: 'flex', fontSize: '46px', fontWeight: 700, color: '#D4A857', marginLeft: '26px', marginRight: '26px' }">→</div>
+      <!-- 矢印（フォント非依存でCSS描画：線＋三角）。Noto Sans JPに→(U+2192)が無く豆腐になるため -->
+      <div :style="{ display: 'flex', alignItems: 'center', marginLeft: '24px', marginRight: '24px' }">
+        <div :style="{ width: '34px', height: '5px', backgroundColor: '#D4A857' }" />
+        <div :style="{ width: '0px', height: '0px', borderTop: '10px solid transparent', borderBottom: '10px solid transparent', borderLeft: '17px solid #D4A857' }" />
+      </div>
 
       <!-- to（宛先） -->
       <img
