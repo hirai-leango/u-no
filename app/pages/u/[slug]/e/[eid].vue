@@ -10,11 +10,11 @@
             :to="review.fromSlug ? `/u/${review.fromSlug}/` : undefined"
             class="flex-none"
           >
-            <img :src="hiResAvatar(review.fromPhotoURL, 96)" alt="" class="w-9 h-9 rounded-full object-cover ring-1 ring-line hover:ring-2 ring-brand transition-all bg-surface-card" @error="onAvatarError" />
+            <img :src="hiResAvatar(review.fromPhotoURL, 96)" :alt="`${review.fromDisplayName || 'ユーザー'}さんのアイコン`" class="w-9 h-9 rounded-full object-cover ring-1 ring-line hover:ring-2 ring-brand transition-all bg-surface-card" @error="onAvatarError" />
           </component>
           <span class="text-ink-mute text-sm flex-none">→</span>
           <NuxtLink :to="`/u/${slug}/`" class="flex-none">
-            <img :src="hiResAvatar(profile.photoURL, 96)" alt="" class="w-9 h-9 rounded-full object-cover ring-1 ring-line hover:ring-2 ring-brand transition-all bg-surface-card" @error="onAvatarError" />
+            <img :src="hiResAvatar(profile.photoURL, 96)" :alt="`${profile.displayName}さんのアイコン`" class="w-9 h-9 rounded-full object-cover ring-1 ring-line hover:ring-2 ring-brand transition-all bg-surface-card" @error="onAvatarError" />
           </NuxtLink>
           <div class="min-w-0 flex-1">
             <div class="flex items-center gap-2 flex-wrap">
@@ -45,7 +45,41 @@
       >
         {{ profile.displayName }}さんのプロフィールをすべて見る →
       </NuxtLink>
-      <p class="text-center text-xs text-ink-mute mt-6">
+
+      <!-- #2 関連エピソード（この人への他のエピソード）: 内部リンク＆回遊 -->
+      <section v-if="relatedEpisodes.length" class="mt-10">
+        <h2 class="text-sm font-bold text-ink mb-1">{{ profile.displayName }}さんへの他のエピソード</h2>
+        <div class="border-t border-line">
+          <NuxtLink
+            v-for="r in relatedEpisodes"
+            :key="r.id"
+            :to="`/u/${slug}/e/${r.id}/`"
+            class="flex items-start gap-3 py-3.5 border-b border-line group"
+          >
+            <img
+              :src="hiResAvatar(r.fromPhotoURL, 96)"
+              :alt="`${r.fromDisplayName || 'ユーザー'}さんのアイコン`"
+              class="w-8 h-8 rounded-full object-cover ring-1 ring-line flex-none bg-surface-card"
+              @error="onAvatarError"
+            />
+            <div class="min-w-0">
+              <p class="text-xs text-ink-mute mb-0.5"><span class="font-semibold text-ink-soft">{{ r.fromDisplayName || 'ユーザー' }}さん</span>より</p>
+              <p class="text-sm text-ink-soft leading-snug line-clamp-2 group-hover:text-ink transition-colors">{{ r.comment }}</p>
+            </div>
+          </NuxtLink>
+        </div>
+      </section>
+
+      <!-- #4 未ログイン向け登録CTA（拡散→登録の輪） -->
+      <section v-if="!currentUser" class="mt-10 rounded-xl bg-surface-deep px-6 py-7 text-center">
+        <p class="text-base font-bold text-ink mb-1.5">あなたも「他己紹介」を集めませんか？</p>
+        <p class="text-xs text-ink-mute leading-relaxed mb-4">知人が書くエピソードで、あなたの信頼と人柄が伝わるプロフィールに。無料で作れます。</p>
+        <NuxtLink to="/signup/" class="inline-block px-6 py-3 rounded-lg font-bold text-sm bg-brand text-white hover:bg-brand-hover transition-colors">
+          無料でユーザー登録 →
+        </NuxtLink>
+      </section>
+
+      <p class="text-center text-xs text-ink-mute mt-8">
         ユーノーミーは、知人が書く「他己紹介」であなたの信頼を可視化するサービスです。
       </p>
     </div>
@@ -71,6 +105,18 @@ const eid = computed(() => route.params.eid as string)
 const { data } = await useFetch(`/api/profile/${slug.value}`)
 const profile = computed(() => data.value?.profile ?? null)
 const review = computed(() => (data.value?.reviews ?? []).find((r: any) => r.id === eid.value) ?? null)
+
+// #1 ソフト404の解消: ユーザー or エピソードが存在しなければ正しく404を返す（ソフト404を出さない）
+if (!profile.value || !review.value) {
+  throw createError({ statusCode: 404, statusMessage: 'エピソードが見つかりませんでした', fatal: true })
+}
+
+const currentUser = useCurrentUser()
+
+// #2 関連エピソード: 同じ人への他のエピソード（現在のものを除き最大5件）
+const relatedEpisodes = computed(() =>
+  (data.value?.reviews ?? []).filter((r: any) => r.id !== eid.value).slice(0, 5),
+)
 
 const relLabel = computed(() => {
   const rel = review.value?.relationship as Relationship | undefined
