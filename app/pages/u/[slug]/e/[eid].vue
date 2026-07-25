@@ -93,11 +93,53 @@ function truncate(s: string, n: number) {
 
 const ogComment = computed(() => truncate(review.value?.comment ?? '', 78))
 
+// --- TDK（Title / Description / Keywords）最適化 ---
+// タイトル: 「宛先さんへのエピソード（投稿者さんより）｜ユーノーミー」
+const metaTitle = computed(() => {
+  const r = review.value, p = profile.value
+  if (!r || !p) return 'エピソード | ユーノーミー'
+  const from = r.fromDisplayName || 'ある方'
+  return `${p.displayName}さんへのエピソード（${from}さんより）｜ユーノーミー`
+})
+// OGタイトル: SNS向けに「誰が誰について書いたか」を前面に
+const metaOgTitle = computed(() => {
+  const r = review.value, p = profile.value
+  if (!r || !p) return 'ユーノーミー'
+  return `${r.fromDisplayName || 'ある方'}さんが書いた、${p.displayName}さんへのエピソード`
+})
+// ディスクリプション: 関係性＋投稿者を添えて本文抜粋（検索結果でのクリックを促す）
+const metaDescription = computed(() => {
+  const r = review.value, p = profile.value
+  if (!r || !p) return ''
+  const from = r.fromDisplayName || 'ある方'
+  const who = relLabel.value ? `${p.displayName}さんの${relLabel.value}・${from}さん` : `${from}さん`
+  return truncate(`${who}が綴った、${p.displayName}さんの人物エピソード。「${truncate(r.comment, 72)}」`, 118)
+})
+// キーワード（補助的。人物名・関係性・サービス語彙）
+const metaKeywords = computed(() => {
+  const r = review.value, p = profile.value
+  if (!r || !p) return ''
+  return [p.displayName, r.fromDisplayName, relLabel.value, '他己紹介', 'エピソード', '評判', '人物', 'ビジネスプロフィール', 'ユーノーミー']
+    .filter(Boolean).join(', ')
+})
+
 useSeoMeta({
-  title: () => review.value && profile.value ? `${profile.value.displayName}さんへのエピソード | ユーノーミー` : 'ユーノーミー',
-  ogTitle: () => review.value && profile.value ? `${review.value.fromDisplayName}さんが書いた、${profile.value.displayName}さんへのエピソード` : 'ユーノーミー',
-  description: () => ogComment.value,
-  ogDescription: () => ogComment.value,
+  title: () => metaTitle.value,
+  description: () => metaDescription.value,
+  keywords: () => metaKeywords.value,
+  // OGP（Facebook / LINE など）
+  ogTitle: () => metaOgTitle.value,
+  ogDescription: () => metaDescription.value,
+  ogType: 'article',
+  ogSiteName: 'ユーノーミー',
+  ogLocale: 'ja_JP',
+  // Twitter/X 大画像カード（エピソード専用OG画像を大きく表示）
+  twitterCard: 'summary_large_image',
+  twitterTitle: () => metaOgTitle.value,
+  twitterDescription: () => metaDescription.value,
+  // article 系
+  articlePublishedTime: () => (review.value?.createdAt ? String(review.value.createdAt) : undefined),
+  articleModifiedTime: () => (review.value?.updatedAt ? String(review.value.updatedAt) : review.value?.createdAt ? String(review.value.createdAt) : undefined),
   robots: () => (review.value && profile.value?.isSearchable !== false ? 'index, follow' : 'noindex, nofollow'),
 })
 
