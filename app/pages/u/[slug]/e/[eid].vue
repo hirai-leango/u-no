@@ -3,43 +3,39 @@
     <div v-if="review && profile" class="max-w-xl mx-auto">
       <!-- エピソードカード -->
       <div class="border border-surface-border rounded-2xl p-6 md:p-8 bg-white">
-        <!-- 宛先 -->
-        <NuxtLink :to="`/u/${slug}/`" class="flex items-center gap-3 mb-5 group">
-          <img
-            :src="hiResAvatar(profile.photoURL, 96)"
-            class="w-12 h-12 rounded-full object-cover flex-none"
-            @error="onAvatarError"
-          />
-          <div class="min-w-0">
-            <p class="text-xs text-ink-mute">エピソードの宛先</p>
-            <p class="font-bold text-ink group-hover:text-brand transition-colors truncate">{{ profile.displayName }}さん</p>
+        <!-- 誰から誰へ（投稿者 → ◯◯さん）: プロフィールのカードと同じ from→to 形式で統一 -->
+        <div class="flex items-center gap-2 mb-5">
+          <component
+            :is="review.fromSlug ? 'NuxtLink' : 'span'"
+            :to="review.fromSlug ? `/u/${review.fromSlug}/` : undefined"
+            class="flex-none"
+          >
+            <img :src="hiResAvatar(review.fromPhotoURL, 96)" alt="" class="w-9 h-9 rounded-full object-cover ring-1 ring-line hover:ring-2 ring-brand transition-all bg-surface-card" @error="onAvatarError" />
+          </component>
+          <span class="text-ink-mute text-sm flex-none">→</span>
+          <NuxtLink :to="`/u/${slug}/`" class="flex-none">
+            <img :src="hiResAvatar(profile.photoURL, 96)" alt="" class="w-9 h-9 rounded-full object-cover ring-1 ring-line hover:ring-2 ring-brand transition-all bg-surface-card" @error="onAvatarError" />
+          </NuxtLink>
+          <div class="min-w-0 flex-1">
+            <div class="flex items-center gap-2 flex-wrap">
+              <span class="text-sm truncate">
+                <component
+                  :is="review.fromSlug ? 'NuxtLink' : 'span'"
+                  :to="review.fromSlug ? `/u/${review.fromSlug}/` : undefined"
+                  class="font-bold text-brand hover:underline"
+                >{{ review.fromDisplayName || 'ユーザー' }}さん</component>
+                <span class="text-ink-mute"> → </span>
+                <NuxtLink :to="`/u/${slug}/`" class="font-bold text-ink hover:text-brand transition-colors">{{ profile.displayName }}さん</NuxtLink>
+              </span>
+              <span v-if="relLabel" class="text-[10px] px-2 py-0.5 rounded-sm bg-surface-card text-ink-soft font-semibold flex-none">{{ relLabel }}</span>
+            </div>
+            <p v-if="review.fromHeadline" class="text-xs text-ink-mute truncate">{{ review.fromHeadline }}</p>
+            <p class="text-xs text-ink-mute">{{ formatDate(review.createdAt) }}</p>
           </div>
-        </NuxtLink>
+        </div>
 
         <!-- 本文 -->
         <p class="text-lg text-ink leading-relaxed whitespace-pre-wrap">{{ review.comment }}</p>
-
-        <!-- 書いた人 -->
-        <div class="flex items-center gap-3 mt-6 pt-5 border-t border-surface-border">
-          <component
-            :is="review.fromSlug ? 'NuxtLink' : 'div'"
-            :to="review.fromSlug ? `/u/${review.fromSlug}/` : undefined"
-            class="flex items-center gap-3 min-w-0 group"
-          >
-            <img
-              :src="hiResAvatar(review.fromPhotoURL, 96)"
-              class="w-10 h-10 rounded-full object-cover flex-none"
-              @error="onAvatarError"
-            />
-            <div class="min-w-0">
-              <div class="flex items-center gap-2">
-                <span class="text-sm font-semibold text-ink group-hover:text-brand transition-colors truncate">{{ review.fromDisplayName || 'ユーザー' }}さん</span>
-                <span v-if="relLabel" class="text-[11px] font-semibold px-2 py-0.5 rounded-full bg-brand/8 text-brand flex-none">{{ relLabel }}</span>
-              </div>
-              <p v-if="review.fromHeadline" class="text-xs text-ink-mute truncate">{{ review.fromHeadline }}</p>
-            </div>
-          </component>
-        </div>
       </div>
 
       <!-- CTA -->
@@ -81,6 +77,13 @@ const relLabel = computed(() => {
   if (!rel) return ''
   return RECEIVED_REL_DISPLAY[rel] ?? RELATIONSHIP_LABELS[rel] ?? ''
 })
+
+// 日付表示（プロフィールのカードと同じ書式で揃える）
+function formatDate(date: any) {
+  if (!date) return ''
+  const d = date?.toDate ? date.toDate() : new Date(date)
+  return isNaN(d.getTime()) ? '' : d.toLocaleDateString('ja-JP', { year: 'numeric', month: 'long', day: 'numeric' })
+}
 
 function truncate(s: string, n: number) {
   if (!s) return ''
