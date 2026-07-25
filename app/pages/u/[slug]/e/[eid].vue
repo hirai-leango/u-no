@@ -149,6 +149,7 @@ defineOgImageComponent('Episode', {
   fromName: review.value?.fromDisplayName ?? '',
   fromPhoto: review.value?.fromPhotoURL ?? '',
   toName: profile.value?.displayName ?? '',
+  toPhoto: profile.value?.photoURL ?? '',
   relationship: relLabel.value,
 }, {
   width: 1200,
