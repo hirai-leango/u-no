@@ -70,18 +70,31 @@
         </div>
       </section>
 
-      <!-- #4 未ログイン向け登録CTA（拡散→登録の輪） -->
-      <section v-if="!currentUser" class="mt-10 rounded-xl bg-surface-deep px-6 py-7 text-center">
-        <p class="text-base font-bold text-ink mb-1.5">あなたも「他己紹介」を集めませんか？</p>
-        <p class="text-xs text-ink-mute leading-relaxed mb-4">知人が書くエピソードで、あなたの信頼と人柄が伝わるプロフィールに。無料で作れます。</p>
-        <NuxtLink to="/signup/" class="inline-block px-6 py-3 rounded-lg font-bold text-sm bg-brand text-white hover:bg-brand-hover transition-colors">
-          無料でユーザー登録 →
+      <!-- この人へエピソードを贈るCTA -->
+      <NuxtLink
+        v-if="!isOwner"
+        :to="giveEpisodeLink"
+        class="block w-full text-center mt-10 py-3.5 rounded-lg font-bold text-sm border border-brand text-brand hover:bg-brand/5 transition-colors"
+      >
+        あなたも{{ profile.displayName }}さんへエピソードを贈りませんか？
+      </NuxtLink>
+
+      <!-- ユーノーミー紹介 + アカウント作成CTA -->
+      <section v-if="!currentUser" class="mt-8 rounded-xl bg-surface-deep px-6 py-8">
+        <p class="text-base font-bold text-ink text-center mb-3">ユーノーミーとは？</p>
+        <p class="text-xs text-ink-soft leading-relaxed mb-2">
+          ユーノーミーは、知人や同僚が書く「他己紹介（エピソード）」で、あなたの人柄・仕事ぶり・信頼を可視化するビジネスプロフィールサービスです。
+        </p>
+        <p class="text-xs text-ink-soft leading-relaxed mb-2">
+          自分では言いにくい強みも、第三者の言葉なら自然に伝わります。受け取ったエピソードはあなたのプロフィールに集まり、初対面の相手や取引先に「どんな人か」を一目で示す信頼の証になります。
+        </p>
+        <p class="text-xs text-ink-soft leading-relaxed mb-5">
+          登録は無料。あなたのプロフィールURLを知人に送るだけで、エピソードが集まりはじめます。
+        </p>
+        <NuxtLink to="/signup/" class="block w-full text-center px-6 py-3.5 rounded-lg font-bold text-sm bg-brand text-white hover:bg-brand-hover transition-colors">
+          無料でアカウントを作りませんか？ →
         </NuxtLink>
       </section>
-
-      <p class="text-center text-xs text-ink-mute mt-8">
-        ユーノーミーは、知人が書く「他己紹介」であなたの信頼を可視化するサービスです。
-      </p>
     </div>
 
     <div v-else class="max-w-xl mx-auto text-center py-20">
@@ -117,6 +130,13 @@ const currentUser = useCurrentUser()
 const relatedEpisodes = computed(() =>
   (data.value?.reviews ?? []).filter((r: any) => r.id !== eid.value).slice(0, 5),
 )
+
+// この人へエピソードを贈る導線（未ログインは登録経由でエピソード投稿へ）
+const giveEpisodeLink = computed(() =>
+  currentUser.value ? `/u/${slug.value}/review/` : `/signup/?redirect=/u/${slug.value}/review/`,
+)
+// 自分自身のエピソードには「贈る」を出さない
+const isOwner = computed(() => !!currentUser.value && currentUser.value.uid === profile.value?.uid)
 
 const relLabel = computed(() => {
   const rel = review.value?.relationship as Relationship | undefined
