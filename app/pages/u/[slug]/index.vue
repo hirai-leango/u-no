@@ -109,14 +109,24 @@
         :class="tab === 'resume' ? 'text-brand border-brand' : 'text-ink-mute border-transparent hover:text-ink'"
         @click="tab = 'resume'"
       >
-        経歴
+        経歴<span v-if="isMyPage && !hasResume" class="ml-1 inline-block w-1.5 h-1.5 rounded-full bg-brand align-middle" title="未入力"></span>
       </button>
     </div>
 
     <!-- 経歴 -->
     <section v-show="tab === 'resume'" class="mb-8">
-      <div v-if="!hasResume" class="text-center py-12 text-ink-mute">
-        <p class="text-sm">まだ経歴が登録されていません。</p>
+      <div v-if="!hasResume" class="py-10 text-center">
+        <div v-if="isMyPage" class="max-w-sm mx-auto rounded-xl bg-surface-deep px-6 py-8">
+          <p class="text-sm font-bold text-ink mb-2">職歴を追加しませんか？</p>
+          <p class="text-xs text-ink-mute leading-relaxed mb-5 text-left">
+            あなたの歩み（会社・役割）が分かると、受け取ったエピソードの説得力が一段と増し、初対面の相手や取引先に「どんな人か」がより伝わります。検索にも載りやすくなります。
+          </p>
+          <NuxtLink
+            to="/settings/resume/"
+            class="inline-block px-5 py-2.5 rounded-lg font-bold text-sm bg-brand text-white hover:bg-brand-hover transition-colors"
+          >職歴を追加する →</NuxtLink>
+        </div>
+        <p v-else class="text-sm text-ink-mute">まだ経歴が登録されていません。</p>
       </div>
       <div v-else class="space-y-8">
         <div v-if="profile.resume.experience.length">
