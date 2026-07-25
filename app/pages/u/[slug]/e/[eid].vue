@@ -1,10 +1,10 @@
 <template>
   <div>
     <div v-if="review && profile" class="max-w-xl mx-auto">
-      <!-- エピソードカード -->
-      <div class="border border-surface-border rounded-2xl p-6 md:p-8 bg-white">
+      <!-- エピソードカード（プロフィールのカードと同じ見た目に統一：箱線なし・下線区切り） -->
+      <div class="border-b border-line pb-6">
         <!-- 誰から誰へ（投稿者 → ◯◯さん）: プロフィールのカードと同じ from→to 形式で統一 -->
-        <div class="flex items-center gap-2 mb-5">
+        <div class="flex items-center gap-2 mb-3">
           <component
             :is="review.fromSlug ? 'NuxtLink' : 'span'"
             :to="review.fromSlug ? `/u/${review.fromSlug}/` : undefined"
@@ -35,7 +35,7 @@
         </div>
 
         <!-- 本文 -->
-        <p class="text-lg text-ink leading-relaxed whitespace-pre-wrap">{{ review.comment }}</p>
+        <p class="text-sm text-ink-soft leading-relaxed whitespace-pre-wrap">{{ review.comment }}</p>
       </div>
 
       <!-- CTA -->
