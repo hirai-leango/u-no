@@ -186,6 +186,8 @@
             :key="review.id"
             :review="review"
             :profile-slug="slug"
+            :owner-name="profile.displayName"
+            :owner-photo="profile.photoURL"
             :show-giveback="isMyPage && !givenToUserIds.has(review.fromUserId)"
           />
           <button
@@ -224,14 +226,14 @@
         <div v-for="g in givenReviews" :key="g.id" class="py-5 border-b border-line">
           <div class="flex items-center gap-2 mb-2">
             <!-- 贈った本人（プロフィール主） -->
-            <img :src="hiResAvatar(profile.photoURL, 96)" alt="" class="w-8 h-8 rounded-full object-cover flex-none ring-1 ring-line" />
+            <img :src="hiResAvatar(profile.photoURL, 96)" alt="" class="w-9 h-9 rounded-full object-cover flex-none ring-1 ring-line bg-surface-card" />
             <span class="text-ink-mute text-sm flex-none">→</span>
             <!-- 宛先 -->
             <NuxtLink v-if="g.toSlug" :to="`/u/${g.toSlug}/`" class="flex-none">
-              <img :src="hiResAvatar(g.toPhotoURL, 96)" alt="" class="w-9 h-9 rounded-full object-cover bg-surface-card hover:ring-2 ring-brand transition-all" />
+              <img :src="hiResAvatar(g.toPhotoURL, 96)" alt="" class="w-9 h-9 rounded-full object-cover ring-1 ring-line hover:ring-2 ring-brand transition-all bg-surface-card" />
             </NuxtLink>
             <div v-else class="flex-none">
-              <img :src="hiResAvatar(g.toPhotoURL, 96)" alt="" class="w-9 h-9 rounded-full object-cover bg-surface-card" />
+              <img :src="hiResAvatar(g.toPhotoURL, 96)" alt="" class="w-9 h-9 rounded-full object-cover ring-1 ring-line bg-surface-card" />
             </div>
             <div class="min-w-0">
               <div class="flex items-center gap-2">

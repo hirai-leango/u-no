@@ -7,25 +7,26 @@
       ⚠️ 多くの人がこのエピソードを不当と評価しています
     </div>
 
-    <!-- レビュアー情報 -->
-    <div class="flex items-start gap-3 mb-3">
-      <NuxtLink :to="`/u/${review.fromSlug}/`">
-        <img :src="hiResAvatar(review.fromPhotoURL)" class="w-9 h-9 rounded-full object-cover hover:ring-2 ring-brand transition-all" />
+    <!-- 誰から誰へ（投稿者 → ◯◯さん）: 贈ったカードと同じ from→to 形式で統一 -->
+    <div class="flex items-center gap-2 mb-3">
+      <NuxtLink :to="`/u/${review.fromSlug}/`" class="flex-none">
+        <img :src="hiResAvatar(review.fromPhotoURL, 96)" alt="" class="w-9 h-9 rounded-full object-cover ring-1 ring-line hover:ring-2 ring-brand transition-all" />
       </NuxtLink>
+      <span class="text-ink-mute text-sm flex-none">→</span>
+      <img :src="hiResAvatar(ownerPhoto, 96)" alt="" class="w-9 h-9 rounded-full object-cover flex-none ring-1 ring-line bg-surface-card" />
       <div class="min-w-0 flex-1">
-        <div class="flex items-center gap-2 flex-wrap">
-          <NuxtLink :to="`/u/${review.fromSlug}/`" class="text-sm font-bold text-brand hover:underline">
-            {{ review.fromDisplayName }}
+        <div class="flex items-center gap-2">
+          <NuxtLink :to="`/u/${review.fromSlug}/`" class="text-sm font-bold text-brand hover:underline truncate">
+            {{ review.fromDisplayName }}さんより
           </NuxtLink>
           <span
             v-if="review.relationship"
-            class="text-[10px] px-2 py-0.5 rounded-sm bg-surface-card text-ink-soft font-semibold"
+            class="text-[10px] px-2 py-0.5 rounded-sm bg-surface-card text-ink-soft font-semibold flex-none"
           >
             {{ relationshipLabel }}
           </span>
         </div>
-        <div v-if="review.fromHeadline" class="text-xs text-ink-soft">{{ review.fromHeadline }}</div>
-        <div class="text-xs text-ink-mute">{{ formatDate(review.updatedAt) }}</div>
+        <p v-if="review.fromHeadline" class="text-xs text-ink-mute truncate">{{ review.fromHeadline }}</p>
       </div>
       <div class="ml-auto flex items-center gap-3 flex-none">
         <button
@@ -165,6 +166,8 @@ import { RELATIONSHIP_LABELS } from '~/types'
 const props = defineProps<{
   review: Review
   profileSlug: string
+  ownerName?: string
+  ownerPhoto?: string
   showGiveback?: boolean
 }>()
 
