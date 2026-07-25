@@ -334,9 +334,10 @@ defineOgImageComponent('Profile', {
   height: 630,
 })
 
-// 構造化データ（ProfilePage > Person + Review[] + BreadcrumbList）
-// 他者が実名で書く他己紹介＝一次情報。ProfilePage/Review はu-no.meの本質にそのまま対応し
-// E-E-A-T（信頼性）の強いシグナルになる
+// 構造化データ（ProfilePage > Person + BreadcrumbList）
+// ProfilePage はGoogle公式サポート型（人物プロフィール向け）。
+// 注意: Person に Review を埋め込むと、Googleが人物レビュー（非対応）と判定してエラーに
+// なるため埋め込まない。エピソード数は interactionStatistic（ProfilePage対応）で表す。
 useHead(() => {
   const p = profileData.value
   if (!p) return {}
@@ -355,21 +356,13 @@ useHead(() => {
   if (p.bio) person.description = p.bio
   if (sameAs.length) person.sameAs = sameAs
 
-  // 受け取ったエピソードをReviewとして埋め込む（最大20件）
-  const rvs = (data.value?.reviews ?? []).slice(0, 20)
-  if (rvs.length) {
-    person.review = rvs.map((r: any) => {
-      const author: Record<string, any> = { '@type': 'Person', name: r.fromDisplayName || 'ユーザー' }
-      if (r.fromSlug) author.url = `${SITE}/u/${r.fromSlug}/`
-      if (r.fromHeadline) author.jobTitle = r.fromHeadline
-      const rev: Record<string, any> = { '@type': 'Review', reviewBody: r.comment, author }
-      if (r.createdAt) rev.datePublished = String(r.createdAt).slice(0, 10)
-      return rev
-    })
+  // 受け取ったエピソード数（ProfilePageが公式サポートする指標）
+  const reviewCount = data.value?.reviews?.length ?? 0
+  if (reviewCount > 0) {
     person.interactionStatistic = {
       '@type': 'InteractionCounter',
       interactionType: 'https://schema.org/WriteAction',
-      userInteractionCount: data.value?.reviews?.length ?? rvs.length,
+      userInteractionCount: reviewCount,
     }
   }
 

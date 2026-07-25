@@ -155,10 +155,11 @@ defineOgImageComponent('Episode', {
   height: 630,
 })
 
-// 構造化データ（Person に review をネスト + BreadcrumbList）
-// 注意: schema.org Review の itemReviewed に Person は使えない（Googleは人物レビューの
-// リッチリザルト非対応で「無効なタイプ」エラーになる）。そのため単体Reviewではなく、
-// 対象人物(Person)の review プロパティとしてネストし、レビュー対象を暗黙に定める。
+// 構造化データ（Comment + BreadcrumbList）
+// 注意: Googleは Review 型を検出すると必ず「レビュー対象の型」を検証し、Person は
+// リッチリザルト非対応のため常にエラーになる（itemReviewed でもネストでも同じ）。
+// エピソード＝他者(author)が対象人物(about)について書いた投稿 なので、Review ではなく
+// Comment 型で表現する（author=書いた人 / about=対象人物）。エラーにならず意味も正確。
 const SITE = 'https://u-no.me'
 useHead(() => {
   const r = review.value
@@ -171,26 +172,25 @@ useHead(() => {
   if (r.fromPhotoURL) author.image = r.fromPhotoURL
   if (r.fromHeadline) author.jobTitle = r.fromHeadline
 
-  const review_: Record<string, any> = {
-    '@type': 'Review',
-    '@id': episodeUrl,
-    url: episodeUrl,
-    reviewBody: r.comment,
-    author,
-    publisher: { '@type': 'Organization', name: 'ユーノーミー', url: `${SITE}/` },
-  }
-  if (r.createdAt) review_.datePublished = String(r.createdAt).slice(0, 10)
-
-  // レビュー対象の人物。review をネストすることで itemReviewed 相当を表す
-  const person: Record<string, any> = {
+  const about: Record<string, any> = {
     '@type': 'Person',
     '@id': `${SITE}/u/${p.slug}/#person`,
     name: p.displayName,
     url: `${SITE}/u/${p.slug}/`,
-    review: review_,
   }
-  if (p.photoURL) person.image = p.photoURL
-  if (p.headline) person.jobTitle = p.headline
+  if (p.photoURL) about.image = p.photoURL
+  if (p.headline) about.jobTitle = p.headline
+
+  const comment: Record<string, any> = {
+    '@type': 'Comment',
+    '@id': episodeUrl,
+    url: episodeUrl,
+    text: r.comment,
+    author,
+    about,
+    publisher: { '@type': 'Organization', name: 'ユーノーミー', url: `${SITE}/` },
+  }
+  if (r.createdAt) comment.datePublished = String(r.createdAt).slice(0, 10)
 
   const breadcrumb = {
     '@type': 'BreadcrumbList',
@@ -204,7 +204,7 @@ useHead(() => {
   return {
     script: [{
       type: 'application/ld+json',
-      innerHTML: JSON.stringify({ '@context': 'https://schema.org', '@graph': [person, breadcrumb] }),
+      innerHTML: JSON.stringify({ '@context': 'https://schema.org', '@graph': [comment, breadcrumb] }),
     }],
   }
 })
