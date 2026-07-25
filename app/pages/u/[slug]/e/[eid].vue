@@ -43,7 +43,7 @@
         :to="`/u/${slug}/`"
         class="block w-full text-center mt-5 py-3.5 rounded-lg font-bold text-sm bg-brand text-white hover:bg-brand-hover transition-colors"
       >
-        {{ profile.displayName }}さんのプロフィールをすべて見る →
+        {{ profile.displayName }}さんのプロフィールを見る →
       </NuxtLink>
 
       <!-- #2 関連エピソード（この人への他のエピソード）: 内部リンク＆回遊 -->
