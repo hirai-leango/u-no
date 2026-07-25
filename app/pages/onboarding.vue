@@ -8,7 +8,7 @@
     <div class="mb-2">
       <label class="block text-xs font-bold tracking-widest text-ink-mute mb-2">スラッグ</label>
       <div class="flex items-center bg-surface border border-surface-border rounded overflow-hidden focus-within:border-brand transition-colors">
-        <span class="pl-4 text-ink-mute text-sm whitespace-nowrap">yuuno.app/u/</span>
+        <span class="pl-4 text-ink-mute text-sm whitespace-nowrap">u-no.me/u/</span>
         <input
           v-model="slug"
           type="text"
