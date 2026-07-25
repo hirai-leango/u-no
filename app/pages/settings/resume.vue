@@ -296,6 +296,7 @@ const SNS_FIELDS: { key: keyof SnsLinks; label: string; ph: string }[] = [
   { key: 'youtube', label: 'YouTube', ph: 'https://youtube.com/@...' },
   { key: 'note', label: 'note', ph: 'https://note.com/...' },
   { key: 'github', label: 'GitHub', ph: 'https://github.com/...' },
+  { key: 'chatwork', label: 'Chatwork', ph: 'https://www.chatwork.com/...' },
 ]
 
 onMounted(async () => {

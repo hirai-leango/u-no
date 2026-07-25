@@ -34,7 +34,8 @@
               :aria-label="s.label"
               class="text-white/75 hover:text-white transition-colors"
             >
-              <Icon :name="s.icon" class="text-xl" />
+              <Icon v-if="s.icon" :name="s.icon" class="text-xl" />
+              <svg v-else viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5" v-html="s.svg" />
             </a>
           </div>
         </div>
@@ -395,7 +396,9 @@ const profile = computed(() => data.value?.profile ?? null)
 const safeLinks = computed(() => (profile.value?.links ?? []).filter(l => isHttpUrl(l.url)))
 
 // SNSアイコン（入力済みのみ・http(s)のみ）
-const SNS_META: { key: keyof SnsLinks; icon: string; label: string }[] = [
+// icon: @nuxt/icon 名 / svg: brandアイコンが無い場合のインラインSVG（Chatworkはどのセットにも無いため）
+const CHATWORK_SVG = '<path d="M12 2C6.477 2 2 6.03 2 11c0 2.79 1.4 5.28 3.6 6.92V22l3.9-2.16c.8.2 1.63.31 2.5.31 5.523 0 10-4.03 10-9S17.523 2 12 2z"/>'
+const SNS_META: { key: keyof SnsLinks; icon: string; label: string; svg?: string }[] = [
   { key: 'x', icon: 'simple-icons:x', label: 'X' },
   { key: 'instagram', icon: 'simple-icons:instagram', label: 'Instagram' },
   { key: 'linkedin', icon: 'simple-icons:linkedin', label: 'LinkedIn' },
@@ -403,6 +406,7 @@ const SNS_META: { key: keyof SnsLinks; icon: string; label: string }[] = [
   { key: 'youtube', icon: 'simple-icons:youtube', label: 'YouTube' },
   { key: 'note', icon: 'simple-icons:note', label: 'note' },
   { key: 'github', icon: 'simple-icons:github', label: 'GitHub' },
+  { key: 'chatwork', icon: '', label: 'Chatwork', svg: CHATWORK_SVG },
 ]
 const snsList = computed(() =>
   SNS_META

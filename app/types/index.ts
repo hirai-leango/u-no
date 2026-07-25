@@ -26,6 +26,7 @@ export interface SnsLinks {
   youtube?: string
   note?: string
   github?: string
+  chatwork?: string
 }
 
 export interface Resume {
