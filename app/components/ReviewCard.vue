@@ -27,6 +27,7 @@
           </span>
         </div>
         <p v-if="review.fromHeadline" class="text-xs text-ink-mute truncate">{{ review.fromHeadline }}</p>
+        <p class="text-xs text-ink-mute">{{ formatDate(review.updatedAt) }}</p>
       </div>
       <div class="ml-auto flex items-center gap-3 flex-none">
         <button

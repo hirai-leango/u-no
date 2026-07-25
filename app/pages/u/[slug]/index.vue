@@ -244,6 +244,7 @@
                 <span v-if="g.relationship" class="text-[10px] px-2 py-0.5 rounded-sm bg-surface-card text-ink-soft font-semibold flex-none">{{ RELATIONSHIP_LABELS[g.relationship] }}</span>
               </div>
               <p v-if="g.toHeadline" class="text-xs text-ink-mute truncate">{{ g.toHeadline }}</p>
+              <p class="text-xs text-ink-mute">{{ formatDate(g.updatedAt) }}</p>
             </div>
             <button
               v-if="isMyPage"
@@ -478,6 +479,12 @@ onMounted(async () => {
 })
 const givenReviews = ref<Review[]>([])
 const givenCount = computed(() => givenReviews.value.length)
+// 日付表示（ReviewCardと同じ書式で揃える）
+function formatDate(date: any) {
+  if (!date) return ''
+  const d = date.toDate ? date.toDate() : new Date(date)
+  return d.toLocaleDateString('ja-JP', { year: 'numeric', month: 'long', day: 'numeric' })
+}
 // 贈ったエピソードを本人がシェア（相手について書いたことを拡散）
 const givenShareCopiedId = ref('')
 async function shareGiven(g: Review) {
