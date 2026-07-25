@@ -24,6 +24,25 @@
     <p v-else class="text-transparent text-xs mb-4">_</p>
 
     <div class="mb-6">
+      <label class="block text-xs font-bold tracking-widest text-ink-mute mb-2">現在の勤務先（任意）</label>
+      <div class="grid grid-cols-2 gap-3">
+        <input
+          v-model="company"
+          type="text"
+          placeholder="株式会社○○"
+          class="bg-surface border border-surface-border rounded px-4 py-3 text-sm outline-none focus:border-brand transition-colors text-ink placeholder-ink-mute"
+        />
+        <input
+          v-model="title"
+          type="text"
+          placeholder="役職・職種"
+          class="bg-surface border border-surface-border rounded px-4 py-3 text-sm outline-none focus:border-brand transition-colors text-ink placeholder-ink-mute"
+        />
+      </div>
+      <p class="text-xs text-ink-mute mt-2">入力すると、経歴とプロフィールの肩書きに反映されます（あとで編集できます）</p>
+    </div>
+
+    <div class="mb-6">
       <label class="block text-xs font-bold tracking-widest text-ink-mute mb-2">自己紹介（任意）</label>
       <textarea
         v-model="bio"
@@ -53,6 +72,8 @@ const { isSlugAvailable, saveProfile } = useUserProfile()
 
 const slug = ref('')
 const bio = ref('')
+const company = ref('')
+const title = ref('')
 const slugStatus = ref<'idle' | 'ok' | 'taken'>('idle')
 let debounceTimer: ReturnType<typeof setTimeout>
 
@@ -71,13 +92,21 @@ function checkSlug() {
 
 async function submit() {
   if (!user.value || !canSubmit.value) return
+  const c = company.value.trim()
+  const t = title.value.trim()
+  // 勤務先を入力していたら最初の職歴＋肩書きを自動生成（着手ハードルを下げる）
+  const experience = (c || t)
+    ? [{ company: c, title: t, startDate: '', endDate: '', description: '', url: '' }]
+    : []
+  const headline = [c, t].filter(Boolean).join(' / ')
   await saveProfile(user.value.uid, {
     uid: user.value.uid,
     displayName: user.value.displayName ?? '',
     photoURL: user.value.photoURL ?? '',
     slug: slug.value,
     bio: bio.value,
-    resume: { skills: [], experience: [], education: [] },
+    headline,
+    resume: { skills: [], experience, education: [] },
     createdAt: new Date(),
   })
   const redirect = safeInternalRedirect(useRoute().query.redirect as string)
