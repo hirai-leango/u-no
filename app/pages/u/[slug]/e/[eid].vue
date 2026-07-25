@@ -110,6 +110,54 @@ defineOgImageComponent('Episode', {
   height: 630,
 })
 
+// 構造化データ（Review + BreadcrumbList）
+// エピソード＝第三者が実名で書く他己紹介 → schema.org Review にそのまま対応
+const SITE = 'https://u-no.me'
+useHead(() => {
+  const r = review.value
+  const p = profile.value
+  if (!r || !p) return {}
+  const person: Record<string, any> = {
+    '@type': 'Person',
+    name: p.displayName,
+    url: `${SITE}/u/${p.slug}/`,
+  }
+  if (p.photoURL) person.image = p.photoURL
+  if (p.headline) person.jobTitle = p.headline
+
+  const author: Record<string, any> = { '@type': 'Person', name: r.fromDisplayName || 'ユーザー' }
+  if (r.fromSlug) author.url = `${SITE}/u/${r.fromSlug}/`
+  if (r.fromPhotoURL) author.image = r.fromPhotoURL
+  if (r.fromHeadline) author.jobTitle = r.fromHeadline
+
+  const review_: Record<string, any> = {
+    '@type': 'Review',
+    '@id': `${SITE}/u/${p.slug}/e/${r.id}/`,
+    url: `${SITE}/u/${p.slug}/e/${r.id}/`,
+    reviewBody: r.comment,
+    author,
+    itemReviewed: person,
+    publisher: { '@type': 'Organization', name: 'ユーノーミー', url: `${SITE}/` },
+  }
+  if (r.createdAt) review_.datePublished = String(r.createdAt).slice(0, 10)
+
+  const breadcrumb = {
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'ホーム', item: `${SITE}/` },
+      { '@type': 'ListItem', position: 2, name: `${p.displayName}さん`, item: `${SITE}/u/${p.slug}/` },
+      { '@type': 'ListItem', position: 3, name: 'エピソード' },
+    ],
+  }
+
+  return {
+    script: [{
+      type: 'application/ld+json',
+      innerHTML: JSON.stringify({ '@context': 'https://schema.org', '@graph': [review_, breadcrumb] }),
+    }],
+  }
+})
+
 function onAvatarError(e: Event) {
   const t = e.target as HTMLImageElement
   t.style.visibility = 'hidden'

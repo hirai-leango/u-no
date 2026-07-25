@@ -330,22 +330,64 @@ defineOgImageComponent('Profile', {
   height: 630,
 })
 
-// Person 構造化データ（JSON-LD）
+// 構造化データ（ProfilePage > Person + Review[] + BreadcrumbList）
+// 他者が実名で書く他己紹介＝一次情報。ProfilePage/Review はu-no.meの本質にそのまま対応し
+// E-E-A-T（信頼性）の強いシグナルになる
 useHead(() => {
   const p = profileData.value
   if (!p) return {}
+  const SITE = 'https://u-no.me'
+  const url = `${SITE}/u/${p.slug}/`
   const sameAs = Object.values(p.sns ?? {}).filter(u => isHttpUrl(u ?? '')) as string[]
-  const json: Record<string, any> = {
-    '@context': 'https://schema.org',
+
+  const person: Record<string, any> = {
     '@type': 'Person',
+    '@id': `${url}#person`,
     name: p.displayName,
-    url: `https://u-no.me/u/${p.slug}/`,
+    url,
   }
-  if (p.photoURL) json.image = p.photoURL
-  if (p.headline) json.jobTitle = p.headline
-  if (p.bio) json.description = p.bio
-  if (sameAs.length) json.sameAs = sameAs
-  return { script: [{ type: 'application/ld+json', innerHTML: JSON.stringify(json) }] }
+  if (p.photoURL) person.image = p.photoURL
+  if (p.headline) person.jobTitle = p.headline
+  if (p.bio) person.description = p.bio
+  if (sameAs.length) person.sameAs = sameAs
+
+  // 受け取ったエピソードをReviewとして埋め込む（最大20件）
+  const rvs = (data.value?.reviews ?? []).slice(0, 20)
+  if (rvs.length) {
+    person.review = rvs.map((r: any) => {
+      const author: Record<string, any> = { '@type': 'Person', name: r.fromDisplayName || 'ユーザー' }
+      if (r.fromSlug) author.url = `${SITE}/u/${r.fromSlug}/`
+      if (r.fromHeadline) author.jobTitle = r.fromHeadline
+      const rev: Record<string, any> = { '@type': 'Review', reviewBody: r.comment, author }
+      if (r.createdAt) rev.datePublished = String(r.createdAt).slice(0, 10)
+      return rev
+    })
+    person.interactionStatistic = {
+      '@type': 'InteractionCounter',
+      interactionType: 'https://schema.org/WriteAction',
+      userInteractionCount: data.value?.reviews?.length ?? rvs.length,
+    }
+  }
+
+  const profilePage = {
+    '@type': 'ProfilePage',
+    '@id': url,
+    url,
+    mainEntity: person,
+  }
+  const breadcrumb = {
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'ホーム', item: `${SITE}/` },
+      { '@type': 'ListItem', position: 2, name: `${p.displayName}さん` },
+    ],
+  }
+  return {
+    script: [{
+      type: 'application/ld+json',
+      innerHTML: JSON.stringify({ '@context': 'https://schema.org', '@graph': [profilePage, breadcrumb] }),
+    }],
+  }
 })
 
 const profile = computed(() => data.value?.profile ?? null)
