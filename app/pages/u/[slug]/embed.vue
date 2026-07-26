@@ -14,15 +14,22 @@
         </div>
       </a>
 
-      <!-- 上位エピソード -->
+      <!-- 上位エピソード（他画面と同じ from→to カセット形式に統一） -->
       <div v-if="topReviews.length" class="divide-y divide-line">
         <div v-for="r in topReviews" :key="r.id" class="p-4">
-          <p class="text-sm text-ink-soft leading-relaxed">{{ truncate(r.comment, 96) }}</p>
-          <div class="flex items-center gap-1.5 mt-2 text-xs text-ink-mute">
-            <img :src="hiResAvatar(r.fromPhotoURL, 96)" :alt="`${r.fromDisplayName || 'ある方'}さんのアイコン`" class="w-5 h-5 rounded-full object-cover flex-none ring-1 ring-line bg-surface-card" />
-            <span class="font-semibold text-ink-soft">{{ r.fromDisplayName || 'ある方' }}さん</span>
-            <span v-if="relLabel(r)" class="px-1.5 py-0.5 rounded-sm bg-surface-card text-ink-soft font-semibold">{{ relLabel(r) }}</span>
+          <div class="flex items-center gap-2 mb-2">
+            <img :src="hiResAvatar(r.fromPhotoURL, 96)" :alt="`${r.fromDisplayName || 'ある方'}さんのアイコン`" class="w-8 h-8 rounded-full object-cover flex-none ring-1 ring-line bg-surface-card" />
+            <span class="text-ink-mute text-sm flex-none">→</span>
+            <img :src="hiResAvatar(profile.photoURL, 96)" :alt="`${profile.displayName}さんのアイコン`" class="w-8 h-8 rounded-full object-cover flex-none ring-1 ring-line bg-surface-card" />
+            <div class="min-w-0 flex-1">
+              <div class="flex items-center gap-1.5">
+                <span class="text-xs font-bold text-ink truncate">{{ r.fromDisplayName || 'ある方' }}さんより</span>
+                <span v-if="relLabel(r)" class="text-[10px] px-1.5 py-0.5 rounded-sm bg-surface-card text-ink-soft font-semibold flex-none">{{ relLabel(r) }}</span>
+              </div>
+              <p v-if="r.fromHeadline" class="text-[11px] text-ink-mute truncate">{{ r.fromHeadline }}</p>
+            </div>
           </div>
+          <p class="text-sm text-ink-soft leading-relaxed">{{ truncate(r.comment, 96) }}</p>
         </div>
       </div>
       <div v-else class="p-4 text-center text-xs text-ink-mute">まだ紹介がありません</div>
