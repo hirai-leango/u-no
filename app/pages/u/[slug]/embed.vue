@@ -19,6 +19,7 @@
         <div v-for="r in topReviews" :key="r.id" class="p-4">
           <p class="text-sm text-ink-soft leading-relaxed">{{ truncate(r.comment, 96) }}</p>
           <div class="flex items-center gap-1.5 mt-2 text-xs text-ink-mute">
+            <img :src="hiResAvatar(r.fromPhotoURL, 96)" :alt="`${r.fromDisplayName || 'ある方'}さんのアイコン`" class="w-5 h-5 rounded-full object-cover flex-none ring-1 ring-line bg-surface-card" />
             <span class="font-semibold text-ink-soft">{{ r.fromDisplayName || 'ある方' }}さん</span>
             <span v-if="relLabel(r)" class="px-1.5 py-0.5 rounded-sm bg-surface-card text-ink-soft font-semibold">{{ relLabel(r) }}</span>
           </div>
@@ -29,7 +30,7 @@
       <!-- フッターCTA -->
       <a :href="profileUrl" target="_blank" rel="noopener" class="flex items-center justify-center gap-2 py-3 border-t border-line text-sm font-bold text-brand hover:bg-brand/5 transition-colors">
         <img src="/favicon.svg" alt="" class="w-4 h-5" style="image-rendering: pixelated;" />
-        ユーノーミーで信頼を見る →
+        すべての紹介を見る →
       </a>
     </div>
 
