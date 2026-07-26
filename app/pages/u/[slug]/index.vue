@@ -471,6 +471,15 @@ const facepile = computed(() => reviews.value.slice(0, 6))
 const isMyPage = computed(() =>
   !!currentUser.value && !!profile.value && currentUser.value.uid === profile.value.uid)
 
+// 受け取り通知（ヘッダー赤ドット）を、本人がマイページを見たらクリア（最終閲覧件数を更新）
+const hasNewReceived = useState('hasNewReceived', () => false)
+watch(isMyPage, (mine) => {
+  if (!import.meta.client || !mine || !currentUser.value || !profile.value) return
+  hasNewReceived.value = false
+  const directReceived = (data.value?.reviews ?? []).filter((r: any) => r.toUserId === profile.value!.uid).length
+  saveProfile(currentUser.value.uid, { lastSeenReceivedCount: directReceived }).catch(() => {})
+}, { immediate: true })
+
 // この人が贈ったエピソード一覧（受け取った数は reviews.length）
 const { getGivenReviews, deleteReview } = useReviews()
 const { getProfileByUid, saveProfile } = useUserProfile()

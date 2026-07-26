@@ -8,7 +8,7 @@
         </NuxtLink>
         <nav v-if="user" class="relative flex items-center" ref="menuRef">
           <button
-            class="flex items-center gap-1.5"
+            class="relative flex items-center gap-1.5"
             @click="menuOpen = !menuOpen"
           >
             <img
@@ -16,6 +16,7 @@
               :src="user.photoURL"
               class="w-8 h-8 rounded-full cursor-pointer hover:ring-2 ring-brand transition-all"
             />
+            <span v-if="hasNewReceived" class="absolute -top-0.5 left-6 w-2.5 h-2.5 rounded-full bg-warn ring-2 ring-white" title="新しいエピソードが届いています"></span>
             <Icon name="heroicons:chevron-down-20-solid" class="text-ink-mute text-base transition-transform" :class="menuOpen ? 'rotate-180' : ''" />
           </button>
 
@@ -25,10 +26,11 @@
           >
             <NuxtLink
               :to="`/u/${userSlug}/`"
-              class="block px-4 py-2.5 text-sm text-ink hover:bg-brand/5 transition-colors"
+              class="flex items-center gap-2 px-4 py-2.5 text-sm text-ink hover:bg-brand/5 transition-colors"
               @click="menuOpen = false"
             >
               マイページ
+              <span v-if="hasNewReceived" class="text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-warn/10 text-warn">新着</span>
             </NuxtLink>
             <button
               class="block w-full text-left px-4 py-2.5 text-sm font-semibold text-brand hover:bg-brand/5 transition-colors"
@@ -129,11 +131,18 @@ const showFloatingCta = computed(() => !user.value && !isAuthPage.value)
 
 const mediaCategories = useMediaCategories()
 
+// 新着の受け取りエピソード（ヘッダーの赤ドット）。マイページ閲覧でクリアされる（index.vue）
+const hasNewReceived = useState('hasNewReceived', () => false)
 watch(user, async (u) => {
   if (!u) return
   const { getProfileByUid } = useUserProfile()
+  const { getReceivedCount } = useReviews()
   const profile = await getProfileByUid(u.uid)
   userSlug.value = profile?.slug ?? ''
+  try {
+    const count = await getReceivedCount(u.uid)
+    hasNewReceived.value = count > (profile?.lastSeenReceivedCount ?? 0)
+  } catch { /* 通知チェック失敗は無視 */ }
 }, { immediate: true })
 
 // メニュー外クリックで閉じる

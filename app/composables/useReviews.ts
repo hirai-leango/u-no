@@ -81,5 +81,12 @@ export function useReviews() {
     return snap.data().count
   }
 
-  return { getReviews, getMyReview, upsertReview, deleteReview, getGivenCount, getGivenReviews }
+  // 受け取ったエピソード数（toUserId == 自分）。新着通知の判定に使う（軽い集計クエリ）
+  async function getReceivedCount(toUserId: string): Promise<number> {
+    const q = query(collection(db, 'reviews'), where('toUserId', '==', toUserId))
+    const snap = await getCountFromServer(q)
+    return snap.data().count
+  }
+
+  return { getReviews, getMyReview, upsertReview, deleteReview, getGivenCount, getGivenReviews, getReceivedCount }
 }

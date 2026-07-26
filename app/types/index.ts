@@ -16,6 +16,7 @@ export interface UserProfile {
   sns?: SnsLinks
   celebratedMutuals?: string[]
   claimedPendingIds?: string[]
+  lastSeenReceivedCount?: number
   createdAt: Date
 }
 
