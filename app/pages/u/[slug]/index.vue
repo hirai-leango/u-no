@@ -230,11 +230,11 @@
 
     <!-- 贈ったエピソード一覧（宛先を主役に） -->
     <section v-show="tab === 'given'">
-      <div v-if="givenReviews.length === 0" class="text-center py-12 text-ink-mute">
+      <div v-if="visibleGivenReviews.length === 0" class="text-center py-12 text-ink-mute">
         <p class="text-sm">まだ誰にもエピソードを贈っていません。</p>
       </div>
       <div v-else>
-        <div v-for="g in givenReviews" :key="g.id" class="py-5 border-b border-line">
+        <div v-for="g in visibleGivenReviews" :key="g.id" class="py-5 border-b border-line">
           <div class="flex items-center gap-2 mb-2">
             <!-- 贈った本人（プロフィール主） -->
             <img :src="hiResAvatar(profile.photoURL, 96)" alt="" class="w-9 h-9 rounded-full object-cover flex-none ring-1 ring-line bg-surface-card" />
@@ -486,7 +486,11 @@ onMounted(async () => {
   reviews.value = [...reviews.value]
 })
 const givenReviews = ref<Review[]>([])
-const givenCount = computed(() => givenReviews.value.length)
+// プライバシー: 未登録の相手への贈ったエピソードは、相手が受け取るまで本人以外に見せない。
+// （未登録/未受け取りは toSlug が解決されず空。登録済み相手のみ toSlug を持つ）
+const visibleGivenReviews = computed(() =>
+  isMyPage.value ? givenReviews.value : givenReviews.value.filter(g => !!g.toSlug))
+const givenCount = computed(() => visibleGivenReviews.value.length)
 // 日付表示（ReviewCardと同じ書式で揃える）
 function formatDate(date: any) {
   if (!date) return ''
