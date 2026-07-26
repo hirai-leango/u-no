@@ -29,7 +29,7 @@
     <div v-else>
       <h1 class="text-2xl font-black text-ink mb-2">知人について書く</h1>
       <p class="text-sm text-ink-mute mb-6 leading-relaxed">
-        まだユーノーミーに登録していない人にも、先にエピソードを書いて贈れます。相手は受け取るために登録します。
+        まだユーノーミーに登録していない人にも、先にエピソードを書いて贈れます。
       </p>
 
       <label class="block text-xs font-bold tracking-widest text-ink-mute mb-2">相手のお名前</label>
