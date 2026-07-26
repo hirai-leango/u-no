@@ -92,9 +92,18 @@ useSeoMeta({
   ogSiteName: 'ユーノーミー',
   twitterCard: 'summary_large_image',
 })
+const ogTop = computed(() => reviews.value[0] ?? null)
+function ogTruncate(s: string, n: number) {
+  const clean = (s ?? '').replace(/\s+/g, ' ').trim()
+  return clean.length > n ? clean.slice(0, n) + '…' : clean
+}
 defineOgImageComponent('Welcome', {
   name: ogName.value,
   count: reviews.value.length,
+  comment: ogTruncate(ogTop.value?.comment ?? '', 60),
+  fromName: ogTop.value?.fromDisplayName ?? '',
+  fromPhoto: ogTop.value?.fromPhotoURL ?? '',
+  fromHeadline: ogTruncate(ogTop.value?.fromHeadline ?? '', 28),
 }, { width: 1200, height: 630 })
 const currentUser = useCurrentUser()
 const { track } = useTrack()
