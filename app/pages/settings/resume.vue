@@ -205,8 +205,8 @@
 
     <!-- 埋め込みバッジ -->
     <section v-if="slug" class="mb-8">
-      <label class="block text-xs font-bold tracking-widest text-ink-mute mb-2">埋め込みバッジ</label>
-      <p class="text-xs text-ink-mute mb-3 leading-relaxed">あなたのサイト・提案書・ポートフォリオに貼ると、受け取った信頼を見せられます（自動で更新）。</p>
+      <label class="block text-xs font-bold tracking-widest text-ink-mute mb-2">iframe埋め込み</label>
+      <p class="text-xs text-ink-mute mb-3 leading-relaxed">あなたのサイト・提案書・ポートフォリオに貼ると、受け取ったエピソードを共有できます。</p>
       <div class="border border-surface-border rounded overflow-hidden mb-3" style="height:440px">
         <iframe :src="`/u/${slug}/embed/`" width="100%" height="440" style="border:none" title="埋め込みプレビュー"></iframe>
       </div>
