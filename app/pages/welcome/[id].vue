@@ -1,8 +1,6 @@
 <template>
   <div class="max-w-md mx-auto pt-8">
-    <div v-if="loading" class="text-center py-20 text-ink-mute text-sm">読み込み中…</div>
-
-    <div v-else-if="!pending" class="text-center py-20">
+    <div v-if="!pending" class="text-center py-20">
       <p class="text-ink-mute text-sm">リンクが無効か、期限切れです。</p>
       <NuxtLink to="/" class="inline-block mt-4 text-brand font-semibold hover:underline">トップへ</NuxtLink>
     </div>
@@ -73,15 +71,31 @@
 import type { Relationship } from '~/types'
 import { RELATIONSHIP_LABELS } from '~/types'
 
-useSeoMeta({
-  robots: 'noindex, nofollow',
-  title: 'エピソードが届いています | ユーノーミー',
-})
-
 const route = useRoute()
 const id = computed(() => route.params.id as string)
-const { getPending, getPendingReviews, claimPending } = useClaim()
+const { claimPending } = useClaim()
 const { getProfileByUid, saveProfile } = useUserProfile()
+
+// SSRで取得（OG画像・リンクプレビュー・初回描画のため）
+const { data } = await useFetch(`/api/pending/${id.value}`)
+const pending = computed<any>(() => data.value?.pending ?? null)
+const reviews = computed<any[]>(() => sortByCredibility((data.value?.reviews ?? []) as any))
+
+const ogName = computed(() => pending.value?.name ?? '')
+useSeoMeta({
+  robots: 'noindex, nofollow',
+  title: () => pending.value ? `${pending.value.name}さんへエピソードが届いています | ユーノーミー` : 'ユーノーミー',
+  ogTitle: () => pending.value ? `${pending.value.name}さんへ、エピソードが届いています` : 'ユーノーミー',
+  description: () => pending.value ? `知人があなたについて書いた「他己紹介」が届いています。受け取ると、あなたのプロフィールに表示されます。` : '',
+  ogDescription: () => pending.value ? `知人があなたについて書いた「他己紹介」が届いています。受け取ると、あなたのプロフィールに表示されます。` : '',
+  ogType: 'website',
+  ogSiteName: 'ユーノーミー',
+  twitterCard: 'summary_large_image',
+})
+defineOgImageComponent('Welcome', {
+  name: ogName.value,
+  count: reviews.value.length,
+}, { width: 1200, height: 630 })
 const currentUser = useCurrentUser()
 const { track } = useTrack()
 const { showToast } = useToast()
@@ -98,27 +112,13 @@ async function claimToMyAccount() {
     const ids = Array.isArray(my?.claimedPendingIds) ? my!.claimedPendingIds : []
     if (!ids.includes(id.value)) await saveProfile(currentUser.value.uid, { claimedPendingIds: [...ids, id.value] })
     track('claim_converted', { logged_in: true })
-    if (my?.slug) navigateTo(`/u/${my.slug}/`)
-    else if (pending.value) pending.value.claimedByUid = currentUser.value.uid
+    navigateTo(my?.slug ? `/u/${my.slug}/` : '/')
   } catch {
     showToast('受け取りに失敗しました', { type: 'error' })
   } finally {
     claiming.value = false
   }
 }
-
-const pending = ref<any>(null)
-const reviews = ref<any[]>([])
-const loading = ref(true)
-
-onMounted(async () => {
-  try {
-    pending.value = await getPending(id.value)
-    if (pending.value) reviews.value = sortByCredibility(await getPendingReviews(id.value) as any)
-  } finally {
-    loading.value = false
-  }
-})
 
 const claimed = computed(() => !!pending.value?.claimedByUid)
 const initial = computed(() => (pending.value?.name ?? '?').trim().charAt(0) || '?')
