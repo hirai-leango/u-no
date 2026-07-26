@@ -33,6 +33,15 @@ export function useClaim() {
     return snap.docs.map(d => ({ id: d.id, ...d.data() }) as Review)
   }
 
+  // 自分が「知人について書いた」相手（仮の器）の一覧。新しい順
+  async function getMyPendings(createdBy: string): Promise<any[]> {
+    const q = query(collection(db, 'pendingRecipients'), where('createdBy', '==', createdBy))
+    const snap = await getDocs(q)
+    return snap.docs
+      .map(d => ({ id: d.id, ...d.data() }) as any)
+      .sort((a, b) => ((b.createdAt as any)?.toMillis?.() ?? 0) - ((a.createdAt as any)?.toMillis?.() ?? 0))
+  }
+
   // 受け取り確定：仮の器を自分のuidでclaimする（未claimのみ・1回だけ）
   async function claimPending(pendingId: string, uid: string): Promise<boolean> {
     const pending = await getPending(pendingId)
@@ -44,5 +53,5 @@ export function useClaim() {
     return true
   }
 
-  return { createPending, getPending, getPendingReviews, claimPending }
+  return { createPending, getPending, getPendingReviews, claimPending, getMyPendings }
 }

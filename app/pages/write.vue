@@ -68,6 +68,26 @@
       >
         {{ submitting ? '保存中…' : 'エピソードを書いて贈る' }}
       </button>
+
+      <!-- 書いた相手リスト（再送・状態確認） -->
+      <section v-if="myPendings.length" class="mt-10">
+        <p class="text-xs font-bold tracking-widest text-ink-mute mb-3">書いた相手（{{ myPendings.length }}人）</p>
+        <div class="border-t border-line">
+          <div v-for="p in myPendings" :key="p.id" class="flex items-center gap-3 py-3 border-b border-line">
+            <div class="min-w-0 flex-1">
+              <p class="text-sm font-semibold text-ink truncate">{{ p.name }}さん</p>
+              <p class="text-xs" :class="p.claimedByUid ? 'text-good' : 'text-ink-mute'">
+                {{ p.claimedByUid ? '受け取り済み' : '未受け取り' }}
+              </p>
+            </div>
+            <button
+              v-if="!p.claimedByUid"
+              class="flex-none text-xs font-bold px-3 py-1.5 rounded border border-brand text-brand hover:bg-brand/5 transition-colors"
+              @click="resend(p)"
+            >{{ resentId === p.id ? 'コピー済み' : 'リンクを送る' }}</button>
+          </div>
+        </div>
+      </section>
     </div>
   </div>
 </template>
@@ -90,10 +110,31 @@ const SELECT_REL_LABELS: Record<Relationship, string> = {
 
 const currentUser = useCurrentUser()
 const { getProfileByUid } = useUserProfile()
-const { createPending } = useClaim()
+const { createPending, getMyPendings } = useClaim()
 const { upsertReview } = useReviews()
 const { track } = useTrack()
 const { showToast } = useToast()
+
+// 書いた相手リスト（再送・状態確認）
+const myPendings = ref<any[]>([])
+const resentId = ref('')
+async function loadMyPendings() {
+  if (!currentUser.value) return
+  myPendings.value = await getMyPendings(currentUser.value.uid)
+}
+watch(currentUser, loadMyPendings, { immediate: true })
+async function resend(p: any) {
+  const url = `${window.location.origin}/welcome/${p.id}/`
+  const text = `${p.name}さんへエピソードを書きました。受け取ってください。`
+  if (navigator.share) {
+    try { await navigator.share({ title: 'ユーノーミー', text, url }) } catch { /* キャンセル */ }
+  } else {
+    await navigator.clipboard.writeText(url)
+    resentId.value = p.id
+    showToast('リンクをコピーしました')
+    setTimeout(() => (resentId.value = ''), 2000)
+  }
+}
 
 const name = ref('')
 const relationship = ref<Relationship | ''>('')
@@ -126,6 +167,7 @@ async function submit() {
     track('episode_written', { relationship: relationship.value, to_pending: true })
     track('invite_sent', { source: 'write_nonuser' })
     done.value = true
+    loadMyPendings()
   } catch (e) {
     showToast('保存に失敗しました。時間をおいて再度お試しください', { type: 'error' })
   } finally {
