@@ -132,6 +132,7 @@ async function submit() {
     ref,
   })
   const redirect = safeInternalRedirect(useRoute().query.redirect as string)
-  navigateTo(redirect || `/u/${slug.value}/`)
+  // 通常はまず行動喚起(/start/)へ。claim受け取り等のredirect指定があれば優先
+  navigateTo(redirect || '/start/')
 }
 </script>
