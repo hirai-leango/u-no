@@ -117,6 +117,29 @@
       </div>
     </section>
 
+    <!-- 埋め込みバッジ -->
+    <section v-if="slug" class="mb-8">
+      <label class="block text-xs font-bold tracking-widest text-ink-mute mb-2">埋め込みバッジ</label>
+      <p class="text-xs text-ink-mute mb-3 leading-relaxed">あなたのサイト・提案書・ポートフォリオに貼ると、受け取った信頼を見せられます（自動で更新）。</p>
+      <div class="border border-surface-border rounded overflow-hidden mb-3" style="height:440px">
+        <iframe :src="`/u/${slug}/embed/`" width="100%" height="440" style="border:none" title="埋め込みプレビュー"></iframe>
+      </div>
+      <div class="relative">
+        <textarea
+          ref="snippetEl"
+          :value="embedSnippet"
+          readonly
+          rows="3"
+          class="w-full bg-surface border border-surface-border rounded px-3 py-2 pr-20 text-xs font-mono outline-none text-ink-soft resize-none"
+          @focus="($event.target as HTMLTextAreaElement).select()"
+        />
+        <button
+          class="absolute top-2 right-2 text-xs font-bold px-3 py-1.5 rounded bg-brand text-white hover:bg-brand-hover transition-colors"
+          @click="copyEmbed"
+        >{{ embedCopied ? 'コピー済み' : 'コピー' }}</button>
+      </div>
+    </section>
+
     <!-- 検索設定 -->
     <div class="bg-surface border border-surface-border rounded-none p-6 mb-8 flex flex-wrap items-center justify-between">
       <div>
@@ -238,6 +261,23 @@ import { getAuth, updateProfile } from 'firebase/auth'
 const user = useCurrentUser()
 const { getProfileByUid, saveProfile } = useUserProfile()
 const { track } = useTrack()
+
+// 埋め込みバッジ
+const slug = ref('')
+const embedCopied = ref(false)
+const embedSnippet = computed(() =>
+  `<iframe src="https://u-no.me/u/${slug.value}/embed/" width="100%" height="440" style="border:none;max-width:480px" title="ユーノーミー"></iframe>`,
+)
+async function copyEmbed() {
+  try {
+    await navigator.clipboard.writeText(embedSnippet.value)
+    embedCopied.value = true
+    track('embed_snippet_copied', {})
+    setTimeout(() => (embedCopied.value = false), 2000)
+  } catch {
+    showToast('コピーに失敗しました', { type: 'error' })
+  }
+}
 const saving = ref(false)
 // プロフィール画像（クライアントで正方形リサイズ→Firebase Storage）
 async function uploadAvatar(uid: string, file: File): Promise<string> {
@@ -306,6 +346,7 @@ onMounted(async () => {
   if (profile?.resume) Object.assign(form, profile.resume)
   photoURL.value = profile?.photoURL ?? user.value?.photoURL ?? ''
   displayName.value = profile?.displayName ?? user.value?.displayName ?? ''
+  slug.value = profile?.slug ?? ''
   headline.value = profile?.headline ?? ''
   bio.value = profile?.bio ?? ''
   links.value = profile?.links ?? []
