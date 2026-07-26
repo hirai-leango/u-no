@@ -1,8 +1,8 @@
 <template>
-  <div class="min-h-screen bg-white p-3 font-sans">
-    <div v-if="profile" class="max-w-[480px] mx-auto border border-surface-border rounded-xl overflow-hidden">
-      <!-- ヘッダー -->
-      <a :href="profileUrl" target="_blank" rel="noopener" class="flex items-center gap-3 p-4 bg-surface-deep/60 hover:bg-surface-deep transition-colors">
+  <div class="h-screen bg-white flex flex-col p-3 font-sans">
+    <div v-if="profile" class="flex flex-col flex-1 min-h-0 w-full max-w-[480px] mx-auto border border-surface-border rounded-xl overflow-hidden">
+      <!-- ヘッダー（固定）：本人 -->
+      <a :href="profileUrl" target="_blank" rel="noopener" class="flex items-center gap-3 p-4 flex-none bg-surface-deep/60 hover:bg-surface-deep transition-colors">
         <img :src="hiResAvatar(profile.photoURL, 96)" :alt="`${profile.displayName}さんのアイコン`" class="w-12 h-12 rounded-full object-cover flex-none ring-1 ring-line bg-surface-card" />
         <div class="min-w-0 flex-1">
           <p class="font-bold text-ink truncate">{{ profile.displayName }}</p>
@@ -14,31 +14,40 @@
         </div>
       </a>
 
-      <!-- 上位エピソード（他画面と同じ from→to カセット形式に統一） -->
-      <div v-if="topReviews.length" class="divide-y divide-line">
-        <div v-for="r in topReviews" :key="r.id" class="p-4">
-          <div class="flex items-center gap-2 mb-2">
-            <img :src="hiResAvatar(r.fromPhotoURL, 96)" :alt="`${r.fromDisplayName || 'ある方'}さんのアイコン`" class="w-8 h-8 rounded-full object-cover flex-none ring-1 ring-line bg-surface-card" />
-            <span class="text-ink-mute text-sm flex-none">→</span>
-            <img :src="hiResAvatar(profile.photoURL, 96)" :alt="`${profile.displayName}さんのアイコン`" class="w-8 h-8 rounded-full object-cover flex-none ring-1 ring-line bg-surface-card" />
-            <div class="min-w-0 flex-1">
-              <div class="flex items-center gap-1.5">
-                <span class="text-xs font-bold text-ink truncate">{{ r.fromDisplayName || 'ある方' }}さんより</span>
-                <span v-if="relLabel(r)" class="text-[10px] px-1.5 py-0.5 rounded-sm bg-surface-card text-ink-soft font-semibold flex-none">{{ relLabel(r) }}</span>
+      <!-- エピソード（スクロール領域・数件ずつ表示） -->
+      <div ref="scrollEl" class="flex-1 min-h-0 overflow-y-auto">
+        <div v-if="sortedReviews.length" class="divide-y divide-line">
+          <div v-for="r in shownReviews" :key="r.id" class="p-4">
+            <div class="flex items-center gap-2 mb-2">
+              <img :src="hiResAvatar(r.fromPhotoURL, 96)" :alt="`${r.fromDisplayName || 'ある方'}さんのアイコン`" class="w-8 h-8 rounded-full object-cover flex-none ring-1 ring-line bg-surface-card" />
+              <span class="text-ink-mute text-sm flex-none">→</span>
+              <img :src="hiResAvatar(profile.photoURL, 96)" :alt="`${profile.displayName}さんのアイコン`" class="w-8 h-8 rounded-full object-cover flex-none ring-1 ring-line bg-surface-card" />
+              <div class="min-w-0 flex-1">
+                <div class="flex items-center gap-1.5">
+                  <span class="text-xs font-bold text-ink truncate">{{ r.fromDisplayName || 'ある方' }}さんより</span>
+                  <span v-if="relLabel(r)" class="text-[10px] px-1.5 py-0.5 rounded-sm bg-surface-card text-ink-soft font-semibold flex-none">{{ relLabel(r) }}</span>
+                </div>
+                <p v-if="r.fromHeadline" class="text-[11px] text-ink-mute truncate">{{ r.fromHeadline }}</p>
               </div>
-              <p v-if="r.fromHeadline" class="text-[11px] text-ink-mute truncate">{{ r.fromHeadline }}</p>
             </div>
+            <p class="text-sm text-ink-soft leading-relaxed">{{ truncate(r.comment, 140) }}</p>
           </div>
-          <p class="text-sm text-ink-soft leading-relaxed">{{ truncate(r.comment, 96) }}</p>
+          <!-- 追加読み込みのセンチネル -->
+          <div ref="sentinel" class="h-1"></div>
         </div>
+        <div v-else class="p-6 text-center text-xs text-ink-mute">まだ紹介がありません</div>
       </div>
-      <div v-else class="p-4 text-center text-xs text-ink-mute">まだ紹介がありません</div>
 
-      <!-- フッターCTA -->
-      <a :href="profileUrl" target="_blank" rel="noopener" class="flex items-center justify-center gap-2 py-3 border-t border-line text-sm font-bold text-brand hover:bg-brand/5 transition-colors">
-        <img src="/favicon.svg" alt="" class="w-4 h-5" style="image-rendering: pixelated;" />
-        すべての紹介を見る →
-      </a>
+      <!-- フッター（固定）：ユーノーミー紹介＋つくるCTA（バイラル） -->
+      <div class="flex-none border-t border-line bg-surface-deep/40 px-4 py-3">
+        <p class="text-[11px] text-ink-mute leading-relaxed mb-2">
+          <img src="/favicon.svg" alt="" class="inline-block w-3 h-4 mr-1 align-[-2px]" style="image-rendering: pixelated;" />
+          <span class="font-bold text-ink-soft">ユーノーミー</span>は、知人が書く「他己紹介」であなたの信頼を可視化するサービスです。
+        </p>
+        <a :href="signupUrl" target="_blank" rel="noopener" class="block w-full text-center text-xs font-bold text-white bg-brand hover:bg-brand-hover transition-colors rounded-md py-2">
+          自分も無料でつくる →
+        </a>
+      </div>
     </div>
 
     <div v-else class="max-w-[480px] mx-auto p-6 text-center text-sm text-ink-mute">
@@ -53,7 +62,6 @@ import { RELATIONSHIP_LABELS } from '~/types'
 
 // 埋め込み専用：サイトのヘッダー/フッターを外す・検索非対象
 definePageMeta({ layout: false })
-useSeoMeta({ robots: 'noindex, nofollow' })
 
 const SITE = 'https://u-no.me'
 const route = useRoute()
@@ -63,11 +71,29 @@ const { data } = await useFetch(`/api/profile/${slug.value}`)
 const profile = computed(() => data.value?.profile ?? null)
 const reviews = computed(() => data.value?.reviews ?? [])
 
-// S0-2: 信頼できる順の上位2件（相互判定は埋め込みでは省略＝関係性・具体性で並べる）
-const topReviews = computed(() => sortByCredibility(reviews.value as any).slice(0, 2))
+// 信頼できる順（相互判定は埋め込みでは省略＝関係性・具体性で並べる）
+const sortedReviews = computed(() => sortByCredibility(reviews.value as any))
+
+// X風：数件ずつ表示。スクロールで下端に達したら増やす
+const visibleCount = ref(5)
+const shownReviews = computed(() => sortedReviews.value.slice(0, visibleCount.value))
+const scrollEl = ref<HTMLElement | null>(null)
+const sentinel = ref<HTMLElement | null>(null)
+let io: IntersectionObserver | null = null
+onMounted(() => {
+  if (!sentinel.value) return
+  io = new IntersectionObserver((entries) => {
+    if (entries[0]?.isIntersecting && visibleCount.value < sortedReviews.value.length) {
+      visibleCount.value += 5
+    }
+  }, { root: scrollEl.value, rootMargin: '0px 0px 120px 0px' })
+  io.observe(sentinel.value)
+})
+onBeforeUnmount(() => io?.disconnect())
 
 // 招待経由の登録を測るため ?ref に本人uidを付与（K計測）
 const profileUrl = computed(() => `${SITE}/u/${slug.value}/?ref=${profile.value?.uid ?? ''}`)
+const signupUrl = computed(() => `${SITE}/signup/?ref=${profile.value?.uid ?? ''}`)
 
 // 受け取り表示は「書いた人が本人にとって何者か」の視点に反転（ReviewCardと統一）
 const RECEIVED_REL_DISPLAY: Partial<Record<Relationship, string>> = { boss: '部下', subordinate: '上司' }
@@ -84,5 +110,6 @@ function truncate(s: string, n: number) {
 
 useSeoMeta({
   title: () => profile.value ? `${profile.value.displayName} | ユーノーミー` : 'ユーノーミー',
+  robots: 'noindex, nofollow',
 })
 </script>
