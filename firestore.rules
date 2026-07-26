@@ -31,6 +31,24 @@ service cloud.firestore {
         && resource.data.fromUserId == request.auth.uid;
     }
 
+    // 未登録の受け取り予定者（claim用の仮の器）
+    //  作成: ログイン済みが自分名義(createdBy)で作れる
+    //  受け取り(claim): 未claimのものを、自分のuidで1回だけ確定できる（名前・作成者は改変不可）
+    match /pendingRecipients/{pendingId} {
+      allow read: if true;
+      allow create: if request.auth != null
+        && request.resource.data.createdBy == request.auth.uid
+        && request.resource.data.name is string
+        && request.resource.data.name.size() > 0
+        && request.resource.data.name.size() <= 60
+        && request.resource.data.claimedByUid == null;
+      allow update: if request.auth != null
+        && resource.data.claimedByUid == null
+        && request.resource.data.claimedByUid == request.auth.uid
+        && request.resource.data.createdBy == resource.data.createdBy
+        && request.resource.data.name == resource.data.name;
+    }
+
     // 公正さ評価(Good/Bad): 誰でも読める、自分の投票だけ作成・削除できる
     match /votes/{voteId} {
       allow read: if true;
