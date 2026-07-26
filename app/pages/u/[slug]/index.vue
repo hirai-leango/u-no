@@ -316,6 +316,7 @@ import { RELATIONSHIP_LABELS } from '~/types'
 const route = useRoute()
 const slug = computed(() => route.params.slug as string)
 const currentUser = useCurrentUser()
+const { track } = useTrack()
 
 const { data } = await useFetch(`/api/profile/${slug.value}`)
 
@@ -492,6 +493,7 @@ function formatDate(date: any) {
 const givenShareCopiedId = ref('')
 async function shareGiven(g: Review) {
   if (!g.toSlug) return
+  track('episode_shared', { kind: 'given' })
   const url = `${window.location.origin}/u/${g.toSlug}/e/${g.id}/`
   if (navigator.share) {
     try {
@@ -560,7 +562,12 @@ function onAvatarError(e: Event) {
 
 const copied = ref(false)
 async function shareProfile() {
-  const url = window.location.href
+  // 計測(S0-1): 自分のプロフィール共有＝招待。?ref={自分uid}でK測定
+  const isInvite = isMyPage.value && !!profile.value?.uid
+  const url = isInvite
+    ? `${window.location.origin}/u/${slug.value}/?ref=${profile.value!.uid}`
+    : window.location.href
+  track(isInvite ? 'invite_sent' : 'profile_shared', { source: 'profile_cta' })
   const name = profile.value?.displayName ?? ''
   // スマホ等はネイティブ共有シート、非対応環境はURLコピーにフォールバック
   if (navigator.share) {

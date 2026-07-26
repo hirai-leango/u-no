@@ -69,6 +69,7 @@ useSeoMeta({ robots: 'noindex, nofollow' })
 
 const user = useCurrentUser()
 const { isSlugAvailable, saveProfile } = useUserProfile()
+const { track, consumeRef } = useTrack()
 
 const slug = ref('')
 const bio = ref('')
@@ -108,6 +109,14 @@ async function submit() {
     headline,
     resume: { skills: [], experience, education: [] },
     createdAt: new Date(),
+  })
+  // 計測(S0-1): 登録完了。招待経由(ref)なら被参照IDも載せてK測定に使う
+  const ref = consumeRef()
+  track('signup_complete', {
+    has_company: !!c,
+    has_bio: !!bio.value.trim(),
+    referred: !!ref,
+    ref,
   })
   const redirect = safeInternalRedirect(useRoute().query.redirect as string)
   navigateTo(redirect || `/u/${slug.value}/`)

@@ -237,6 +237,7 @@ import { getAuth, updateProfile } from 'firebase/auth'
 
 const user = useCurrentUser()
 const { getProfileByUid, saveProfile } = useUserProfile()
+const { track } = useTrack()
 const saving = ref(false)
 // プロフィール画像（クライアントで正方形リサイズ→Firebase Storage）
 async function uploadAvatar(uid: string, file: File): Promise<string> {
@@ -364,6 +365,8 @@ async function save() {
     // 認証側の写真も更新 → ヘッダー・確認モーダル・今後の投稿スナップショットが同じ画像になる
     const authUser = getAuth().currentUser
     if (authUser) await updateProfile(authUser, { displayName: displayName.value.trim() || undefined, photoURL: photoURL.value || undefined })
+    // 計測(S0-1): 職歴が入っている状態で保存された（職歴入力率の追跡）
+    if (form.experience.length) track('resume_added', { count: form.experience.length })
     showToast('プロフィールを保存しました')
   } catch (e) {
     showToast('保存に失敗しました。時間をおいて再度お試しください', { type: 'error' })

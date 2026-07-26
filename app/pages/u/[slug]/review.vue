@@ -215,6 +215,7 @@ const submitting = ref(false)
 
 const { getProfileBySlug, getProfileByUid, saveProfile } = useUserProfile()
 const { getMyReview, upsertReview, deleteReview } = useReviews()
+const { track } = useTrack()
 const isPhoneVerified = useIsPhoneVerified()
 const showPhoneModal = ref(false)
 const showConfirmModal = ref(false)
@@ -344,6 +345,11 @@ async function doSubmit() {
   }
   submitting.value = false
   showDoneModal.value = true
+  // 計測(S0-1): エピソード投稿。関係性と相互かどうかを記録（相互性比率のガードレール用）
+  track('episode_written', {
+    relationship: relationship.value,
+    reciprocated: reciprocated.value,
+  })
 }
 
 // 完了後：お返し依頼のため自分のプロフィールを共有

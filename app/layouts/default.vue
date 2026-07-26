@@ -137,12 +137,15 @@ onMounted(() => document.addEventListener('click', onClickOutside))
 onBeforeUnmount(() => document.removeEventListener('click', onClickOutside))
 
 const { showToast } = useToast()
+const { track } = useTrack()
 
 // 自分のプロフィールURLを共有（知人に他己紹介を書いてもらう）
 async function shareMyProfile() {
   menuOpen.value = false
   if (!userSlug.value) return
-  const url = `${window.location.origin}/u/${userSlug.value}/`
+  // 計測(S0-1): 招待。?ref={自分uid}で被参照登録を追跡（K測定）
+  track('invite_sent', { source: 'header_menu' })
+  const url = `${window.location.origin}/u/${userSlug.value}/?ref=${user.value?.uid ?? ''}`
   if (navigator.share) {
     try {
       await navigator.share({

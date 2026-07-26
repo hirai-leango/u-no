@@ -185,10 +185,12 @@ const relationshipLabel = computed(() => {
 })
 
 const currentUser = useCurrentUser()
+const { track } = useTrack()
 
 // このエピソード（自分についての証言）を本人がシェア
 const shareCopied = ref(false)
 async function shareEpisode() {
+  track('episode_shared', { kind: 'received' })
   const url = `${window.location.origin}/u/${props.profileSlug}/e/${props.review.id}/`
   const from = props.review.fromDisplayName
   if (navigator.share) {
