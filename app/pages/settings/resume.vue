@@ -86,6 +86,92 @@
       />
     </section>
 
+    <!-- 職歴 -->
+    <section class="mb-6">
+      <div class="flex items-center justify-between mb-3">
+        <label class="text-xs font-bold tracking-widest text-ink-mute">職歴</label>
+        <button class="text-xs text-brand-light hover:underline" @click="addExperience">+ 追加</button>
+      </div>
+      <div class="space-y-4">
+        <div
+          v-for="(exp, i) in form.experience"
+          :key="i"
+          class="bg-surface border border-surface-border rounded p-4 space-y-3"
+        >
+          <div class="flex justify-end">
+            <button class="text-xs text-ink-mute hover:text-red-400 transition-colors" @click="form.experience.splice(i, 1)">削除</button>
+          </div>
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="text-xs text-ink-mute mb-1 block">会社名</label>
+              <input v-model="exp.company" type="text" class="input-field" placeholder="株式会社○○" />
+            </div>
+            <div>
+              <label class="text-xs text-ink-mute mb-1 block">役職</label>
+              <input v-model="exp.title" type="text" class="input-field" placeholder="エンジニア" />
+            </div>
+            <div>
+              <label class="text-xs text-ink-mute mb-1 block">開始</label>
+              <input v-model="exp.startDate" type="month" class="input-field" />
+            </div>
+            <div>
+              <label class="text-xs text-ink-mute mb-1 block">終了</label>
+              <input v-model="exp.endDate" type="month" class="input-field" placeholder="現在" />
+            </div>
+          </div>
+          <div>
+            <label class="text-xs text-ink-mute mb-1 block">業務内容</label>
+            <textarea v-model="exp.description" v-autogrow rows="2" class="input-field resize-none min-h-[4.5rem]" placeholder="担当業務の概要" />
+          </div>
+          <div>
+            <label class="text-xs text-ink-mute mb-1 block">URL（任意）</label>
+            <input v-model="exp.url" type="url" class="input-field" placeholder="https://…（実績・会社サイトなど）" />
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 学歴 -->
+    <section class="mb-6">
+      <div class="flex items-center justify-between mb-3">
+        <label class="text-xs font-bold tracking-widest text-ink-mute">学歴</label>
+        <button class="text-xs text-brand-light hover:underline" @click="addEducation">+ 追加</button>
+      </div>
+      <div class="space-y-4">
+        <div
+          v-for="(edu, i) in form.education"
+          :key="i"
+          class="bg-surface border border-surface-border rounded p-4 space-y-3"
+        >
+          <div class="flex justify-end">
+            <button class="text-xs text-ink-mute hover:text-red-400 transition-colors" @click="form.education.splice(i, 1)">削除</button>
+          </div>
+          <div class="grid grid-cols-2 gap-3">
+            <div class="col-span-2">
+              <label class="text-xs text-ink-mute mb-1 block">学校名</label>
+              <input v-model="edu.institution" type="text" class="input-field" placeholder="○○大学" />
+            </div>
+            <div>
+              <label class="text-xs text-ink-mute mb-1 block">学位</label>
+              <input v-model="edu.degree" type="text" class="input-field" placeholder="学士" />
+            </div>
+            <div>
+              <label class="text-xs text-ink-mute mb-1 block">専攻</label>
+              <input v-model="edu.field" type="text" class="input-field" placeholder="情報工学" />
+            </div>
+            <div>
+              <label class="text-xs text-ink-mute mb-1 block">入学</label>
+              <input v-model="edu.startDate" type="month" class="input-field" />
+            </div>
+            <div>
+              <label class="text-xs text-ink-mute mb-1 block">卒業</label>
+              <input v-model="edu.endDate" type="month" class="input-field" />
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <!-- リンク集 -->
     <section class="mb-6">
       <div class="flex items-center justify-between mb-3">
@@ -162,91 +248,6 @@
       </p>
     </div>
 
-    <!-- 職歴 -->
-    <section class="mb-6">
-      <div class="flex items-center justify-between mb-3">
-        <label class="text-xs font-bold tracking-widest text-ink-mute">職歴</label>
-        <button class="text-xs text-brand-light hover:underline" @click="addExperience">+ 追加</button>
-      </div>
-      <div class="space-y-4">
-        <div
-          v-for="(exp, i) in form.experience"
-          :key="i"
-          class="bg-surface border border-surface-border rounded p-4 space-y-3"
-        >
-          <div class="flex justify-end">
-            <button class="text-xs text-ink-mute hover:text-red-400 transition-colors" @click="form.experience.splice(i, 1)">削除</button>
-          </div>
-          <div class="grid grid-cols-2 gap-3">
-            <div>
-              <label class="text-xs text-ink-mute mb-1 block">会社名</label>
-              <input v-model="exp.company" type="text" class="input-field" placeholder="株式会社○○" />
-            </div>
-            <div>
-              <label class="text-xs text-ink-mute mb-1 block">役職</label>
-              <input v-model="exp.title" type="text" class="input-field" placeholder="エンジニア" />
-            </div>
-            <div>
-              <label class="text-xs text-ink-mute mb-1 block">開始</label>
-              <input v-model="exp.startDate" type="month" class="input-field" />
-            </div>
-            <div>
-              <label class="text-xs text-ink-mute mb-1 block">終了</label>
-              <input v-model="exp.endDate" type="month" class="input-field" placeholder="現在" />
-            </div>
-          </div>
-          <div>
-            <label class="text-xs text-ink-mute mb-1 block">業務内容</label>
-            <textarea v-model="exp.description" v-autogrow rows="2" class="input-field resize-none min-h-[4.5rem]" placeholder="担当業務の概要" />
-          </div>
-          <div>
-            <label class="text-xs text-ink-mute mb-1 block">URL（任意）</label>
-            <input v-model="exp.url" type="url" class="input-field" placeholder="https://…（実績・会社サイトなど）" />
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- 学歴 -->
-    <section class="mb-10">
-      <div class="flex items-center justify-between mb-3">
-        <label class="text-xs font-bold tracking-widest text-ink-mute">学歴</label>
-        <button class="text-xs text-brand-light hover:underline" @click="addEducation">+ 追加</button>
-      </div>
-      <div class="space-y-4">
-        <div
-          v-for="(edu, i) in form.education"
-          :key="i"
-          class="bg-surface border border-surface-border rounded p-4 space-y-3"
-        >
-          <div class="flex justify-end">
-            <button class="text-xs text-ink-mute hover:text-red-400 transition-colors" @click="form.education.splice(i, 1)">削除</button>
-          </div>
-          <div class="grid grid-cols-2 gap-3">
-            <div class="col-span-2">
-              <label class="text-xs text-ink-mute mb-1 block">学校名</label>
-              <input v-model="edu.institution" type="text" class="input-field" placeholder="○○大学" />
-            </div>
-            <div>
-              <label class="text-xs text-ink-mute mb-1 block">学位</label>
-              <input v-model="edu.degree" type="text" class="input-field" placeholder="学士" />
-            </div>
-            <div>
-              <label class="text-xs text-ink-mute mb-1 block">専攻</label>
-              <input v-model="edu.field" type="text" class="input-field" placeholder="情報工学" />
-            </div>
-            <div>
-              <label class="text-xs text-ink-mute mb-1 block">入学</label>
-              <input v-model="edu.startDate" type="month" class="input-field" />
-            </div>
-            <div>
-              <label class="text-xs text-ink-mute mb-1 block">卒業</label>
-              <input v-model="edu.endDate" type="month" class="input-field" />
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
   </div>
 </template>
 
