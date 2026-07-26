@@ -37,6 +37,13 @@
               エピソードを受け取る
             </button>
             <NuxtLink
+              to="/write/"
+              class="block px-4 py-2.5 text-sm font-semibold text-brand hover:bg-brand/5 transition-colors"
+              @click="menuOpen = false"
+            >
+              知人について書く
+            </NuxtLink>
+            <NuxtLink
               to="/settings/"
               class="block px-4 py-2.5 text-sm text-ink hover:bg-brand/5 transition-colors"
               @click="menuOpen = false"
