@@ -257,11 +257,16 @@
               <p v-if="g.toHeadline" class="text-xs text-ink-mute truncate">{{ g.toHeadline }}</p>
               <p class="text-xs text-ink-mute">{{ formatDate(g.updatedAt) }}</p>
             </div>
-            <button
-              v-if="isMyPage"
-              class="ml-auto flex-none text-xs font-semibold text-brand hover:underline whitespace-nowrap"
-              @click="shareGiven(g)"
-            >{{ givenShareCopiedId === g.id ? 'コピー済み！' : 'シェア' }}</button>
+            <div v-if="isMyPage" class="ml-auto flex items-center gap-3 flex-none">
+              <button
+                class="text-xs font-semibold text-brand hover:underline whitespace-nowrap"
+                @click="shareGiven(g)"
+              >{{ givenShareCopiedId === g.id ? 'コピー済み！' : 'シェア' }}</button>
+              <button
+                class="text-xs text-ink-mute hover:text-warn transition-colors whitespace-nowrap"
+                @click="deleteGiven(g)"
+              >削除</button>
+            </div>
           </div>
           <p class="text-sm text-ink-soft leading-relaxed whitespace-pre-wrap">{{ g.comment }}</p>
         </div>
@@ -467,7 +472,7 @@ const isMyPage = computed(() =>
   !!currentUser.value && !!profile.value && currentUser.value.uid === profile.value.uid)
 
 // この人が贈ったエピソード一覧（受け取った数は reviews.length）
-const { getGivenReviews } = useReviews()
+const { getGivenReviews, deleteReview } = useReviews()
 const { getProfileByUid, saveProfile } = useUserProfile()
 
 // 受け取ったエピソードの投稿者を最新プロフィール（写真・名前・肩書き）に同期
@@ -498,6 +503,18 @@ function formatDate(date: any) {
   return d.toLocaleDateString('ja-JP', { year: 'numeric', month: 'long', day: 'numeric' })
 }
 // 贈ったエピソードを本人がシェア（相手について書いたことを拡散）
+// 贈ったエピソードを削除（本人のみ・自分が書いたもの）
+async function deleteGiven(g: Review) {
+  if (!currentUser.value) return
+  const label = g.toDisplayName ? `${g.toDisplayName}さんへの` : ''
+  if (!confirm(`この${label}エピソードを削除しますか？この操作は取り消せません。`)) return
+  try {
+    await deleteReview(g.toUserId, currentUser.value.uid)
+    givenReviews.value = givenReviews.value.filter(x => x.id !== g.id)
+  } catch {
+    alert('削除に失敗しました。時間をおいて再度お試しください。')
+  }
+}
 const givenShareCopiedId = ref('')
 async function shareGiven(g: Review) {
   if (!g.toSlug) return
