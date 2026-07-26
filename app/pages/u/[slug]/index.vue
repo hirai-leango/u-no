@@ -198,6 +198,7 @@
             :profile-slug="slug"
             :owner-name="profile.displayName"
             :owner-photo="profile.photoURL"
+            :is-mutual="mutualUids.has(review.fromUserId)"
             :show-giveback="isMyPage && !givenToUserIds.has(review.fromUserId)"
           />
           <button
@@ -518,6 +519,12 @@ const mutualConfetti = Array.from({ length: 30 }, (_, i) => ({
 }))
 // お返しナッジ用：自分が既にエピソードを贈った相手のuid集合
 const givenToUserIds = computed(() => new Set(givenReviews.value.map(g => g.toUserId)))
+// S0-3 相互ペア検出：このプロフィールが「受け取った相手」かつ「贈った相手」＝相互称賛
+// （信用スコアではこれを減点する土台。表示は控えめな「相互」タグのみ）
+const mutualUids = computed(() => {
+  const given = givenToUserIds.value
+  return new Set(reviews.value.map(r => r.fromUserId).filter(uid => given.has(uid)))
+})
 watch(profile, async (p) => {
   if (import.meta.client && p?.uid) {
     try {

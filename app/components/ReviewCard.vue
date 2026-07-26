@@ -25,6 +25,13 @@
           >
             {{ relationshipLabel }}
           </span>
+          <span
+            v-if="isMutual"
+            class="text-[10px] px-1.5 py-0.5 rounded-sm border border-line text-ink-mute font-semibold flex-none"
+            title="お互いにエピソードを書き合っています"
+          >
+            相互
+          </span>
         </div>
         <p v-if="review.fromHeadline" class="text-xs text-ink-mute truncate">{{ review.fromHeadline }}</p>
         <p class="text-xs text-ink-mute">{{ formatDate(review.updatedAt) }}</p>
@@ -169,6 +176,7 @@ const props = defineProps<{
   profileSlug: string
   ownerName?: string
   ownerPhoto?: string
+  isMutual?: boolean
   showGiveback?: boolean
 }>()
 
