@@ -248,6 +248,25 @@
       </p>
     </div>
 
+    <!-- メール通知 -->
+    <div class="bg-surface border border-surface-border rounded-none p-6 mb-8 flex flex-wrap items-center justify-between">
+      <div>
+        <h2 class="text-sm font-bold text-ink-soft mb-1">メール通知</h2>
+        <p class="text-xs text-ink-mute">エピソードを受け取ったときにメールでお知らせします。</p>
+      </div>
+      <button
+        type="button"
+        class="relative w-12 h-7 rounded-full transition-colors flex-shrink-0 ml-4"
+        :class="emailNotify ? 'bg-brand' : 'bg-surface-border'"
+        @click="emailNotify = !emailNotify"
+      >
+        <span
+          class="absolute top-1 left-1 w-5 h-5 bg-white rounded-full transition-transform"
+          :class="emailNotify ? 'translate-x-5' : 'translate-x-0'"
+        />
+      </button>
+    </div>
+
   </div>
 </template>
 
@@ -321,6 +340,7 @@ const headline = ref('')
 const bio = ref('')
 const links = ref<ProfileLink[]>([])
 const isSearchable = ref(true)
+const emailNotify = ref(true)
 // エピソード3件以上でないと検索表示ONにできない（OFFはいつでも可）
 const { getReviews, getGivenCount } = useReviews()
 const episodeTotal = ref(0)
@@ -352,6 +372,7 @@ onMounted(async () => {
   bio.value = profile?.bio ?? ''
   links.value = profile?.links ?? []
   isSearchable.value = profile?.isSearchable ?? true
+  emailNotify.value = profile?.emailNotify ?? true
   Object.assign(sns, profile?.sns ?? {})
   const [recv, given] = await Promise.all([
     getReviews(user.value.uid),
@@ -399,6 +420,7 @@ async function save() {
       links: links.value.filter(l => l.label && isHttpUrl(l.url)),
       resume: { ...form },
       isSearchable: isSearchable.value,
+      emailNotify: emailNotify.value,
       sns: Object.fromEntries(
         SNS_FIELDS.map(s => [s.key, (sns[s.key] ?? '').trim()])
           .filter(([, v]) => isHttpUrl(v as string)),

@@ -17,6 +17,7 @@ export interface UserProfile {
   celebratedMutuals?: string[]
   claimedPendingIds?: string[]
   lastSeenReceivedCount?: number
+  emailNotify?: boolean
   createdAt: Date
 }
 
