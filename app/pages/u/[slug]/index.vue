@@ -447,10 +447,13 @@ const relOrder = Object.keys(RELATIONSHIP_LABELS) as Relationship[]
 function countByRel(rel: Relationship) {
   return reviews.value.filter(r => r.relationship === rel).length
 }
-const filteredReviews = computed(() =>
-  relFilter.value === 'all'
+const filteredReviews = computed(() => {
+  const base = relFilter.value === 'all'
     ? reviews.value
-    : reviews.value.filter(r => r.relationship === relFilter.value))
+    : reviews.value.filter(r => r.relationship === relFilter.value)
+  // S0-2: 信頼できる順に並べる（非対称推薦を上・相互を下、同点は新しい順）。数値は非表示
+  return sortByCredibility(base, mutualUids.value)
+})
 
 // エピソードは10件ずつ表示（フィルター切替でリセット）
 const visibleCount = ref(10)
