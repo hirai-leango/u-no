@@ -43,7 +43,18 @@
 
       <!-- 受け取りCTA -->
       <template v-else>
+        <!-- ログイン済み：自分のアカウントに追加 -->
+        <button
+          v-if="currentUser"
+          :disabled="claiming"
+          class="block w-full text-center py-3.5 rounded-lg font-bold text-sm bg-brand text-white hover:bg-brand-hover transition-colors disabled:bg-disabled-bg disabled:text-disabled-text mb-3"
+          @click="claimToMyAccount"
+        >
+          {{ claiming ? '受け取り中…' : '受け取る（あなたのプロフィールに追加）' }}
+        </button>
+        <!-- 未ログイン：登録して受け取る -->
         <NuxtLink
+          v-else
           :to="claimSignupUrl"
           class="block w-full text-center py-3.5 rounded-lg font-bold text-sm bg-brand text-white hover:bg-brand-hover transition-colors mb-3"
         >
@@ -69,7 +80,32 @@ useSeoMeta({
 
 const route = useRoute()
 const id = computed(() => route.params.id as string)
-const { getPending, getPendingReviews } = useClaim()
+const { getPending, getPendingReviews, claimPending } = useClaim()
+const { getProfileByUid, saveProfile } = useUserProfile()
+const currentUser = useCurrentUser()
+const { track } = useTrack()
+const { showToast } = useToast()
+const claiming = ref(false)
+
+// ログイン済みユーザーが、届いたエピソードを自分のアカウントに追加
+async function claimToMyAccount() {
+  if (!currentUser.value || claiming.value) return
+  claiming.value = true
+  try {
+    const ok = await claimPending(id.value, currentUser.value.uid)
+    if (!ok) { showToast('受け取れませんでした（既に受け取り済みかもしれません）', { type: 'error' }); return }
+    const my = await getProfileByUid(currentUser.value.uid)
+    const ids = Array.isArray(my?.claimedPendingIds) ? my!.claimedPendingIds : []
+    if (!ids.includes(id.value)) await saveProfile(currentUser.value.uid, { claimedPendingIds: [...ids, id.value] })
+    track('claim_converted', { logged_in: true })
+    if (my?.slug) navigateTo(`/u/${my.slug}/`)
+    else if (pending.value) pending.value.claimedByUid = currentUser.value.uid
+  } catch {
+    showToast('受け取りに失敗しました', { type: 'error' })
+  } finally {
+    claiming.value = false
+  }
+}
 
 const pending = ref<any>(null)
 const reviews = ref<any[]>([])
@@ -86,7 +122,7 @@ onMounted(async () => {
 
 const claimed = computed(() => !!pending.value?.claimedByUid)
 const initial = computed(() => (pending.value?.name ?? '?').trim().charAt(0) || '?')
-const claimSignupUrl = computed(() => `/signup/?claim=${id.value}&redirect=${encodeURIComponent(`/claim/${id.value}/`)}`)
+const claimSignupUrl = computed(() => `/signup/?claim=${id.value}&redirect=${encodeURIComponent(`/welcome/${id.value}/`)}`)
 
 const RECEIVED_REL_DISPLAY: Partial<Record<Relationship, string>> = { boss: '部下', subordinate: '上司' }
 function relLabel(r: any) {

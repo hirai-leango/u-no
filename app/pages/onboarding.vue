@@ -70,6 +70,7 @@ useSeoMeta({ robots: 'noindex, nofollow' })
 const user = useCurrentUser()
 const { isSlugAvailable, saveProfile } = useUserProfile()
 const { track, consumeRef } = useTrack()
+const { claimPending } = useClaim()
 
 const slug = ref('')
 const bio = ref('')
@@ -100,6 +101,17 @@ async function submit() {
     ? [{ company: c, title: t, startDate: '', endDate: '', description: '', url: '' }]
     : []
   const headline = [c, t].filter(Boolean).join(' / ')
+  // S1-3 claim: 受け取りリンク経由の登録なら、届いていたエピソード（仮ID）を本人に紐づける
+  const claimedPendingIds: string[] = []
+  const claimId = import.meta.client ? localStorage.getItem('uno_claim') : null
+  if (claimId) {
+    const ok = await claimPending(claimId, user.value.uid)
+    if (ok) {
+      claimedPendingIds.push(claimId)
+      try { localStorage.removeItem('uno_claim') } catch { /* noop */ }
+      track('claim_converted', {})
+    }
+  }
   await saveProfile(user.value.uid, {
     uid: user.value.uid,
     displayName: user.value.displayName ?? '',
@@ -108,6 +120,7 @@ async function submit() {
     bio: bio.value,
     headline,
     resume: { skills: [], experience, education: [] },
+    ...(claimedPendingIds.length ? { claimedPendingIds } : {}),
     createdAt: new Date(),
   })
   // 計測(S0-1): 登録完了。招待経由(ref)なら被参照IDも載せてK測定に使う

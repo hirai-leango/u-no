@@ -122,7 +122,7 @@ async function submit() {
       headline: my?.headline ?? '',
     }, comment.value.trim(), relationship.value as Relationship, { displayName: nm })
     savedName.value = nm
-    claimUrl.value = `${window.location.origin}/claim/${pendingId}/`
+    claimUrl.value = `${window.location.origin}/welcome/${pendingId}/`
     track('episode_written', { relationship: relationship.value, to_pending: true })
     track('invite_sent', { source: 'write_nonuser' })
     done.value = true

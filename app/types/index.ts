@@ -15,6 +15,7 @@ export interface UserProfile {
   isSearchable: boolean
   sns?: SnsLinks
   celebratedMutuals?: string[]
+  claimedPendingIds?: string[]
   createdAt: Date
 }
 

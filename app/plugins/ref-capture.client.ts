@@ -6,6 +6,9 @@ export default defineNuxtPlugin(() => {
     const params = new URLSearchParams(window.location.search)
     const ref = params.get('ref')
     if (ref) localStorage.setItem('uno_ref', ref)
+    // S1-3 claim: 受け取り登録の紐づけ用に仮IDを保存（登録完了時に使う）
+    const claim = params.get('claim')
+    if (claim) localStorage.setItem('uno_claim', claim)
   } catch {
     // 何もしない
   }

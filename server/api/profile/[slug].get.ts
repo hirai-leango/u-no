@@ -69,12 +69,37 @@ export default defineEventHandler(async (event) => {
     },
   })
 
-  const reviews = reviewRes
+  const reviewDocs = reviewRes
     .filter((r: any) => r.document)
     .map((r: any) => ({
       id: r.document.name.split('/').pop(),
       ...parseFields(r.document.fields),
     }))
+
+  // S1-3 claim: 受け取り確定した仮ID宛のエピソードも合流（登録前に貯まっていた他己紹介）
+  const pendingIds: string[] = Array.isArray(profile.claimedPendingIds) ? profile.claimedPendingIds : []
+  if (pendingIds.length) {
+    const claimRes = await $fetch<any>(`${BASE}:runQuery`, {
+      method: 'POST',
+      body: {
+        structuredQuery: {
+          from: [{ collectionId: 'reviews' }],
+          where: {
+            fieldFilter: {
+              field: { fieldPath: 'toUserId' },
+              op: 'IN',
+              value: { arrayValue: { values: pendingIds.slice(0, 30).map(id => ({ stringValue: id })) } },
+            },
+          },
+        },
+      },
+    }).catch(() => [])
+    for (const r of claimRes) {
+      if (r.document) reviewDocs.push({ id: r.document.name.split('/').pop(), ...parseFields(r.document.fields) })
+    }
+  }
+
+  const reviews = reviewDocs
     // インデックス不要にするためサーバー側で新しい順にソート
     .sort((a: any, b: any) => {
       const ta = a.createdAt ? new Date(a.createdAt).getTime() : 0
