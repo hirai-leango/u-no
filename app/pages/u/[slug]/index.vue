@@ -503,7 +503,7 @@ watch(isMyPage, (mine) => {
 }, { immediate: true })
 
 // この人が贈ったエピソード一覧（受け取った数は reviews.length）
-const { getGivenReviews, deleteReview } = useReviews()
+const { deleteReview } = useReviews()
 const { getProfileByUid, saveProfile } = useUserProfile()
 const { getPending } = useClaim()
 
@@ -585,23 +585,21 @@ const mutualUids = computed(() => {
 watch(profile, async (p) => {
   if (import.meta.client && p?.uid) {
     try {
-      const list = await getGivenReviews(p.uid)
-      givenReviews.value = list // まず表示
-      // 宛先の最新プロフィール（氏名・写真・会社役職）を補完（1件失敗しても全体は落とさない）
-      await Promise.all(list.map(async (g) => {
+      // SSRで取得済みの「贈った」を使う（再取得しない＝重複クエリを削減）
+      const list = givenReviews.value
+      // 未登録(pending)宛で未解決(toSlug空)のものだけ、受け取り済みなら本人で解決（claim補完）。
+      // 登録済み相手は保存済みの氏名・写真をそのまま使い、N+1のプロフィール再取得を避ける。
+      await Promise.all(list.filter(g => !g.toSlug).map(async (g) => {
         try {
-          let rp = await getProfileByUid(g.toUserId)
-          // 未登録者(pending)宛：受け取り済みなら、受け取った本人のプロフィールで解決
-          // → 贈った側でも公開表示＋相手プロフィールへのリンクが付く（toSlugが埋まる）
-          if (!rp) {
-            const pend = await getPending(g.toUserId)
-            if (pend?.claimedByUid) rp = await getProfileByUid(pend.claimedByUid)
-          }
-          if (rp) {
-            g.toDisplayName = rp.displayName
-            g.toPhotoURL = rp.photoURL
-            g.toSlug = rp.slug
-            g.toHeadline = rp.headline
+          const pend = await getPending(g.toUserId)
+          if (pend?.claimedByUid) {
+            const rp = await getProfileByUid(pend.claimedByUid)
+            if (rp) {
+              g.toDisplayName = rp.displayName
+              g.toPhotoURL = rp.photoURL
+              g.toSlug = rp.slug
+              g.toHeadline = rp.headline
+            }
           }
         } catch { /* この1件はスキップ */ }
       }))
