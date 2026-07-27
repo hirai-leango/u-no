@@ -483,6 +483,7 @@ watch(isMyPage, (mine) => {
 // この人が贈ったエピソード一覧（受け取った数は reviews.length）
 const { getGivenReviews, deleteReview } = useReviews()
 const { getProfileByUid, saveProfile } = useUserProfile()
+const { getPending } = useClaim()
 
 // 受け取ったエピソードの投稿者を最新プロフィール（写真・名前・肩書き）に同期
 onMounted(async () => {
@@ -566,7 +567,13 @@ watch(profile, async (p) => {
       // 宛先の最新プロフィール（氏名・写真・会社役職）を補完（1件失敗しても全体は落とさない）
       await Promise.all(list.map(async (g) => {
         try {
-          const rp = await getProfileByUid(g.toUserId)
+          let rp = await getProfileByUid(g.toUserId)
+          // 未登録者(pending)宛：受け取り済みなら、受け取った本人のプロフィールで解決
+          // → 贈った側でも公開表示＋相手プロフィールへのリンクが付く（toSlugが埋まる）
+          if (!rp) {
+            const pend = await getPending(g.toUserId)
+            if (pend?.claimedByUid) rp = await getProfileByUid(pend.claimedByUid)
+          }
           if (rp) {
             g.toDisplayName = rp.displayName
             g.toPhotoURL = rp.photoURL
