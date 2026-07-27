@@ -11,7 +11,7 @@
               <h1 class="text-3xl font-black text-white leading-tight break-words">{{ profile.displayName }}</h1>
               <p v-if="profile.headline" class="text-white/85 text-sm font-semibold mt-2 leading-snug">{{ profile.headline }}</p>
             </div>
-            <img :src="hiResAvatar(profile.photoURL)" @error="onAvatarError" class="w-24 h-24 rounded-full object-cover flex-none ring-4 ring-white/90 shadow-lg" />
+            <img :src="hiResAvatar(profile.photoURL)" :alt="`${profile.displayName}さんのプロフィール画像`" @error="onAvatarError" class="w-24 h-24 rounded-full object-cover flex-none ring-4 ring-white/90 shadow-lg" />
           </div>
           <p v-if="profile.bio" class="text-white/80 text-sm leading-relaxed whitespace-pre-wrap mt-5">{{ profile.bio }}</p>
           <div v-if="safeLinks.length" class="flex flex-wrap gap-2 mt-3">
@@ -328,10 +328,27 @@ const { data } = await useFetch(`/api/profile/${slug.value}`)
 
 const profileData = computed(() => data.value?.profile ?? null)
 
+// SEO: 氏名＋社名/役職をtitleに入れて「名前＋会社」検索・同姓同名の区別・CTRを改善
+const seoTrunc = (s: string, n: number) => { const c = (s ?? '').replace(/\s+/g, ' ').trim(); return c.length > n ? c.slice(0, n) + '…' : c }
+const seoTitle = () => {
+  const p = profileData.value
+  if (!p) return 'ユーノーミー'
+  const h = seoTrunc(p.headline ?? '', 28)
+  return h ? `${p.displayName}（${h}）| ユーノーミー` : `${p.displayName} | ユーノーミー`
+}
+const seoDesc = () => {
+  const p = profileData.value
+  if (!p) return ''
+  const role = seoTrunc(p.headline ?? '', 30)
+  const lead = role ? `${p.displayName}（${role}）` : `${p.displayName}さん`
+  const body = (p.bio ?? '').trim() || '知人・同僚が書いたエピソードで、人柄や仕事ぶり・信頼がわかります。'
+  return seoTrunc(`${lead}の他己紹介。${body}`, 120)
+}
 useSeoMeta({
-  title: () => profileData.value ? `${profileData.value.displayName} | ユーノーミー` : 'ユーノーミー',
-  ogTitle: () => profileData.value ? `${profileData.value.displayName} | ユーノーミー` : 'ユーノーミー',
-  description: () => profileData.value ? (profileData.value.bio || `${profileData.value.displayName}のプロフィール`) : '',
+  title: seoTitle,
+  ogTitle: seoTitle,
+  description: seoDesc,
+  ogDescription: seoDesc,
   // 検索設定OFF、または エピソード（受け取り＋贈り）が3件未満なら noindex（薄いページを出さない）
   robots: () => {
     const p = profileData.value
@@ -372,6 +389,11 @@ useHead(() => {
   if (p.headline) person.jobTitle = p.headline
   if (p.bio) person.description = p.bio
   if (sameAs.length) person.sameAs = sameAs
+  // 勤務先・学歴（人物を企業/学校エンティティに接続＝Knowledge Graph向け）
+  const exp = (p.resume?.experience ?? []).find(e => (e.company ?? '').trim())
+  if (exp?.company) person.worksFor = { '@type': 'Organization', name: exp.company }
+  const edu = (p.resume?.education ?? []).find(e => (e.institution ?? '').trim())
+  if (edu?.institution) person.alumniOf = { '@type': 'EducationalOrganization', name: edu.institution }
 
   // 受け取ったエピソード数（ProfilePageが公式サポートする指標）
   const reviewCount = data.value?.reviews?.length ?? 0
