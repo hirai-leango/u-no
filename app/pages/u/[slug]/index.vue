@@ -234,7 +234,7 @@
         <p class="text-sm">まだ誰にもエピソードを贈っていません。</p>
       </div>
       <div v-else>
-        <div v-for="g in visibleGivenReviews" :key="g.id" class="py-5 border-b border-line">
+        <article v-for="g in visibleGivenReviews" :key="g.id" class="py-5 border-b border-line">
           <div class="flex items-center gap-2 mb-2">
             <!-- 贈った本人（プロフィール主） -->
             <img :src="hiResAvatar(profile.photoURL, 96)" alt="" class="w-9 h-9 rounded-full object-cover flex-none ring-1 ring-line bg-surface-card" />
@@ -269,7 +269,7 @@
             </div>
           </div>
           <p class="text-sm text-ink-soft leading-relaxed whitespace-pre-wrap">{{ g.comment }}</p>
-        </div>
+        </article>
       </div>
     </section>
   </div>
@@ -522,7 +522,8 @@ onMounted(async () => {
   }))
   reviews.value = [...reviews.value]
 })
-const givenReviews = ref<Review[]>([])
+// SSRで返ってきた贈ったエピソードで初期化（クローラに見せる）。クライアントで再解決して最新化
+const givenReviews = ref<Review[]>((data.value?.given ?? []) as Review[])
 // プライバシー: 未登録の相手への贈ったエピソードは、相手が受け取るまで本人以外に見せない。
 // （未登録/未受け取りは toSlug が解決されず空。登録済み相手のみ toSlug を持つ）
 const visibleGivenReviews = computed(() =>

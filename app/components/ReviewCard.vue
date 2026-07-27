@@ -1,5 +1,5 @@
 <template>
-  <div class="relative py-5 border-b border-line"
+  <article class="relative py-5 border-b border-line"
     :class="{ 'opacity-60': isFlagged }">
 
     <!-- 不当フラグ -->
@@ -163,7 +163,7 @@
         <span class="font-bold text-brand">エピソードを贈り返す</span>
       </span>
     </NuxtLink>
-  </div>
+  </article>
 </template>
 
 <script setup lang="ts">

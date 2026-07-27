@@ -2,7 +2,7 @@
   <div>
     <div v-if="review && profile" class="max-w-xl mx-auto">
       <!-- エピソードカード（プロフィールのカードと同じ見た目に統一：箱線なし・下線区切り） -->
-      <div class="border-b border-line pb-6">
+      <article class="border-b border-line pb-6">
         <!-- 誰から誰へ（投稿者 → ◯◯さん）: プロフィールのカードと同じ from→to 形式で統一 -->
         <div class="flex items-center gap-2 mb-3">
           <component
@@ -36,7 +36,7 @@
 
         <!-- 本文 -->
         <p class="text-sm text-ink-soft leading-relaxed whitespace-pre-wrap">{{ review.comment }}</p>
-      </div>
+      </article>
 
       <!-- CTA -->
       <NuxtLink

@@ -123,7 +123,16 @@ export default defineEventHandler(async (event) => {
       },
     },
   })
-  const givenCount = givenRes.filter((r: any) => r.document).length
+  // 贈ったエピソードもSSRで返す（クローラに見せる。表示は保存済みの to* フィールドを使用）
+  const given = givenRes
+    .filter((r: any) => r.document)
+    .map((r: any) => ({ id: r.document.name.split('/').pop(), ...parseFields(r.document.fields) }))
+    .sort((a: any, b: any) => {
+      const ta = a.createdAt ? new Date(a.createdAt).getTime() : 0
+      const tb = b.createdAt ? new Date(b.createdAt).getTime() : 0
+      return tb - ta
+    })
+  const givenCount = given.length
 
-  return { profile, reviews, givenCount }
+  return { profile, reviews, givenCount, given }
 })
