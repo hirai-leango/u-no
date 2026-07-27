@@ -273,14 +273,18 @@ async function loadInteractions() {
 
 async function vote(value: 'fair' | 'unfair') {
   if (!currentUser.value) return alert('投票するにはログインが必要です')
-  const myProfile = await getProfileByUid(currentUser.value.uid)
-  await setVote(props.review.id, {
-    uid: currentUser.value.uid,
-    displayName: currentUser.value.displayName ?? '',
-    photoURL: currentUser.value.photoURL ?? '',
-    slug: myProfile?.slug ?? '',
-  }, value)
-  votes.value = await getVotes(props.review.id)
+  try {
+    const myProfile = await getProfileByUid(currentUser.value.uid)
+    await setVote(props.review.id, {
+      uid: currentUser.value.uid,
+      displayName: currentUser.value.displayName ?? '',
+      photoURL: currentUser.value.photoURL ?? '',
+      slug: myProfile?.slug ?? '',
+    }, value)
+    votes.value = await getVotes(props.review.id)
+  } catch {
+    alert('投票に失敗しました。時間をおいて再度お試しください。')
+  }
 }
 
 function onReply(commentId: string) {
@@ -316,6 +320,8 @@ async function submitComment() {
     replyTo.value = null
     // 即時反映（サーバー再取得を待たずローカルに追加）
     comments.value = [...comments.value, created]
+  } catch {
+    alert('コメントの投稿に失敗しました。時間をおいて再度お試しください。')
   } finally {
     posting.value = false
   }
@@ -325,8 +331,12 @@ async function reportReview() {
   if (!currentUser.value) return alert('通報するにはログインが必要です')
   const reason = prompt('通報理由を入力してください（誹謗中傷・スパム・なりすまし など）')
   if (!reason?.trim()) return
-  await reportTarget('review', props.review.id, currentUser.value.uid, reason.trim())
-  alert('通報を受け付けました。運営が確認します。')
+  try {
+    await reportTarget('review', props.review.id, currentUser.value.uid, reason.trim())
+    alert('通報を受け付けました。運営が確認します。')
+  } catch {
+    alert('通報に失敗しました。時間をおいて再度お試しください。')
+  }
 }
 
 onMounted(loadInteractions)

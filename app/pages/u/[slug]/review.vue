@@ -321,35 +321,40 @@ async function publish() {
 async function doSubmit() {
   if (!profile.value || !currentUser.value || !relationship.value) return
   submitting.value = true
-  const myProfile = await getProfileByUid(currentUser.value.uid)
-  await upsertReview(profile.value.uid, {
-    uid: currentUser.value.uid,
-    displayName: currentUser.value.displayName ?? '',
-    photoURL: currentUser.value.photoURL ?? '',
-    slug: myProfile?.slug ?? '',
-    headline: myProfile?.headline ?? '',
-  }, comment.value.trim(), relationship.value, {
-    displayName: profile.value.displayName,
-    photoURL: profile.value.photoURL,
-    slug: slug.value,
-  })
-  mySlug.value = myProfile?.slug ?? ''
-  // 相手が既に自分にエピソードを書いているか（＝相互）
-  reciprocated.value = !!(await getMyReview(currentUser.value.uid, profile.value.uid))
-  if (reciprocated.value) {
-    // この相互を「祝福表示済み」に記録（マイページで二重表示しない）
-    const seen = myProfile?.celebratedMutuals ?? []
-    if (!seen.includes(profile.value.uid)) {
-      await saveProfile(currentUser.value.uid, { celebratedMutuals: [...seen, profile.value.uid] })
+  try {
+    const myProfile = await getProfileByUid(currentUser.value.uid)
+    await upsertReview(profile.value.uid, {
+      uid: currentUser.value.uid,
+      displayName: currentUser.value.displayName ?? '',
+      photoURL: currentUser.value.photoURL ?? '',
+      slug: myProfile?.slug ?? '',
+      headline: myProfile?.headline ?? '',
+    }, comment.value.trim(), relationship.value, {
+      displayName: profile.value.displayName,
+      photoURL: profile.value.photoURL,
+      slug: slug.value,
+    })
+    mySlug.value = myProfile?.slug ?? ''
+    // 相手が既に自分にエピソードを書いているか（＝相互）
+    reciprocated.value = !!(await getMyReview(currentUser.value.uid, profile.value.uid))
+    if (reciprocated.value) {
+      // この相互を「祝福表示済み」に記録（マイページで二重表示しない）
+      const seen = myProfile?.celebratedMutuals ?? []
+      if (!seen.includes(profile.value.uid)) {
+        await saveProfile(currentUser.value.uid, { celebratedMutuals: [...seen, profile.value.uid] })
+      }
     }
+    showDoneModal.value = true
+    // 計測(S0-1): エピソード投稿。関係性と相互かどうかを記録（相互性比率のガードレール用）
+    track('episode_written', {
+      relationship: relationship.value,
+      reciprocated: reciprocated.value,
+    })
+  } catch (e) {
+    alert('投稿に失敗しました。時間をおいて再度お試しください。')
+  } finally {
+    submitting.value = false
   }
-  submitting.value = false
-  showDoneModal.value = true
-  // 計測(S0-1): エピソード投稿。関係性と相互かどうかを記録（相互性比率のガードレール用）
-  track('episode_written', {
-    relationship: relationship.value,
-    reciprocated: reciprocated.value,
-  })
 }
 
 // 完了後：お返し依頼のため自分のプロフィールを共有
