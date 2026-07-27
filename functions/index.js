@@ -21,7 +21,10 @@ function buildHtml({ toName, fromName, comment, profileUrl, settingsUrl }) {
   return `
   <div style="background:#f4f1e8;padding:32px 16px;font-family:'Hiragino Kaku Gothic ProN','Yu Gothic',Meiryo,sans-serif;">
     <div style="max-width:480px;margin:0 auto;background:#ffffff;border-radius:14px;overflow:hidden;border:1px solid #e6e0d3;">
-      <div style="background:#1F4B7A;padding:18px 24px;color:#fff;font-weight:700;font-size:16px;">ユーノーミー</div>
+      <div style="background:#1F4B7A;padding:16px 24px;">
+        <img src="https://u-no.me/og-yunomi.png" width="22" height="29" alt="" style="vertical-align:middle;margin-right:8px;" />
+        <span style="color:#ffffff;font-weight:700;font-size:16px;vertical-align:middle;">ユーノーミー</span>
+      </div>
       <div style="padding:24px;">
         <p style="margin:0 0 8px;color:#8a6d1f;font-weight:700;font-size:13px;">${esc(toName)}さんへ</p>
         <p style="margin:0 0 16px;color:#1B2430;font-weight:700;font-size:20px;line-height:1.4;">${esc(fromName)}さんがあなたについて<br>エピソードを書きました</p>
@@ -29,7 +32,7 @@ function buildHtml({ toName, fromName, comment, profileUrl, settingsUrl }) {
         <a href="${profileUrl}" style="display:block;text-align:center;background:#1F4B7A;color:#fff;text-decoration:none;font-weight:700;font-size:14px;padding:13px;border-radius:8px;">ユーノーミーで見る</a>
       </div>
       <div style="padding:14px 24px;border-top:1px solid #e6e0d3;color:#8593a3;font-size:11px;line-height:1.6;">
-        知人が書く「他己紹介」であなたの信頼を可視化するサービスです。<br>
+        知人があなたを紹介する、ビジネスプロフィールサービスです。<br>
         メール通知を止めるには <a href="${settingsUrl}" style="color:#8593a3;">設定 &gt; メール通知</a> からオフにしてください。
       </div>
     </div>
