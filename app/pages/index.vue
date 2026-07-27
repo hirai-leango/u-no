@@ -125,6 +125,26 @@
         </div>
       </section>
 
+      <!-- メディア（お役立ち記事）: トップから記事へ内部リンク＝クロール優先度を上げる -->
+      <section v-if="topArticles.length" class="px-6 py-20 max-w-3xl mx-auto border-t border-line">
+        <p class="text-[11px] tracking-[.24em] text-trust font-bold text-center mb-3">メディア</p>
+        <h2 class="font-black text-2xl md:text-3xl text-center mb-10 text-ink">ビジネスプロフィールのヒント</h2>
+        <div class="divide-y divide-line">
+          <NuxtLink
+            v-for="a in topArticles"
+            :key="a.slug"
+            :to="`/media/${a.slug}/`"
+            class="block py-4 group"
+          >
+            <p v-if="a.category" class="text-[11px] text-trust font-bold mb-1">{{ a.category }}</p>
+            <h3 class="text-[15px] font-bold text-ink group-hover:text-brand transition-colors leading-snug">{{ a.title }}</h3>
+          </NuxtLink>
+        </div>
+        <div class="text-center mt-8">
+          <NuxtLink to="/media/" class="text-sm font-semibold text-brand hover:underline">記事をもっと見る →</NuxtLink>
+        </div>
+      </section>
+
     </div>
   </div>
 </template>
@@ -137,6 +157,13 @@ import {
   signInWithPopup,
   getAuth,
 } from 'firebase/auth'
+
+// トップに載せる記事（新しい順に最大6件）＝トップから各記事への内部リンク
+const topArticles = computed(() =>
+  [...useMediaList()]
+    .sort((a, b) => (b.publishedAt || '').localeCompare(a.publishedAt || ''))
+    .slice(0, 6),
+)
 
 const siteTitle = 'ユーノーミー（u-no.me）| 知人があなたを紹介するビジネスプロフィールサービス'
 const siteDescription = 'ユーノーミーは、知人や取引先があなたを紹介してくれるビジネスプロフィールサービス。自分で盛るのではなく、周りの人のエピソードで信頼を可視化。URLひとつで、名刺やSNSから自己紹介できます。'
