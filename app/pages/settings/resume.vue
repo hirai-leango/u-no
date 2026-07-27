@@ -80,7 +80,7 @@
         v-model="bio"
         v-autogrow
         rows="2"
-        maxlength="200"
+        maxlength="1000"
         placeholder="ひとことで自己紹介"
         class="w-full bg-surface border border-surface-border rounded px-4 py-3 text-sm outline-none focus:border-brand transition-colors resize-none min-h-[4.5rem] text-ink placeholder-ink-mute"
       />

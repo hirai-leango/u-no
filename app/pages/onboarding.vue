@@ -47,6 +47,7 @@
       <textarea
         v-model="bio"
         v-autogrow
+        maxlength="1000"
         placeholder="簡単な自己紹介を書いてください"
         rows="3"
         class="w-full bg-surface border border-surface-border rounded px-4 py-3 text-sm outline-none focus:border-brand transition-colors resize-none min-h-[4.5rem] text-ink placeholder-ink-mute"
@@ -112,17 +113,23 @@ async function submit() {
       track('claim_converted', {})
     }
   }
-  await saveProfile(user.value.uid, {
-    uid: user.value.uid,
-    displayName: user.value.displayName ?? '',
-    photoURL: user.value.photoURL ?? '',
-    slug: slug.value,
-    bio: bio.value,
-    headline,
-    resume: { skills: [], experience, education: [] },
-    ...(claimedPendingIds.length ? { claimedPendingIds } : {}),
-    createdAt: new Date(),
-  })
+  try {
+    await saveProfile(user.value.uid, {
+      uid: user.value.uid,
+      displayName: user.value.displayName ?? '',
+      photoURL: user.value.photoURL ?? '',
+      slug: slug.value,
+      bio: bio.value,
+      headline,
+      resume: { skills: [], experience, education: [] },
+      ...(claimedPendingIds.length ? { claimedPendingIds } : {}),
+      createdAt: new Date(),
+    })
+  } catch (e) {
+    // 保存失敗を無反応にしない（原因が分かるよう表示）
+    alert('保存に失敗しました。自己紹介が長すぎる可能性があります。短くして再度お試しください。')
+    return
+  }
   // 計測(S0-1): 登録完了。招待経由(ref)なら被参照IDも載せてK測定に使う
   const ref = consumeRef()
   track('signup_complete', {
