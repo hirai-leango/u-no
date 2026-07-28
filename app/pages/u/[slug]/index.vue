@@ -587,19 +587,21 @@ watch(profile, async (p) => {
     try {
       // SSRで取得済みの「贈った」を使う（再取得しない＝重複クエリを削減）
       const list = givenReviews.value
-      // 未登録(pending)宛で未解決(toSlug空)のものだけ、受け取り済みなら本人で解決（claim補完）。
-      // 登録済み相手は保存済みの氏名・写真をそのまま使い、N+1のプロフィール再取得を避ける。
-      await Promise.all(list.filter(g => !g.toSlug).map(async (g) => {
+      // 表示情報（slug/氏名/写真）が揃っているものはスキップ＝N+1回避。
+      // 欠けているものだけ解決：登録相手はそのまま、pendingは受け取り済みなら本人で補完。
+      await Promise.all(list.map(async (g) => {
+        if (g.toSlug && g.toDisplayName && g.toPhotoURL) return
         try {
-          const pend = await getPending(g.toUserId)
-          if (pend?.claimedByUid) {
-            const rp = await getProfileByUid(pend.claimedByUid)
-            if (rp) {
-              g.toDisplayName = rp.displayName
-              g.toPhotoURL = rp.photoURL
-              g.toSlug = rp.slug
-              g.toHeadline = rp.headline
-            }
+          let rp = await getProfileByUid(g.toUserId)
+          if (!rp) {
+            const pend = await getPending(g.toUserId)
+            if (pend?.claimedByUid) rp = await getProfileByUid(pend.claimedByUid)
+          }
+          if (rp) {
+            g.toDisplayName = rp.displayName
+            g.toPhotoURL = rp.photoURL
+            g.toSlug = rp.slug
+            g.toHeadline = rp.headline
           }
         } catch { /* この1件はスキップ */ }
       }))

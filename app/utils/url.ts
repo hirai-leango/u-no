@@ -29,10 +29,14 @@ export function faviconUrl(u?: string | null, size = 64): string {
   }
 }
 
-// Google等のアバターURLを高解像度で取得（=s96-c → =s{size}-c）。それ以外はそのまま。
+// 写真が無い/無効なときの代替アバター（人物シルエット・壊れた画像アイコンを防ぐ）
+export const AVATAR_PLACEHOLDER =
+  "data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2040%2040'%3E%3Crect%20width='40'%20height='40'%20fill='%23e6e0d3'/%3E%3Ccircle%20cx='20'%20cy='16'%20r='6.5'%20fill='%23c3bcac'/%3E%3Cpath%20d='M7%2037c0-7.5%205.8-12%2013-12s13%204.5%2013%2012'%20fill='%23c3bcac'/%3E%3C/svg%3E"
+
+// Google等のアバターURLを高解像度で取得（=s96-c → =s{size}-c）。空/無効ならプレースホルダー。
 export function hiResAvatar(u?: string | null, size = 256): string {
   const v = (u ?? '').trim()
-  if (!v) return ''
+  if (!v) return AVATAR_PLACEHOLDER
   // googleusercontent の「=s96-c」「=s96」等のサイズ指定を差し替え
   if (/googleusercontent\.com/.test(v)) {
     return v.replace(/=s\d+(-c)?$/, `=s${size}-c`)
