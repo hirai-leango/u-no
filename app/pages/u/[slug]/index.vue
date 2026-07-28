@@ -493,6 +493,11 @@ const facepile = computed(() => reviews.value.slice(0, 6))
 const isMyPage = computed(() =>
   !!currentUser.value && !!profile.value && currentUser.value.uid === profile.value.uid)
 
+// composableのdestructureはwatchより前に宣言（immediate watchでのTDZを回避）
+const { deleteReview } = useReviews()
+const { getProfileByUid, saveProfile } = useUserProfile()
+const { getPending } = useClaim()
+
 // 受け取り通知（ヘッダー赤ドット）を、本人がマイページを見たらクリア（最終閲覧件数を更新）
 const hasNewReceived = useState('hasNewReceived', () => false)
 watch(isMyPage, (mine) => {
@@ -501,11 +506,6 @@ watch(isMyPage, (mine) => {
   const directReceived = (data.value?.reviews ?? []).filter((r: any) => r.toUserId === profile.value!.uid).length
   saveProfile(currentUser.value.uid, { lastSeenReceivedCount: directReceived }).catch(() => {})
 }, { immediate: true })
-
-// この人が贈ったエピソード一覧（受け取った数は reviews.length）
-const { deleteReview } = useReviews()
-const { getProfileByUid, saveProfile } = useUserProfile()
-const { getPending } = useClaim()
 
 // 受け取ったエピソードの投稿者を最新プロフィール（写真・名前・肩書き）に同期
 onMounted(async () => {
