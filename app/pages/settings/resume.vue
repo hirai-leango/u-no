@@ -75,7 +75,7 @@
         >青色に戻す</button>
       </div>
       <input ref="coverInput" type="file" accept="image/*" class="hidden" @change="onCoverChange" />
-      <p class="text-[11px] text-ink-mute mt-1.5">横長（自動でトリミング）。未設定だと藍色の背景になります。変更後は保存してください。</p>
+      <p class="text-[11px] text-ink-mute mt-1.5">推奨サイズ：横長 3:1（1200×400px以上）。中央を基準に自動トリミングされます。未設定だと藍色の背景になります。変更後は保存してください。</p>
     </section>
 
     <!-- 氏名 -->
