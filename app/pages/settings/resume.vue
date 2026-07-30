@@ -49,6 +49,35 @@
       </div>
     </section>
 
+    <!-- カバー画像 -->
+    <section class="mb-6">
+      <label class="block text-xs font-bold tracking-widest text-ink-mute mb-2">カバー画像（背景）</label>
+      <div
+        class="relative w-full h-28 rounded-lg overflow-hidden mb-3 bg-gradient-to-br from-brand to-brand-press"
+        :style="coverURL ? `background-image:url('${coverURL}');background-size:cover;background-position:center;` : ''"
+      >
+        <div v-if="!coverURL" class="absolute inset-0 opacity-[0.16] bg-repeat" style="background-image:url('/og-yunomi.png');background-size:56px 73px;" />
+      </div>
+      <div class="flex items-center gap-3">
+        <button
+          type="button"
+          :disabled="uploadingCover"
+          class="px-4 py-2 rounded border border-surface-border text-sm font-semibold text-ink-soft hover:text-ink disabled:opacity-50 transition-colors"
+          @click="coverInput?.click()"
+        >
+          {{ uploadingCover ? 'アップロード中…' : 'カバーを変更' }}
+        </button>
+        <button
+          v-if="coverURL"
+          type="button"
+          class="text-sm text-ink-mute hover:text-warn transition-colors"
+          @click="clearCover"
+        >青色に戻す</button>
+      </div>
+      <input ref="coverInput" type="file" accept="image/*" class="hidden" @change="onCoverChange" />
+      <p class="text-[11px] text-ink-mute mt-1.5">横長（自動でトリミング）。未設定だと藍色の背景になります。変更後は保存してください。</p>
+    </section>
+
     <!-- 氏名 -->
     <section class="mb-6">
       <label class="block text-xs font-bold tracking-widest text-ink-mute mb-2">氏名</label>
@@ -330,6 +359,43 @@ async function onAvatarChange(e: Event) {
   }
 }
 
+// カバー画像（横長 1200x400 で中央クロップ→Firebase Storage）
+async function uploadCover(uid: string, file: File): Promise<string> {
+  const bitmap = await createImageBitmap(file)
+  const W = 1200, H = 400, ratio = W / H
+  const srcRatio = bitmap.width / bitmap.height
+  let sw: number, sh: number
+  if (srcRatio > ratio) { sh = bitmap.height; sw = sh * ratio } else { sw = bitmap.width; sh = sw / ratio }
+  const canvas = document.createElement('canvas')
+  canvas.width = W
+  canvas.height = H
+  canvas.getContext('2d')!.drawImage(bitmap, (bitmap.width - sw) / 2, (bitmap.height - sh) / 2, sw, sh, 0, 0, W, H)
+  const blob = await new Promise<Blob>((res, rej) => canvas.toBlob(b => (b ? res(b) : rej(new Error('failed'))), 'image/jpeg', 0.85))
+  const r = storageRef(getStorage(), 'covers/' + uid)
+  await uploadBytes(r, blob, { contentType: 'image/jpeg', cacheControl: 'public, max-age=3600' })
+  return await getDownloadURL(r)
+}
+const coverURL = ref('')
+const uploadingCover = ref(false)
+const coverInput = ref<HTMLInputElement | null>(null)
+async function onCoverChange(e: Event) {
+  const file = (e.target as HTMLInputElement).files?.[0]
+  if (!file || !user.value) return
+  uploadingCover.value = true
+  try {
+    coverURL.value = await uploadCover(user.value.uid, file)
+    showToast('カバー画像をアップロードしました。保存してください')
+  } catch {
+    showToast('カバー画像のアップロードに失敗しました', { type: 'error' })
+  } finally {
+    uploadingCover.value = false
+  }
+}
+function clearCover() {
+  coverURL.value = ''
+  showToast('カバー画像を外しました。保存してください')
+}
+
 const form = reactive<Resume>({
   skills: [],
   experience: [],
@@ -366,6 +432,7 @@ onMounted(async () => {
   const profile = await getProfileByUid(user.value.uid)
   if (profile?.resume) Object.assign(form, profile.resume)
   photoURL.value = profile?.photoURL ?? user.value?.photoURL ?? ''
+  coverURL.value = profile?.coverURL ?? ''
   displayName.value = profile?.displayName ?? user.value?.displayName ?? ''
   slug.value = profile?.slug ?? ''
   headline.value = profile?.headline ?? ''
@@ -414,6 +481,7 @@ async function save() {
   try {
     await saveProfile(user.value.uid, {
       photoURL: photoURL.value,
+      coverURL: coverURL.value,
       displayName: displayName.value.trim() || (user.value.displayName ?? ''),
       headline: headline.value,
       bio: bio.value,

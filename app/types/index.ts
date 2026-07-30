@@ -7,6 +7,7 @@ export interface UserProfile {
   uid: string
   displayName: string
   photoURL: string
+  coverURL?: string
   slug: string
   headline: string
   bio: string

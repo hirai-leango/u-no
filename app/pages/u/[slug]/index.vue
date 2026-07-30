@@ -2,9 +2,14 @@
   <div v-if="profile">
     <!-- ヘッダー -->
     <div class="-mt-8 -mx-4 mb-8 overflow-hidden">
-      <!-- カバー（藍色ヒーロー・湯呑み模様）に人物情報を集約 -->
-      <div class="relative bg-gradient-to-br from-brand to-brand-press px-4 pt-10 pb-7 overflow-hidden">
-        <div class="absolute inset-0 opacity-[0.16] bg-repeat pointer-events-none" style="background-image:url('/og-yunomi.png'); background-size:56px 73px;" />
+      <!-- カバー（未設定は藍色ヒーロー・湯呑み模様／設定時はアップロード画像）に人物情報を集約 -->
+      <div
+        class="relative bg-gradient-to-br from-brand to-brand-press px-4 pt-10 pb-7 overflow-hidden"
+        :style="profile.coverURL ? `background-image:url('${profile.coverURL}');background-size:cover;background-position:center;` : ''"
+      >
+        <!-- 未設定：湯呑み模様 ／ 設定時：文字可読性のための暗色オーバーレイ -->
+        <div v-if="!profile.coverURL" class="absolute inset-0 opacity-[0.16] bg-repeat pointer-events-none" style="background-image:url('/og-yunomi.png'); background-size:56px 73px;" />
+        <div v-else class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/35 to-black/15 pointer-events-none" />
         <div class="relative">
           <div class="flex items-end justify-between gap-4">
             <div class="min-w-0 flex-1">
